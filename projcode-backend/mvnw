@@ -1,0 +1,176 @@
+#!/bin/sh
+# ----------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#    https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+# ----------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------
+# Maven Start Up Batch script
+#
+# Required ENV vars:
+# ------------------
+#   JAVA_HOME - location of a JDK home dir
+#
+# Optional ENV vars
+# -----------------
+#   MAVEN_OPTS - parameters passed to the Java VM when running Maven
+#     e.g. to debug Maven itself, use
+#       set MAVEN_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000
+#   MAVEN_SKIP_RC - flag to disable loading of mavenrc files
+# ----------------------------------------------------------------------------
+
+if [ -z "$MAVEN_SKIP_RC" ] ; then
+  if [ -f /etc/mavenrc ] ; then
+    . /etc/mavenrc
+  fi
+
+  if [ -f "$HOME/.mavenrc" ] ; then
+    . "$HOME/.mavenrc"
+  fi
+fi
+
+# OS specific support.  $var _must_ be set to either true or false.
+cygwin=false;
+darwin=false;
+mingw=false
+case "`uname`" in
+  CYGWIN*) cygwin=true ;;
+  Darwin*) darwin=true ;;
+  MINGW*) mingw=true ;;
+esac
+
+if [ "$0" = "/*" ] ; then
+  basedir=`dirname "$0"`
+elif [ -f "$0" ] ; then
+  basedir=`dirname "$0"`
+else
+  basedir=`which "$0" 2>/dev/null`
+  if [ -z "$basedir" ]; then
+    basedir='.'
+  else
+    basedir=`dirname "$basedir"`
+  fi
+fi
+
+# ----------------------------------------------------------------------------
+# Bootstrap the wrapper zip/jar if missing OR CORRUPTED
+# ----------------------------------------------------------------------------
+WRAPPER_JAR_PATH="$basedir/.mvn/wrapper/maven-wrapper.jar"
+WRAPPER_PROPERTIES_PATH="$basedir/.mvn/wrapper/maven-wrapper.properties"
+
+# Check if jar exists and size is reasonable (less than 10KB usually means corrupted HTML/Text file)
+if [ -f "$WRAPPER_JAR_PATH" ]; then
+    filesize=$(wc -c < "$WRAPPER_JAR_PATH")
+    if [ "$filesize" -lt 10000 ]; then
+        echo "⚠️  Wrapper jar corrupted or too small ($filesize bytes). Deleting to force redownload..."
+        rm "$WRAPPER_JAR_PATH"
+    fi
+fi
+
+if [ ! -f "$WRAPPER_JAR_PATH" ]; then
+    echo "Downloading maven-wrapper.jar..."
+    if [ -f "$WRAPPER_PROPERTIES_PATH" ]; then
+        wrapperUrl=`grep "^wrapperUrl=" "$WRAPPER_PROPERTIES_PATH" | cut -d= -f2`
+    fi
+    if [ -z "$wrapperUrl" ]; then
+        wrapperUrl="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.2/maven-wrapper-3.3.2.jar"
+    fi
+    
+    # Use curl with -L to follow redirects and -f to fail on 404/500
+    if command -v curl >/dev/null 2>&1; then
+        curl -L -f -o "$WRAPPER_JAR_PATH" "$wrapperUrl"
+        if [ $? -ne 0 ]; then
+            echo "❌ Error: Failed to download maven-wrapper.jar using curl."
+            exit 1
+        fi
+    elif command -v wget >/dev/null 2>&1; then
+        wget -O "$WRAPPER_JAR_PATH" "$wrapperUrl"
+        if [ $? -ne 0 ]; then
+            echo "❌ Error: Failed to download maven-wrapper.jar using wget."
+            exit 1
+        fi
+    else
+        echo "❌ Error: curl or wget not found. Cannot download maven-wrapper.jar"
+        exit 1
+    fi
+    echo "✅ Download complete."
+fi
+# ----------------------------------------------------------------------------
+
+if [ -f "$basedir/mvnw" ] && [ -z "$basedir" ]; then
+  :
+elif [ -z "$basedir" ] || [ "$basedir" = "." ]; then
+    basedir=`pwd`
+fi
+
+if [ "$darwin" = "true" -a -z "$JAVA_HOME" -a -x "/usr/libexec/java_home" ]; then
+  export JAVA_HOME=`/usr/libexec/java_home`
+fi
+
+if $cygwin ; then
+  [ -n "$JAVA_HOME" ] &&
+    JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
+  [ -n "$CLASSPATH" ] &&
+    CLASSPATH=`cygpath --path --unix "$CLASSPATH"`
+fi
+
+if [ -z "$JAVA_HOME" ] ; then
+  if [ -r /etc/gentoo-release ] ; then
+    JAVA_HOME=`java-config --jre-home`
+  fi
+fi
+
+if $mingw ; then
+  [ -n "$JAVA_HOME" ] &&
+    JAVA_HOME="`(cd "$JAVA_HOME"; pwd)`"
+fi
+
+if [ -z "$JAVA_HOME" ] ; then
+  echo "Error: JAVA_HOME is not defined correctly."
+  echo "  We cannot execute $JAVACMD"
+  exit 1
+fi
+
+if [ -z "$JAVACMD" ] ; then
+  if [ -n "$JAVA_HOME"  ] ; then
+    if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
+      JAVACMD="$JAVA_HOME/jre/sh/java"
+    else
+      JAVACMD="$JAVA_HOME/bin/java"
+    fi
+  else
+    JAVACMD="java"
+  fi
+fi
+
+if [ ! -x "$JAVACMD" ] ; then
+  echo "Error: JAVA_HOME is not defined correctly."
+  echo "  We cannot execute $JAVACMD"
+  exit 1
+fi
+
+CLASSPATH=$WRAPPER_JAR_PATH
+
+exec "$JAVACMD" \
+  $MAVEN_OPTS \
+  -classpath "$CLASSPATH" \
+  -Dmaven.multiModuleProjectDirectory="$basedir" \
+  -Dmaven.home="$MAVEN_HOME" \
+  -Dmaven.basedir="$basedir" \
+  -Dfile.encoding=UTF-8 \
+  org.apache.maven.wrapper.MavenWrapperMain \
+  "$@"

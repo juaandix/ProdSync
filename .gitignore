@@ -1,0 +1,5 @@
+projcode-frontend/node_modules/
+projcode-backend/target/
+projcode-frontend/.next/
+projcode-frontend/test-results/
+.DS_Store
