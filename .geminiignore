@@ -1,0 +1,15 @@
+node_modules/
+.next/
+dist/
+build/
+target/
+.git/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+*.log
+*.svg
+*.png
+*.jpg
+coverage/
+Gemini.md
