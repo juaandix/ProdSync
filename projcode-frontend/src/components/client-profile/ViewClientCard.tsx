@@ -11,11 +11,12 @@ import DashboardMetricCard from "@/components/dashboard/DashboardMetricCard";
 
 const ACTIVE_STATUSES = ["EN_PROGRESO", "ACTIVO"];
 
-const projectBadgeColor = (status: string): "success" | "warning" | "default" | "error" | "info" => {
-  if (status === "Completado" || status === "Completed") return "success";
-  if (status === "En Progreso" || status === "In Progress") return "warning";
-  if (status === "Activo" || status === "Active") return "info";
-  return "default";
+const projectBadgeColor = (status: string): "success" | "warning" | "light" | "error" | "info" => {
+  if (status === "COMPLETADO") return "success";
+  if (status === "EN_PROGRESO") return "warning";
+  if (status === "ACTIVO") return "info";
+  if (status === "CANCELADO") return "error";
+  return "light";
 };
 
 export default function ViewClientCard({ id }: { id: string }) {
@@ -52,7 +53,7 @@ export default function ViewClientCard({ id }: { id: string }) {
 
   const clientProjects = allProjects.filter(p => p.client?.id === id);
   const activeProjects = clientProjects.filter(p => ACTIVE_STATUSES.includes(p.status));
-  const completedProjects = clientProjects.filter(p => p.status === "Completado" || p.status === "Completed");
+  const completedProjects = clientProjects.filter(p => p.status === "COMPLETADO");
 
   return (
     <div className="space-y-6">

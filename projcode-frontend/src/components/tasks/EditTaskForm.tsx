@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -24,7 +24,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ taskId, projectId, onTaskUp
     reset,
     formState: { errors },
   } = useForm<EditTaskFormData>({
-    resolver: zodResolver(editTaskSchema),
+    resolver: zodResolver(editTaskSchema) as Resolver<EditTaskFormData>,
   });
 
   const { data: task, isLoading } = useQuery({

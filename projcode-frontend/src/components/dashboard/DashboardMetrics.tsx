@@ -27,7 +27,7 @@ export default function DashboardMetrics() {
     enabled: isAdmin,
   });
 
-  const activeProjects = projects.filter((p) => p.status === 'IN_PROGRESS').length;
+  const activeProjects = projects.filter((p) => p.status === 'EN_PROGRESO').length;
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 md:gap-6">

@@ -19,8 +19,8 @@ const STATUS_LABEL: Record<BudgetStatus, string> = {
   rejected: 'Rechazado',
 };
 
-const STATUS_COLOR: Record<BudgetStatus, 'default' | 'success' | 'warning' | 'error' | 'info'> = {
-  draft: 'default',
+const STATUS_COLOR: Record<BudgetStatus, 'light' | 'success' | 'warning' | 'error' | 'info'> = {
+  draft: 'light',
   sent: 'info',
   accepted: 'success',
   rejected: 'error',

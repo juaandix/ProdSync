@@ -64,11 +64,11 @@ export default function RecentProjectsTable() {
                     <Badge
                       size="sm"
                       color={
-                        project.status === 'COMPLETED'
+                        project.status === 'COMPLETADO'
                           ? 'success'
-                          : project.status === 'IN_PROGRESS'
+                          : project.status === 'EN_PROGRESO'
                           ? 'warning'
-                          : 'error'
+                          : 'info'
                       }
                     >
                       {project.status}

@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -22,7 +22,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ projectId, onTaskCreate
     handleSubmit,
     formState: { errors },
   } = useForm<TaskFormData>({
-    resolver: zodResolver(taskSchema),
+    resolver: zodResolver(taskSchema) as Resolver<TaskFormData>,
     defaultValues: {
       projectId,
       descripcion: '',

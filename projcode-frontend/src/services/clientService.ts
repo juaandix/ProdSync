@@ -41,7 +41,7 @@ const mapFromBackend = (data: ClientBackend): Client => ({
  * mapToBackend
  * Convierte los datos del formulario frontend al payload que espera el backend.
  */
-const mapToBackend = (data: ClientFormData) => ({
+const mapToBackend = (data: { name?: string; email?: string; identification?: string; location?: string; province?: string; contactPerson?: string }) => ({
   nombre: data.name,
   identificacion: data.identification,
   email: data.email,

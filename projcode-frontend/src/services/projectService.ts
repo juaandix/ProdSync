@@ -12,7 +12,7 @@
  *  PUT    /proyectos/:id     → actualiza un proyecto existente
  *  DELETE /proyectos/:id     → elimina un proyecto
  */
-import { Project, ProjectBackend } from '@/types/models';
+import { Project, ProjectBackend, ProjectStatus } from '@/types/models';
 import apiClient from '@/lib/apiClient';
 
 // --- DTOs (Data Transfer Objects) ---
@@ -45,13 +45,13 @@ const mapFromBackend = (data: ProjectBackend): Project => ({
   description: data.descripcion || '',
   startDate: data.fechaInicio || '',
   endDate: data.fechaFin || '',
-  status: data.estado || '',
+  status: (data.estado || 'ACTIVO') as ProjectStatus,
   // El cliente viene anidado en la respuesta del backend
   client: data.cliente ? {
     id: data.cliente.id ? data.cliente.id.toString() : '',
     name: data.cliente.nombre || '',
     identification: data.cliente.identificacion || '',
-    contactPerson: data.cliente.contacto || '',
+    contactPerson: data.cliente.contactPerson || '',
     email: data.cliente.email || '',
     location: data.cliente.localidad || '',
     province: data.cliente.provincia || '',

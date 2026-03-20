@@ -6,6 +6,6 @@ export const MOCK_USER: User = {
   name: 'Test User',
   username: 'Test User',
   email: 'test@example.com',
-  role: 'user',
-  status: 'active',
+  role: 'USER',
+  status: 'ACTIVE',
 };
