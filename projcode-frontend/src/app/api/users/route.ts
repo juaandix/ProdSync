@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     username: name,
     email,
     role,
-    status: "active", // Los nuevos usuarios están activos de forma predeterminada
+    status: "ACTIVE", // Los nuevos usuarios están activos de forma predeterminada
   };
 
   addUser(newUser);

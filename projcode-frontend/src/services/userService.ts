@@ -46,7 +46,8 @@ const mapToBackend = (data: Partial<UserFormData> | Partial<EditUserFormData>) =
   const payload: Partial<UserBackend> = {};
   if (data.name !== undefined) payload.nombre = data.name;
   if (data.username !== undefined) payload.username = data.username;
-  if (data.password !== undefined && data.password !== '') payload.password = data.password;
+  const withPassword = data as Partial<UserFormData>;
+  if (withPassword.password !== undefined && withPassword.password !== '') payload.password = withPassword.password;
   if (data.email !== undefined) payload.email = data.email;
   if (data.role !== undefined) payload.role = data.role;
   if (data.status !== undefined) payload.estado = data.status;

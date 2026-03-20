@@ -98,6 +98,7 @@ export interface UserBackend {
   email: string;
   role: UserRole;
   estado: UserStatus;
+  password?: string;
 }
 
 // Budget Models

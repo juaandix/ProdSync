@@ -4,6 +4,7 @@ import com.softcode.projcodeapi.model.TimeEntry;
 import com.softcode.projcodeapi.model.User;
 import com.softcode.projcodeapi.service.TimeEntryService;
 import com.softcode.projcodeapi.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,7 +72,7 @@ public class TimeEntryController {
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<TimeEntry> createTimeEntry(
-            @RequestBody TimeEntry timeEntry,
+            @Valid @RequestBody TimeEntry timeEntry,
             Principal principal
     ) {
         User currentUser = getCurrentUser(principal);
@@ -83,7 +84,7 @@ public class TimeEntryController {
 
     @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<TimeEntry> updateTimeEntry(@PathVariable Long id, @RequestBody TimeEntry timeEntry, Principal principal) {
+    public ResponseEntity<TimeEntry> updateTimeEntry(@PathVariable Long id, @Valid @RequestBody TimeEntry timeEntry, Principal principal) {
         return timeEntryService.getTimeEntryById(id)
                 .map(existing -> {
                     if (!hasRole("ROLE_ADMIN")) {

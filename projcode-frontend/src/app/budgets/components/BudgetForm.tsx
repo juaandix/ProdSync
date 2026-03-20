@@ -23,7 +23,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
+import { useForm, useFieldArray, Controller, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -61,7 +61,7 @@ export default function BudgetForm({ defaultValues, onSubmit, isSubmitting, subm
     setValue,
     formState: { errors },
   } = useForm<BudgetFormData>({
-    resolver: zodResolver(budgetSchema),
+    resolver: zodResolver(budgetSchema) as Resolver<BudgetFormData>,
     defaultValues: {
       numero: '',
       title: '',

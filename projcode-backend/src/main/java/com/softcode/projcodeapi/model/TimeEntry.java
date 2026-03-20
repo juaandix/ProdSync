@@ -3,6 +3,9 @@ package com.softcode.projcodeapi.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,9 +28,12 @@ public class TimeEntry {
     @JsonIgnore
     private Task task;
 
+    @NotBlank(message = "La fecha es obligatoria")
     @Column(name = "entry_date")
     private String date;
 
+    @NotNull(message = "Las horas son obligatorias")
+    @Min(value = 0, message = "Las horas no pueden ser negativas")
     @Column(name = "hours")
     private Double hours;
 

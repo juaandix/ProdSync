@@ -29,6 +29,7 @@ interface TableCellProps {
   children: ReactNode; // Contenido de la celda
   isHeader?: boolean; // Si es verdadero, se renderiza como <th>, de lo contrario <td>
   className?: string; // className opcional para estilizar
+  onClick?: () => void; // Manejador de clic (usado para ordenación de columnas)
 }
 
 // Componente de tabla
@@ -56,9 +57,10 @@ const TableCell: React.FC<TableCellProps> = ({
   children,
   isHeader = false,
   className,
+  onClick,
 }) => {
   const CellTag = isHeader ? "th" : "td";
-  return <CellTag className={` ${className}`}>{children}</CellTag>;
+  return <CellTag className={` ${className}`} onClick={onClick}>{children}</CellTag>;
 };
 
 export { Table, TableHeader, TableBody, TableRow, TableCell };

@@ -59,9 +59,9 @@ export default function TaskList({ projectId }: TaskListProps) {
                     <Badge
                       size="sm"
                       color={
-                        task.estado === "COMPLETED" ? "success" :
-                        task.estado === "IN_PROGRESS" ? "warning" :
-                        "error"
+                        task.estado === "COMPLETADO" ? "success" :
+                        task.estado === "EN_PROGRESO" ? "warning" :
+                        "info"
                       }
                     >
                       {task.estado}
