@@ -64,7 +64,28 @@
       "Bash(sleep 8 && \\\\\necho \"=== Login ADMIN ===\" && \\\\\ncurl -s -X POST http://localhost:8080/api/auth/login \\\\\n  -H \"Content-Type: application/json\" \\\\\n  -d '{\"username\":\"admin@test.com\",\"password\":\"password123\"}' | python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('TOKEN OK' if 'token' in d else d\\)\" && \\\\\necho \"=== Login OPERATOR ===\" && \\\\\ncurl -s -X POST http://localhost:8080/api/auth/login \\\\\n  -H \"Content-Type: application/json\" \\\\\n  -d '{\"username\":\"operator@test.com\",\"password\":\"password123\"}' | python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('TOKEN OK' if 'token' in d else d\\)\" && \\\\\necho \"=== Login USER ===\" && \\\\\ncurl -s -X POST http://localhost:8080/api/auth/login \\\\\n  -H \"Content-Type: application/json\" \\\\\n  -d '{\"username\":\"user@test.com\",\"password\":\"password123\"}' | python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('TOKEN OK' if 'token' in d else d\\)\")",
       "Bash(pip3 install:*)",
       "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc3MzIxODU5NiwiZXhwIjoxNzczMzA0OTk2fQ.dtIgUtAuId7k411SGwt67Uj2ySo41k-01x652k7FvcU\"\ncurl -s -X POST http://localhost:8080/api/clientes \\\\\n  -H \"Content-Type: application/json\" \\\\\n  -H \"Authorization: Bearer $TOKEN\" \\\\\n  -d '{\"identificacion\":\"B12345678\",\"nombre\":\"TechCorp Solutions\",\"email\":\"contacto@techcorp.com\",\"localidad\":\"Madrid\",\"provincia\":\"Madrid\",\"contact_person\":\"Laura Martinez\"}' 2>&1)",
-      "Bash(rm -rf /Users/juandix/Programming/SOFTCODE/Develop_prueba/projcode-frontend/.git && rm -rf /Users/juandix/Programming/SOFTCODE/Develop_prueba/projcode-backend/.git)"
+      "Bash(rm -rf /Users/juandix/Programming/SOFTCODE/Develop_prueba/projcode-frontend/.git && rm -rf /Users/juandix/Programming/SOFTCODE/Develop_prueba/projcode-backend/.git)",
+      "Bash(ln -sfn \"/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/projcode-backend\" /tmp/prodsync-backend)",
+      "Bash(./node_modules/.bin/jest --watchAll=false)",
+      "Bash(chmod +x /tmp/process_projcode.sh)",
+      "Bash(/tmp/process_projcode.sh)",
+      "Bash(sed -i '' 's/projcode-api/prodsync-api/g; s/projcode-backend/prodsync-backend/g; s/projcodedb/prodsyncdb/g' '/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/projcode-backend/pom.xml')",
+      "Bash(sed -i '' s/projcodedb/prodsyncdb/g '/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/projcode-backend/src/main/resources/application.yml')",
+      "Bash(sed -i '' s/projcodedb/prodsyncdb/g '/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/projcode-backend/docker-compose.yml')",
+      "Bash(sed -i '' 's/projcodedb/prodsyncdb/g; s/projcode-backend/prodsync-backend/g' '/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/projcode-frontend/docker-compose.yml')",
+      "Bash(mv '/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/projcode-backend/src/main/java/com/softcode/projcodeapi' '/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/projcode-backend/src/main/java/com/softcode/prodsyncapi')",
+      "Bash(mv '/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/projcode-backend/src/test/java/com/softcode/projcodeapi' '/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/projcode-backend/src/test/java/com/softcode/prodsyncapi')",
+      "Bash(mv '/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/projcode-backend' '/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/prodsync-backend')",
+      "Bash(mv '/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/projcode-frontend' '/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/prodsync-frontend')",
+      "Bash(ln -sfn \"/Users/juandix/Documents/CESUR 25:26/Proyecto intermodular /ProdSync/prodsync-backend\" /tmp/prodsync-backend)",
+      "Bash(./node_modules/.bin/next dev *)",
+      "Bash(xargs sed -i '' 's|/images/prodsync-logo\\\\.png|/images/prodsync-logo.jpg|g')",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(mvn compile *)",
+      "Bash(./node_modules/.bin/jest --testPathPattern=\"aiAssignment|AiAssignment\" --no-coverage)",
+      "Bash(./node_modules/.bin/jest --testPathPatterns=\"aiAssignment|AiAssignment\" --no-coverage)",
+      "Bash(./node_modules/.bin/jest --no-coverage)",
+      "Bash(./node_modules/.bin/jest --testPathPatterns=\"AppSidebar\" --no-coverage -u)"
     ]
   }
 }
