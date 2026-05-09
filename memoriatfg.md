@@ -139,6 +139,8 @@ La aplicación se divide en dos capas independientes comunicadas por API REST:
 | Base de datos | PostgreSQL | 15 | Almacenamiento relacional |
 | Reducción boilerplate | Lombok | 1.18.x | Getters/Setters automáticos |
 | Documentación API | SpringDoc OpenAPI | 2.5.0 | Swagger UI en /swagger-ui.html |
+| IA — LLM | Claude API (Anthropic) | claude-sonnet-4-6 | Recomendación de asignación de tareas |
+| HTTP client (IA) | Java HttpClient | Java 17 built-in | Llamadas a la API de Anthropic |
 | Contenedores | Docker + Docker Compose | — | Despliegue reproducible |
 | Tests frontend | Jest + Testing Library | 30.x | Pruebas unitarias y snapshot |
 | Tests E2E | Playwright | 1.56 | Pruebas de extremo a extremo |
@@ -381,13 +383,68 @@ JWT_SECRET: <clave secreta 256 bits>
 ANTHROPIC_API_KEY: <para el módulo IA>
 ```
 
+### 4.5 Módulo de IA — Implementación
+
+El módulo de IA está completamente implementado e integrado con el formulario de creación de tareas.
+
+**Flujo de ejecución:**
+
+```
+Usuario rellena formulario de tarea (descripcion, tipo, estimacion, storyPoints)
+         │
+         │ click "Sugerir asignación IA"
+         ▼
+AiAssignmentPanel.tsx → useMutation → aiAssignmentService.assignTask()
+         │
+         │ POST /api/ai/assign-task  { descripcion, tipo, estimacion, storyPoints }
+         ▼
+AiAssignmentController (Spring Boot)
+         │
+         ▼
+TaskAssignmentService
+   ├── UserPerformanceService.getProfiles()   ← lee TimeEntry + Task de la BD
+   └── ClaudeService.getTaskAssignment()      ← llama a api.anthropic.com/v1/messages
+         │
+         ▼
+Response: { recomendaciones: [{ userId, nombre, puntuacion, justificacion }] }
+         │
+         ▼
+AiAssignmentPanel muestra tabla ranking con medallas 🥇🥈🥉
+```
+
+**Archivos de implementación:**
+
+```
+prodsync-backend/src/main/java/com/softcode/prodsyncapi/
+├── ai/
+│   ├── AiAssignmentController.java   # POST /api/ai/assign-task
+│   ├── ClaudeService.java            # Llama a la API de Anthropic
+│   ├── TaskAssignmentService.java    # Orquestador del flujo
+│   └── dto/
+│       ├── AssignmentRequestDto.java
+│       ├── AssignmentResponseDto.java
+│       └── UserPerformanceDto.java
+└── service/
+    └── UserPerformanceService.java   # Calcula métricas de rendimiento
+
+prodsync-frontend/src/
+├── components/ai/
+│   └── AiAssignmentPanel.tsx         # Panel con selector de tipo + tabla ranking
+├── hooks/
+│   └── useAiAssignment.ts            # useMutation wrapper
+└── services/
+    └── aiAssignmentService.ts        # POST /ai/assign-task
+```
+
+**Integración en el formulario:** `CreateTaskForm.tsx` usa `useWatch` de React Hook Form para observar en tiempo real los campos `descripcion`, `estimacion` y `storyPoints` y pasarlos al panel. El panel solo es visible para roles `ADMIN` y `OPERATOR` mediante `RoleGuard`.
+
 ---
 
 ## 5. Módulo de IA — Asignación Inteligente de Tareas
 
 ### 5.1 Descripción
 
-Se integrará un módulo de inteligencia artificial que analiza el historial de rendimiento de cada desarrollador y recomiende la asignación óptima de nuevas tareas. El sistema utilizará la **API de Claude (Anthropic)** con el modelo `claude-sonnet-4-6`.
+El módulo de inteligencia artificial analiza el historial de rendimiento de cada desarrollador y recomienda la asignación óptima de nuevas tareas. El sistema utiliza la **API de Claude (Anthropic)** con el modelo `claude-sonnet-4-6`. La implementación está completada e integrada en el flujo de creación de tareas.
 
 ### 5.2 Problema que resuelve
 
@@ -429,38 +486,44 @@ TaskAssignmentService
 Respuesta: [{ userId, nombre, puntuacion, justificacion }]
 ```
 
-### 5.5 Archivos planificados
+### 5.5 Detalles de implementación
 
-**Backend:**
-```
-ai/
-├── AiAssignmentController.java
-├── ClaudeService.java
-├── TaskAssignmentService.java
-└── dto/
-    ├── AssignmentRequestDto.java
-    ├── AssignmentResponseDto.java
-    └── UserPerformanceDto.java
-service/
-└── UserPerformanceService.java
-```
+**ClaudeService.java** — Encapsula la comunicación con la API de Anthropic:
+- Usa `java.net.http.HttpClient` (incluido en Java 17, sin dependencias externas)
+- Lanza `IllegalStateException` si `ANTHROPIC_API_KEY` está vacía o nula → el controlador responde 503
+- Elimina bloques de código markdown (` ```json ... ``` `) que Claude pueda incluir en su respuesta antes de parsear el JSON
+- Constructor secundario `package-private` con `HttpClient` inyectado para facilitar los tests unitarios
 
-**Frontend:**
-```
-components/ai/AiAssignmentPanel.tsx
-hooks/useAiAssignment.ts
-services/aiAssignmentService.ts
-```
+**UserPerformanceService.java** — Calcula las métricas de rendimiento:
+- Carga todos los usuarios activos, sus time entries y sus tareas en memoria
+- `@Transactional(readOnly = true)` para evitar `LazyInitializationException` con JPA
+- Agrupa los time entries por usuario y calcula las 5 métricas (ver §5.3)
+- Los usuarios sin time entries se omiten del ranking
 
-### 5.6 Estimación
+**TaskAssignmentService.java** — Orquestador:
+- Si no hay perfiles disponibles, devuelve `AssignmentResponseDto` con lista vacía (sin llamar a Claude)
+- Si hay perfiles, construye el prompt y delega en `ClaudeService`
 
-| Fase | Descripción | Días |
-|------|-------------|------|
-| 1 | UserPerformanceService (métricas) | 2 |
-| 2 | ClaudeService + AiAssignmentController | 1 |
-| 3 | AiAssignmentPanel (frontend) | 1 |
-| 4 | Historial y feedback | 1 |
-| **Total** | | **5 días** |
+**AiAssignmentPanel.tsx** — Interfaz de usuario:
+- Selector de tipo de tarea (DESARROLLO, TESTING, ANALISIS, REUNION, DISEÑO)
+- Botón deshabilitado si `descripcion` está vacía o hay petición en curso
+- Estado de carga: "Consultando IA…" con spinner
+- Estado de error: mensaje explicando que `ANTHROPIC_API_KEY` no está configurada
+- Tabla de ranking con 🥇🥈🥉 para los tres primeros; barra de puntuación coloreada (verde ≥80, ámbar ≥60, rojo <60)
+- Al cambiar el tipo de tarea, se resetea el resultado anterior
+
+### 5.6 Prompt enviado a Claude
+
+El prompt incluye: descripción de la tarea, tipo, estimación en horas, story points, y para cada desarrollador: nombre, eficiencia por tipo de tarea, story points por semana, tasa de finalización, horas en los últimos 7 y 30 días, y especialización dominante.
+
+Se instruye al modelo para que devuelva **exclusivamente JSON** con el esquema:
+```json
+{
+  "recomendaciones": [
+    { "userId": 1, "nombre": "...", "puntuacion": 92, "justificacion": "..." }
+  ]
+}
+```
 
 ---
 
@@ -468,7 +531,7 @@ services/aiAssignmentService.ts
 
 ### 6.1 Tests en frontend (Jest + React Testing Library)
 
-Se han implementado **216 tests** distribuidos en:
+Se han implementado **234 tests** distribuidos en:
 
 | Módulo | Tipo | Archivos de test |
 |--------|------|-----------------|
@@ -476,10 +539,11 @@ Se han implementado **216 tests** distribuidos en:
 | Componentes de visualización | Snapshot | `ViewClientCard`, `ViewProjectCard`, `ProjectAnalytics`, `UserAnalytics`, `UserDropdown` |
 | Tablas y listados | Snapshot | `ClientTable`, `ProjectTable`, `UserTable`, `TimeEntryList`, `Pagination` |
 | Layout | Snapshot | `AppSidebar` |
-| Servicios | Unitario (mock fetch) | `clientService` |
+| Servicios | Unitario (mock fetch) | `clientService`, `aiAssignmentService` |
 | Utilidades | Unitario | `timeUtils` |
 | API Routes (Next.js) | Unitario | `clients`, `projects`, `tasks`, `time-entries` |
 | Páginas | Snapshot | `tasks/page`, `tasks/[taskId]/page` |
+| **Módulo IA** | Snapshot + interacción | `AiAssignmentPanel` (13 tests), `aiAssignmentService` (5 tests) |
 
 **Ejecución:**
 ```bash
@@ -487,11 +551,28 @@ cd prodsync-frontend
 ./node_modules/.bin/jest
 ```
 
-### 6.2 Tests E2E (Playwright)
+### 6.2 Tests en backend (JUnit 5 + Mockito)
+
+Los tests de backend cubren el módulo de IA con **21 tests** distribuidos en:
+
+| Clase de test | Tipo | Tests |
+|---------------|------|-------|
+| `UserPerformanceServiceTest` | Unitario (Mockito) | 6 — calcula las 5 métricas y casos borde |
+| `ClaudeServiceTest` | Unitario (Mockito) | 5 — API key vacía/nula, error HTTP, parseo JSON, eliminación de fences markdown |
+| `TaskAssignmentServiceTest` | Unitario (Mockito) | 4 — sin perfiles, con perfiles, delegación correcta |
+| `AiAssignmentControllerTest` | Integración (`@WebMvcTest`) | 6 — 401 sin auth, 200 con recomendaciones, 400 descripción vacía, 503 API key ausente, 500 error inesperado, lista vacía |
+
+**Ejecución:**
+```bash
+cd prodsync-backend
+./mvnw test
+```
+
+### 6.4 Tests E2E (Playwright)
 
 Configurados para pruebas de extremo a extremo del flujo completo de la aplicación.
 
-### 6.3 Validación de API (Swagger)
+### 6.5 Validación de API (Swagger)
 
 El backend expone documentación interactiva en:
 ```
@@ -518,7 +599,7 @@ El desarrollo se organiza mediante una **metodología ágil** estructurada por s
 4. Presupuestos (backend completo + frontend integrado con API real)
 5. Panel de estadísticas y dashboard
 6. Calendario interactivo con FullCalendar y eventos personalizados
-7. Módulo de IA para asignación de tareas *(en planificación)*
+7. Módulo de IA para asignación de tareas
 
 ---
 
@@ -536,14 +617,14 @@ El desarrollo se organiza mediante una **metodología ágil** estructurada por s
 - [x] **Dashboard** con métricas en tiempo real
 - [x] **Gestión de usuarios** (solo ADMIN)
 - [x] Sistema de **roles** en backend (@PreAuthorize) y frontend (RoleGuard)
-- [x] **216 tests** automáticos pasando
+- [x] **234 tests** automáticos en frontend pasando + **21 tests** del módulo IA en backend
 - [x] **Docker Compose** funcional para backend + PostgreSQL
 - [x] **Swagger UI** para documentación del API
 - [x] Interfaz responsive con sidebar colapsable
+- [x] **Módulo de IA** para asignación inteligente de tareas (`POST /api/ai/assign-task`, integrado en el formulario de creación de tareas)
 
 ### Pendiente
 
-- [ ] Módulo de IA para asignación de tareas (planificado en `IA_Asignacion_Tareas.md`)
 - [ ] Despliegue en producción (VPS / cloud)
 - [ ] Notificaciones en tiempo real
 
@@ -579,6 +660,12 @@ ProdSync/
 │   │       ├── model/
 │   │       ├── repository/
 │   │       ├── service/
+│   │       │   └── UserPerformanceService.java
+│   │       ├── ai/
+│   │       │   ├── AiAssignmentController.java
+│   │       │   ├── ClaudeService.java
+│   │       │   ├── TaskAssignmentService.java
+│   │       │   └── dto/
 │   │       ├── dto/
 │   │       ├── security/
 │   │       └── exception/
@@ -589,9 +676,12 @@ ProdSync/
 │   ├── src/
 │   │   ├── app/               # Páginas (App Router)
 │   │   ├── components/        # Componentes reutilizables
+│   │   │   └── ai/            # AiAssignmentPanel.tsx
 │   │   ├── services/          # Capa de acceso al API
+│   │   │   └── aiAssignmentService.ts
 │   │   ├── context/           # Estado global (Auth, Sidebar)
 │   │   ├── hooks/             # Custom hooks
+│   │   │   └── useAiAssignment.ts
 │   │   ├── schemas/           # Validación Zod
 │   │   └── lib/               # Utilidades y tipos
 │   └── package.json
