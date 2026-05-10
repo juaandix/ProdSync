@@ -10,8 +10,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { getErrorMessage } from "@/lib/errorUtils";
+import Label from "@/components/form/Label";
 
-// Esquema de validación del formulario de registro
 const signUpSchema = z.object({
   fname: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   lname: z.string().min(2, "El apellido debe tener al menos 2 caracteres"),
@@ -25,12 +25,11 @@ const signUpSchema = z.object({
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
-// Clases reutilizables para los inputs del formulario
 const inputClass = (hasError: boolean) =>
-  `h-11 w-full rounded-lg border px-4 py-2.5 text-sm bg-transparent text-white placeholder:text-gray-400 focus:outline-none focus:ring-3 ${
+  `h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-none dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 ${
     hasError
-      ? "border-red-500 focus:ring-red-500/20"
-      : "border-gray-300 focus:border-[#E93222] focus:ring-[#1E1E26]/20"
+      ? "text-error-800 border-error-500 focus:ring-3 focus:ring-error-500/10 dark:text-error-400 dark:border-error-500"
+      : "bg-transparent text-gray-800 border-gray-300 focus:border-[#1E1E26] focus:ring-3 focus:ring-[#1E1E26]/[0.2] dark:border-gray-700 dark:focus:border-[#1E1E26]"
   }`;
 
 export default function SignUpForm() {
@@ -65,26 +64,32 @@ export default function SignUpForm() {
   };
 
   return (
-    <div className="flex min-h-screen w-full">
+    <div className="flex min-h-screen w-full bg-[#1E1E26]">
       {/* Panel izquierdo: Formulario */}
       <div className="flex flex-col items-center justify-center w-full lg:w-1/2">
-        <div className="w-full max-w-md bg-[#1E1E26] dark:bg-[#1E1E26] p-6 rounded-lg">
-          <div className="py-8 flex justify-center">
+        <div className="w-full max-w-md bg-white px-6 pt-0 pb-6 rounded-lg shadow-xl border border-[#A7ABB4]">
+
+          <div className="pt-0 pb-2 flex justify-center">
             <Link href="/">
-              <Image src="/images/prodsync-logo.jpg" alt="ProdSync Logo" width={280} height={93} />
+              <Image
+                src="/images/prodsync-sidebar-logo.png"
+                alt="ProdSync Logo"
+                width={280}
+                height={93}
+                className="w-3/4 h-auto mx-auto"
+              />
             </Link>
           </div>
 
           <div className="mb-5 sm:mb-8 text-center">
-            <h1 className="mb-2 font-semibold text-white text-title-sm sm:text-title-md">
+            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm sm:text-title-md">
               Sign Up
             </h1>
-            <p className="text-sm text-white">Create your account to get started!</p>
+            <p className="text-sm text-gray-500">Create your account to get started!</p>
           </div>
 
-          {/* Botones OAuth (sin funcionalidad real, solo UI) */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
-            <button type="button" className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-800 bg-white border border-gray-300 rounded-lg px-7 hover:bg-gray-100">
+            <button type="button" className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-800 transition-colors bg-white border border-gray-300 rounded-lg px-7 hover:bg-[#A7ABB4] dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:hover:bg-[#A7ABB4]">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18.7511 10.1944C18.7511 9.47495 18.6915 8.94995 18.5626 8.40552H10.1797V11.6527H15.1003C15.0011 12.4597 14.4654 13.675 13.2749 14.4916L13.2582 14.6003L15.9087 16.6126L16.0924 16.6305C17.7788 15.1041 18.7511 12.8583 18.7511 10.1944Z" fill="#4285F4" />
                 <path d="M10.1788 18.75C12.5895 18.75 14.6133 17.9722 16.0915 16.6305L13.274 14.4916C12.5201 15.0068 11.5081 15.3666 10.1788 15.3666C7.81773 15.3666 5.81379 13.8402 5.09944 11.7305L4.99473 11.7392L2.23868 13.8295L2.20264 13.9277C3.67087 16.786 6.68674 18.75 10.1788 18.75Z" fill="#34A853" />
@@ -93,7 +98,7 @@ export default function SignUpForm() {
               </svg>
               Sign up with Google
             </button>
-            <button type="button" className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-800 bg-white border border-gray-300 rounded-lg px-7 hover:bg-gray-100">
+            <button type="button" className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-800 transition-colors bg-white border border-gray-300 rounded-lg px-7 hover:bg-[#A7ABB4] dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:hover:bg-[#A7ABB4]">
               <svg width="21" className="fill-current" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15.6705 1.875H18.4272L12.4047 8.75833L19.4897 18.125H13.9422L9.59717 12.4442L4.62554 18.125H1.86721L8.30887 10.7625L1.51221 1.875H7.20054L11.128 7.0675L15.6705 1.875ZM14.703 16.475H16.2305L6.37054 3.43833H4.73137L14.703 16.475Z" />
               </svg>
@@ -106,18 +111,18 @@ export default function SignUpForm() {
               <div className="w-full border-t border-gray-200 dark:border-gray-800" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="p-2 text-white bg-[#1E1E26] sm:px-5 sm:py-2">Or</span>
+              <span className="p-2 text-[#A7ABB4] bg-white sm:px-5 sm:py-2">Or</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="space-y-5">
-              {/* First Name / Last Name */}
+
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1.5 block text-sm font-medium text-white">
-                    First Name<span className="text-red-500">*</span>
-                  </label>
+                  <Label htmlFor="fname">
+                    First Name <span className="text-error-500">*</span>
+                  </Label>
                   <input
                     type="text"
                     id="fname"
@@ -126,13 +131,13 @@ export default function SignUpForm() {
                     className={inputClass(!!errors.fname)}
                   />
                   {errors.fname && (
-                    <p className="mt-1 text-xs text-red-500">{errors.fname.message}</p>
+                    <p className="mt-1 text-xs text-error-500">{errors.fname.message}</p>
                   )}
                 </div>
                 <div>
-                  <label className="mb-1.5 block text-sm font-medium text-white">
-                    Last Name<span className="text-red-500">*</span>
-                  </label>
+                  <Label htmlFor="lname">
+                    Last Name <span className="text-error-500">*</span>
+                  </Label>
                   <input
                     type="text"
                     id="lname"
@@ -141,16 +146,15 @@ export default function SignUpForm() {
                     className={inputClass(!!errors.lname)}
                   />
                   {errors.lname && (
-                    <p className="mt-1 text-xs text-red-500">{errors.lname.message}</p>
+                    <p className="mt-1 text-xs text-error-500">{errors.lname.message}</p>
                   )}
                 </div>
               </div>
 
-              {/* Username */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
-                  Username<span className="text-red-500">*</span>
-                </label>
+                <Label htmlFor="username">
+                  Username <span className="text-error-500">*</span>
+                </Label>
                 <input
                   type="text"
                   id="username"
@@ -159,15 +163,14 @@ export default function SignUpForm() {
                   className={inputClass(!!errors.username)}
                 />
                 {errors.username && (
-                  <p className="mt-1 text-xs text-red-500">{errors.username.message}</p>
+                  <p className="mt-1 text-xs text-error-500">{errors.username.message}</p>
                 )}
               </div>
 
-              {/* Email */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
-                  Email<span className="text-red-500">*</span>
-                </label>
+                <Label htmlFor="email">
+                  Email <span className="text-error-500">*</span>
+                </Label>
                 <input
                   type="email"
                   id="email"
@@ -176,15 +179,14 @@ export default function SignUpForm() {
                   className={inputClass(!!errors.email)}
                 />
                 {errors.email && (
-                  <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
+                  <p className="mt-1 text-xs text-error-500">{errors.email.message}</p>
                 )}
               </div>
 
-              {/* Password */}
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-white">
-                  Password<span className="text-red-500">*</span>
-                </label>
+                <Label htmlFor="password">
+                  Password <span className="text-error-500">*</span>
+                </Label>
                 <div className="relative">
                   <input
                     id="password"
@@ -205,35 +207,33 @@ export default function SignUpForm() {
                   </span>
                 </div>
                 {errors.password && (
-                  <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
+                  <p className="mt-1 text-xs text-error-500">{errors.password.message}</p>
                 )}
               </div>
 
-              {/* Terms */}
               <div>
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
                     id="terms"
                     {...register("terms")}
-                    className="mt-0.5 h-4 w-4 cursor-pointer accent-[#E93222]"
+                    className="mt-0.5 h-4 w-4 cursor-pointer accent-[#1E1E26]"
                   />
-                  <label htmlFor="terms" className="text-sm font-normal text-white cursor-pointer">
+                  <label htmlFor="terms" className="text-sm font-normal text-gray-600 cursor-pointer">
                     By creating an account means you agree to the{" "}
-                    <span className="text-white font-medium">Terms and Conditions</span> and our{" "}
-                    <span className="text-white font-medium">Privacy Policy</span>
+                    <span className="text-gray-800 font-medium">Terms and Conditions</span> and our{" "}
+                    <span className="text-gray-800 font-medium">Privacy Policy</span>
                   </label>
                 </div>
                 {errors.terms && (
-                  <p className="mt-1 text-xs text-red-500">{errors.terms.message}</p>
+                  <p className="mt-1 text-xs text-error-500">{errors.terms.message}</p>
                 )}
               </div>
 
-              {/* Submit */}
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#1E1E26] text-white hover:bg-[#13131a] disabled:opacity-60 rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                className="w-full bg-[#1E1E26] text-white hover:bg-[#A7ABB4] disabled:opacity-60 rounded-md px-4 py-2 text-sm font-medium transition-colors"
               >
                 {isSubmitting ? "Creando cuenta..." : "Sign Up"}
               </button>
@@ -241,23 +241,21 @@ export default function SignUpForm() {
           </form>
 
           <div className="mt-5">
-            <p className="text-sm font-normal text-center text-white">
+            <p className="text-sm font-normal text-center text-gray-600">
               Already have an account?{" "}
-              <Link
-                href="/signin"
-                className="text-[#E93222] hover:text-[#C72C1F]"
-              >
+              <Link href="/signin" className="text-[#A7ABB4] hover:text-[#1E1E26] font-medium">
                 Sign In
               </Link>
             </p>
           </div>
+
         </div>
       </div>
 
       {/* Panel derecho: Imagen de marca */}
       <div className="hidden lg:flex w-1/2">
         <Image
-          src="/images/banner-1.webp"
+          src="/images/portada.jpg"
           alt="ProdSync Banner"
           width={500}
           height={500}

@@ -38,7 +38,7 @@ export default function SignIn() {
           <div className="pt-0 pb-2 flex justify-center">
             <Link href="/">
               <Image
-                src="/images/prodsync-logo.jpg"
+                src="/images/prodsync-sidebar-logo.png"
                 alt="ProdSync Logo"
                 width={600}
                 height={200}
@@ -149,7 +149,7 @@ export default function SignIn() {
                                             </span>                      </div>
                       <Link
                         href="/reset-password"
-                        className="text-sm text-[#1E1E26] hover:text-[#1E1E26]"
+                        className="text-sm text-[#A7ABB4] hover:text-[#1E1E26]"
                       >
                         Forgot password?
                       </Link>
@@ -167,7 +167,7 @@ export default function SignIn() {
                     Don&apos;t have an account? {""}
                     <Link
                       href="/signup"
-                      className="text-[#1E1E26] hover:text-[#1E1E26] font-medium"
+                      className="text-[#A7ABB4] hover:text-[#1E1E26] font-medium"
                     >
                       Sign Up
                     </Link>
