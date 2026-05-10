@@ -73,7 +73,7 @@ El objetivo principal es desarrollar una aplicación web completa y segura donde
 | RF-06 | Gestión de clientes | CRUD completo de clientes con datos de contacto. |
 | RF-07 | Presupuestos | Crear presupuestos con líneas de concepto, cantidad y precio unitario, asociados a cliente y proyecto. |
 | RF-08 | Calendario | Vista de calendario con time entries, fechas de fin de proyecto y eventos personalizados. |
-| RF-09 | Panel de estadísticas | Dashboard con métricas en tiempo real: proyectos activos, horas registradas, tareas pendientes. |
+| RF-09 | Panel de estadísticas | Dashboard con tablas de proyectos recientes y time entries según el rol del usuario. |
 | RF-10 | Gestión de usuarios | Los administradores pueden crear, editar y desactivar usuarios. |
 | RF-11 | Sistema de roles | Control de acceso basado en roles (ADMIN, OPERATOR, USER). |
 | RF-12 | Asignación IA | El sistema sugiere qué desarrollador debe recibir una tarea basándose en su rendimiento histórico. |
@@ -203,11 +203,32 @@ La interfaz sigue un diseño de **panel de administración** con:
 - **Fondo de página** `#1E1E26`, con **tarjetas de contenido** en blanco (`bg-white`)
 - **Barra superior** integrada en el cuerpo de cada página con: botón colapsar sidebar, breadcrumb, buscador global y menú de usuario
 
+**Paleta de colores corporativa:**
+
+| Color | Hex | Uso |
+|-------|-----|-----|
+| Oscuro principal | `#1E1E26` | Fondo de página, sidebar, botones primarios |
+| Gris corporativo | `#A7ABB4` | Bordes, hovers, textos secundarios |
+| Oscuro profundo | `#13131a` | Hover del fondo oscuro |
+| Rojo acento | `#E93222` | Errores, alertas |
+
+**Páginas de autenticación:**
+
+Las páginas de Sign In y Sign Up comparten la misma estructura visual:
+- Fondo de pantalla completa `#1E1E26`
+- **Tarjeta blanca** centrada (`bg-white`, `shadow-xl`, `border border-[#A7ABB4]`)
+- Logo `prodsync-sidebar-logo.png` en la cabecera de la tarjeta
+- Botones OAuth (Google, X) con `hover:bg-[#A7ABB4]`
+- Inputs con `focus:border-[#1E1E26]` y `hover:border-[#A7ABB4]`
+- Botón de envío `bg-[#1E1E26]` con `hover:bg-[#A7ABB4]`
+- Panel derecho decorativo con imagen `portada.jpg` (oculto en móvil)
+- Validación con React Hook Form + Zod
+
 **Páginas implementadas:**
 
 | Ruta | Descripción |
 |------|-------------|
-| `/dashboard` | Panel principal con métricas, tabla de proyectos recientes y time entries |
+| `/dashboard` | Panel principal con tabla de proyectos recientes y time entries según rol |
 | `/projects` | Listado de proyectos con filtros y acciones |
 | `/projects/[id]` | Detalle del proyecto: tarjeta informativa + analíticas |
 | `/projects/[id]/tasks` | Tareas del proyecto con estado y estimación |
@@ -614,13 +635,16 @@ El desarrollo se organiza mediante una **metodología ágil** estructurada por s
 - [x] **Registro de horas** (TimeEntry con tipo: DESARROLLO, TESTING, ANALISIS, REUNION, DISEÑO)
 - [x] **Presupuestos** con líneas de detalle (backend + frontend integrado con API real)
 - [x] **Calendario** con FullCalendar: time entries, fechas de proyectos y eventos personalizados
-- [x] **Dashboard** con métricas en tiempo real
+- [x] **Dashboard** con tablas de proyectos recientes y time entries por rol
 - [x] **Gestión de usuarios** (solo ADMIN)
 - [x] Sistema de **roles** en backend (@PreAuthorize) y frontend (RoleGuard)
 - [x] **234 tests** automáticos en frontend pasando + **21 tests** del módulo IA en backend
 - [x] **Docker Compose** funcional para backend + PostgreSQL
 - [x] **Swagger UI** para documentación del API
 - [x] Interfaz responsive con sidebar colapsable
+- [x] **Diseño consistente** en páginas de autenticación (Sign In / Sign Up con misma tarjeta blanca, logo y paleta corporativa)
+- [x] **Limpieza de código**: eliminación de modelos muertos (`Usuario.java`), archivos duplicados y recursos no utilizados
+- [x] **RBAC reforzado**: `GET /api/users/{id}` protegido con `@PreAuthorize("hasRole('ADMIN')")`, filtro `taskId+userId` en TimeEntry, `getCurrentUser` optimizado, `FetchType.EAGER` en relación `TimeEntry→User`
 - [x] **Módulo de IA** para asignación inteligente de tareas (`POST /api/ai/assign-task`, integrado en el formulario de creación de tareas)
 
 ### Pendiente
