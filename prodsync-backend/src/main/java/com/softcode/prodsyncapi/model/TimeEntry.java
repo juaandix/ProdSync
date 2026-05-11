@@ -20,7 +20,6 @@ public class TimeEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "time_entry_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
