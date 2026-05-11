@@ -27,7 +27,7 @@ const TimeEntryForm = ({ taskId, onTimeEntryCreated }: TimeEntryFormProps) => {
       date: '',
       hours: '',
       description: '',
-      type: 'Normal',
+      type: 'DESARROLLO',
     },
   });
 

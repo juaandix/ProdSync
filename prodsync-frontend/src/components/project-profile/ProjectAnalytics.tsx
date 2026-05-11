@@ -39,8 +39,7 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
   const desviacion = totalEst > 0 ? ((totalReal - totalEst) / totalEst) * 100 : null;
   const completadas = tasks.filter(t => t.estado === 'COMPLETADO').length;
 
-  // Hours by type — entries without type fall into 'Normal'
-  const typeNames = ['Normal', 'Hora extra', 'Viaje'] as const;
+  const typeNames = ['DESARROLLO', 'ANALISIS', 'TESTING', 'REUNION', 'DISEÑO'] as const;
   const hoursByType = typeNames.map((type, i) =>
     entries
       .filter(e => (i === 0 ? !e.type || e.type === type : e.type === type))

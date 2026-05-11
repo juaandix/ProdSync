@@ -1,26 +1,26 @@
 # Propuestas de Mejoras a Futuro — Backend
 
-Este documento recoge posibles refactorizaciones y mejoras que se pueden aplicar al backend (`projcode-api`) para incrementar su robustez, seguridad y mantenibilidad a largo plazo.
+Este documento recoge posibles refactorizaciones y mejoras que se pueden aplicar al backend (`prodsync-backend`) para incrementar su robustez, seguridad y mantenibilidad a largo plazo.
 
-> Análisis realizado el 2026-02-25 mediante inspección del código fuente completo.
+> Análisis realizado el 2026-02-25. Actualizado el 2026-05-11 para reflejar mejoras ya implementadas.
 
 ---
 
 ## Tabla de Prioridades
 
-| # | Mejora | Prioridad | Esfuerzo |
-|---|--------|-----------|----------|
-| 1 | Manejador global de excepciones (`@ControllerAdvice`) | 🔴 Alta | Bajo |
-| 2 | Estandarización del campo `estado` (enum) | 🔴 Alta | Medio |
-| 3 | Eliminar `HelloWorldController` (código de prueba) | 🔴 Alta | Mínimo |
-| 4 | Logout endpoint + revocación de token | 🟡 Media | Medio |
-| 5 | Refresh token | 🟡 Media | Alto |
-| 6 | Paginación server-side | 🟡 Media | Medio |
-| 7 | Validación de entrada uniforme con Bean Validation | 🟡 Media | Medio |
-| 8 | Logging con `@Slf4j` | 🟡 Media | Bajo |
-| 9 | Documentación OpenAPI / Swagger | 🟢 Baja | Bajo |
-| 10 | Soft delete (borrado lógico) | 🟢 Baja | Alto |
-| 11 | CORS configurado para producción | 🟢 Baja | Bajo |
+| # | Mejora | Prioridad | Esfuerzo | Estado |
+|---|--------|-----------|----------|--------|
+| 1 | Manejador global de excepciones (`@ControllerAdvice`) | 🔴 Alta | Bajo | ✅ Implementado |
+| 2 | Estandarización del campo `estado` (enum) | 🔴 Alta | Medio | ✅ Implementado |
+| 3 | Eliminar `HelloWorldController` (código de prueba) | 🔴 Alta | Mínimo | ✅ Implementado |
+| 4 | Logout endpoint + revocación de token | 🟡 Media | Medio | Pendiente |
+| 5 | Refresh token | 🟡 Media | Alto | Pendiente |
+| 6 | Paginación server-side | 🟡 Media | Medio | Pendiente |
+| 7 | Validación de entrada uniforme con Bean Validation | 🟡 Media | Medio | ✅ Implementado |
+| 8 | Logging con `@Slf4j` | 🟡 Media | Bajo | Pendiente |
+| 9 | Documentación OpenAPI / Swagger | 🟢 Baja | Bajo | ✅ Implementado |
+| 10 | Soft delete (borrado lógico) | 🟢 Baja | Alto | Pendiente |
+| 11 | CORS configurado para producción | 🟢 Baja | Bajo | ✅ Implementado |
 
 ---
 

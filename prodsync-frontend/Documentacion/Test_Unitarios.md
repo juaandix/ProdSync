@@ -1,8 +1,6 @@
 # Tests Unitarios del Frontend (Jest + Testing Library)
 
-**Total suites que pasan: 24 | Total tests que pasan: 192**
-
-> Nota: hay 8 suites con fallos (ClientTable, UserTable, ProjectTable, ViewClientCard, CreateProjectForm, CreateUserForm, EditUserForm, TimeEntryForm) pendientes de correccion. Los 192 tests listados aqui son los que pasan correctamente.
+**Total suites: 34 | Total tests: 234**
 
 ```bash
 # Ejecutar todos
