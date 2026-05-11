@@ -9,16 +9,14 @@ Guia paso a paso para clonar, inicializar y ejecutar todas las pruebas del proye
 | Herramienta         | Version minima | Descarga                                              |
 | ------------------- | -------------- | ----------------------------------------------------- |
 | **Git**             | 2.x            | [git-scm.com](https://git-scm.com/)                   |
-| **Node.js + npm**   | 18.x (rec. 20+)| [nodejs.org](https://nodejs.org/)                      |
 | **Docker Desktop**  | 4.x            | [docker.com](https://www.docker.com/products/docker-desktop/) |
-| **Java JDK**        | 17+            | Solo si ejecutas los tests del backend localmente sin Docker |
+| **Node.js + npm**   | 18.x (rec. 20+)| Solo para ejecutar tests unitarios del frontend       |
+| **Java JDK**        | 17+            | Solo para ejecutar tests del backend sin Docker       |
 
 Verifica que todo esta instalado:
 
 ```bash
 git --version
-node -v
-npm -v
 docker --version
 docker compose version
 ```
@@ -27,61 +25,61 @@ docker compose version
 
 ## Parte 1: Descarga del Repositorio
 
-El proyecto es un monorepo que contiene el backend y el frontend en la misma carpeta:
-
 ```bash
 git clone https://github.com/softcode-sl/prodsync.git
 cd prodsync
 ```
 
-Estructura resultante:
+Estructura del monorepo:
 
 ```
 prodsync/
   prodsync-backend/    # API REST - Java/Spring Boot 3.3
   prodsync-frontend/   # App web  - Next.js 15 / React 19 / TypeScript
+  docker-compose.yml   # Orquesta el stack completo
+  .env.example         # Variables de entorno requeridas
 ```
 
 ---
 
-## Parte 2: Inicializacion del Backend
-
-### 2.1 Levantar con Docker Compose
+## Parte 2: Configurar Variables de Entorno
 
 ```bash
-cd prodsync-backend
-docker compose up --build -d
+cp .env.example .env
 ```
 
-Esto levanta dos servicios:
+Edita el archivo `.env` y añade tu clave de API de Anthropic:
 
-| Servicio | Descripcion                  | Puerto host | Puerto interno |
-| -------- | ---------------------------- | ----------- | -------------- |
-| **app**  | API Spring Boot              | `8080`      | `8080`         |
-| **db**   | PostgreSQL 16 (Alpine)       | `5433`      | `5432`         |
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
 
-La base de datos `prodsyncdb` se crea automaticamente. Hibernate genera las tablas al arrancar (`ddl-auto: update`).
+> Sin esta clave la aplicacion funciona completa, solo el modulo de asignacion IA de tareas quedara inactivo.
 
-### 2.2 Verificar que el backend esta listo
+---
 
-Espera a ver en los logs de Docker el mensaje de Spring Boot indicando que el servidor inicio (~30s). Luego verifica:
+## Parte 3: Levantar el Stack Completo
 
 ```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin@test.com","password":"password123"}'
+docker compose up --build
 ```
 
-Debe devolver un JSON con el token JWT.
+Esto levanta cuatro servicios en orden:
 
-### 2.3 Credenciales de acceso
+| Servicio    | Descripcion                              | Puerto |
+| ----------- | ---------------------------------------- | ------ |
+| **db**      | PostgreSQL 16                            | `5433` |
+| **backend** | API Spring Boot                          | `8080` |
+| **seed**    | Script que crea los usuarios de prueba   | —      |
+| **frontend**| Aplicacion Next.js                       | `3000` |
 
-El usuario **ADMIN** se crea automaticamente al arrancar el backend. Los usuarios **OPERATOR** y **USER** se crean ejecutando el siguiente comando una sola vez tras levantar el backend:
+La primera vez tarda unos **3-5 minutos** (compilacion de Java + Next.js). Las veces siguientes sin `--build` son mucho mas rapidas.
 
-```bash
-cd ../prodsync-frontend
-npm run seed
-```
+Cuando veas el mensaje de Spring Boot indicando que el servidor inicio y el frontend este listo, abre:
+
+**http://localhost:3000**
+
+### Credenciales de acceso
 
 | Rol        | Email                    | Password      | Permisos                                      |
 | ---------- | ------------------------ | ------------- | --------------------------------------------- |
@@ -89,42 +87,21 @@ npm run seed
 | `OPERATOR` | `operator@test.com`      | `password123` | Clientes y proyectos, sin gestion de usuarios |
 | `USER`     | `user@test.com`          | `password123` | Solo consulta y registro de tiempo            |
 
-> El script detecta si los usuarios ya existen (error 409) y los omite, por lo que es seguro ejecutarlo varias veces.
-
-### 2.4 Ver logs y detener
+### Comandos utiles
 
 ```bash
 # Ver logs en tiempo real
-docker compose logs -f app
+docker compose logs -f
 
-# Detener todo
+# Ver logs solo del backend
+docker compose logs -f backend
+
+# Parar todo
 docker compose down
+
+# Parar y borrar todos los datos de la BD
+docker compose down -v
 ```
-
----
-
-## Parte 3: Inicializacion del Frontend
-
-### 3.1 Instalar dependencias
-
-```bash
-cd prodsync-frontend
-npm install
-```
-
-> Si hay errores de peer dependencies: `npm install --legacy-peer-deps`
-
-### 3.2 Iniciar el servidor de desarrollo
-
-```bash
-npm run dev
-```
-
-La aplicacion estara disponible en **http://localhost:3000**.
-
-Inicia sesion con las credenciales del admin (`admin@test.com` / `password123`).
-
-> Si necesitas apuntar a otra URL de API, crea un archivo `.env.local` con: `NEXT_PUBLIC_API_URL=http://tu-host:puerto/api`
 
 ---
 
@@ -171,8 +148,11 @@ Salida esperada:
 
 ### 4.2 Tests Unitarios del Frontend (Jest + Testing Library)
 
+Requiere Node.js instalado localmente:
+
 ```bash
 cd prodsync-frontend
+npm install
 npm run test:unit
 ```
 
@@ -221,26 +201,17 @@ Los tests E2E simulan un usuario real interactuando con la aplicacion en un nave
 #### Prerequisitos
 
 1. **Backend corriendo** en `http://localhost:8080` (con Docker Compose)
-2. Haber ejecutado `npm install` (ver Parte 3.1)
+2. Haber ejecutado `npm install` (ver seccion 4.2)
 
 #### Ejecutar los tests
 
 ```bash
+cd prodsync-frontend
 npm run test:e2e
 ```
 
-> Instala automaticamente el navegador Chromium si no esta instalado y ejecuta todos los tests.
+> Instala automaticamente el navegador Chromium si no esta instalado.
 > Playwright automaticamente hace `npm run build && npm run start` antes de ejecutar los tests.
-
-#### Que hace el global-setup
-
-Antes de los tests, el archivo `e2e/global-setup.ts` ejecuta automaticamente:
-
-1. Registra el usuario admin via `POST /api/auth/register` (o lo ignora si ya existe)
-2. Hace login via `POST /api/auth/login`
-3. Guarda el token JWT en `e2e/token.txt`
-4. Consulta `GET /api/auth/me` para obtener el rol del usuario
-5. Genera `e2e/auth.json` con las cookies `authToken` y `userRole` para que todos los tests partan de una sesion autenticada
 
 #### Tests E2E incluidos
 
@@ -274,51 +245,50 @@ node node_modules/.bin/playwright show-report
 ## Resumen: Secuencia Completa desde Cero
 
 ```bash
-# === DESCARGA ===
+# 1. Clonar
 git clone https://github.com/softcode-sl/prodsync.git && cd prodsync
 
-# === BACKEND ===
-cd prodsync-backend
-docker compose up --build -d
-# Esperar ~30s a que arranque. Verificar con:
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin@test.com","password":"password123"}'
+# 2. Configurar variables de entorno
+cp .env.example .env
+# Editar .env y añadir ANTHROPIC_API_KEY
 
-# === TESTS BACKEND ===
-./mvnw test
+# 3. Levantar todo (tarda ~5 min la primera vez)
+docker compose up --build
 
-# === FRONTEND ===
-cd ../prodsync-frontend
-npm install
-npm run seed         # crea usuarios OPERATOR y USER (solo la primera vez)
-npm run dev
-# Abrir http://localhost:3000
+# 4. Abrir http://localhost:3000
+# Login: admin@test.com / password123
 
-# === TESTS UNITARIOS FRONTEND ===
-npm run test:unit
-# Resultado esperado: 34 suites, 234 tests
+# --- OPCIONAL: ejecutar tests ---
 
-# === TESTS E2E ===
-npm run test:e2e
+# Tests backend (requiere Java 17+)
+cd prodsync-backend && ./mvnw test
+
+# Tests unitarios frontend (requiere Node.js)
+cd prodsync-frontend && npm install && npm run test:unit
+
+# Tests E2E (requiere backend corriendo + Node.js)
+cd prodsync-frontend && npm run test:e2e
 ```
 
 ---
 
 ## Troubleshooting
 
-### El backend no arranca
+### El stack no arranca
 - Verificar que Docker Desktop esta corriendo: `docker info`
-- Verificar que el puerto 8080 no esta ocupado: `lsof -i :8080`
-- Verificar que el puerto 5433 no esta ocupado: `lsof -i :5433`
-- Reconstruir desde cero: `docker compose down && docker compose up --build -d`
+- Verificar que los puertos 3000 y 8080 no estan ocupados: `lsof -i :3000` / `lsof -i :8080`
+- Reconstruir desde cero: `docker compose down -v && docker compose up --build`
 
-### Error "port is already allocated" al levantar Docker
-Los puertos 8080 y 5433 estan ocupados por otro entorno. Detener los contenedores existentes antes de arrancar:
+### Error "port is already allocated"
+Los puertos 3000, 8080 o 5433 estan en uso. Detener los contenedores existentes:
 ```bash
 docker compose down
-docker compose up --build -d
+docker compose up --build
 ```
+
+### El frontend muestra error de conexion con la API
+- Verificar que el backend esta listo: `docker compose logs backend`
+- El frontend esta configurado para conectar a `http://localhost:8080/api`. Si cambias el puerto del backend, debes reconstruir el frontend con `docker compose up --build frontend`.
 
 ### npm install falla con errores de peer dependencies
 ```bash
@@ -332,8 +302,8 @@ npm install --legacy-peer-deps
 ### Los tests unitarios del frontend fallan
 - Asegurate de haber ejecutado `npm install` correctamente
 - Limpia cache de Jest: `npx jest --clearCache`
-- Ejecuta en modo verbose para mas detalles: `npx jest --verbose`
+- Ejecuta en modo verbose: `npx jest --verbose`
 
 ### La base de datos no tiene datos
-- Ejecuta `npm run seed` desde `prodsync-frontend` para crear los usuarios base
+- El servicio `seed` crea los usuarios base automaticamente al arrancar
 - Si necesitas reiniciar todos los datos: `docker compose down -v && docker compose up --build`
