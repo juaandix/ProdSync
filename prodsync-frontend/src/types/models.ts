@@ -66,7 +66,7 @@ export interface TaskBackend {
   storyPoints?: number;
 }
 
-export const timeEntryTypes = ['Normal', 'Hora extra', 'Viaje'] as const;
+export const timeEntryTypes = ['DESARROLLO', 'ANALISIS', 'TESTING', 'REUNION', 'DISEÑO'] as const;
 export type TimeEntryType = (typeof timeEntryTypes)[number];
 
 export type TimeEntry = {

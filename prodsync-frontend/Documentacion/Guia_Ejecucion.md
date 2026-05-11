@@ -1,6 +1,6 @@
-# Guia de Ejecucion Completa: ProjCode
+# Guia de Ejecucion Completa: ProdSync
 
-Guia paso a paso para descargar, inicializar y ejecutar todas las pruebas del proyecto ProjCode (frontend + backend).
+Guia paso a paso para clonar, inicializar y ejecutar todas las pruebas del proyecto ProdSync (frontend + backend).
 
 ---
 
@@ -25,27 +25,21 @@ docker compose version
 
 ---
 
-## Parte 1: Descarga de los Repositorios
+## Parte 1: Descarga del Repositorio
 
-El proyecto esta dividido en dos repositorios independientes. Clonalos en una misma carpeta de trabajo:
+El proyecto es un monorepo que contiene el backend y el frontend en la misma carpeta:
 
 ```bash
-# Crear carpeta de trabajo
-mkdir projcode && cd projcode
-
-# 1. Clonar el BACKEND (API Spring Boot)
-git clone -b feature-Task_Id_Bug https://github.com/softcode-sl/projcode-api.git projcode-backend
-
-# 2. Clonar el FRONTEND (Next.js)
-git clone -b feature-Actualizacion_Front https://github.com/softcode-sl/projcode.git projcode-frontend
+git clone https://github.com/softcode-sl/prodsync.git
+cd prodsync
 ```
 
 Estructura resultante:
 
 ```
-projcode/
-  projcode-backend/    # API REST - Java/Spring Boot 3.3.0
-  projcode-frontend/   # App web  - Next.js 15 / React 19 / TypeScript
+prodsync/
+  prodsync-backend/    # API REST - Java/Spring Boot 3.3
+  prodsync-frontend/   # App web  - Next.js 15 / React 19 / TypeScript
 ```
 
 ---
@@ -55,6 +49,7 @@ projcode/
 ### 2.1 Levantar con Docker Compose
 
 ```bash
+cd prodsync-backend
 docker compose up --build -d
 ```
 
@@ -65,24 +60,26 @@ Esto levanta dos servicios:
 | **app**  | API Spring Boot              | `8080`      | `8080`         |
 | **db**   | PostgreSQL 16 (Alpine)       | `5433`      | `5432`         |
 
-La base de datos `projcodedb` se crea automaticamente. Hibernate genera las tablas al arrancar (`ddl-auto: update`).
+La base de datos `prodsyncdb` se crea automaticamente. Hibernate genera las tablas al arrancar (`ddl-auto: update`).
 
-### 2.3 Verificar que el backend esta listo
+### 2.2 Verificar que el backend esta listo
 
 Espera a ver en los logs de Docker el mensaje de Spring Boot indicando que el servidor inicio (~30s). Luego verifica:
 
 ```bash
-# Verificar login con usuario admin (debe devolver un JSON con el token JWT)
 curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username":"admin@test.com","password":"password123"}'
 ```
 
-### 2.4 Credenciales de acceso
+Debe devolver un JSON con el token JWT.
+
+### 2.3 Credenciales de acceso
 
 El usuario **ADMIN** se crea automaticamente al arrancar el backend. Los usuarios **OPERATOR** y **USER** se crean ejecutando el siguiente comando una sola vez tras levantar el backend:
 
 ```bash
+cd ../prodsync-frontend
 npm run seed
 ```
 
@@ -94,7 +91,7 @@ npm run seed
 
 > El script detecta si los usuarios ya existen (error 409) y los omite, por lo que es seguro ejecutarlo varias veces.
 
-### 2.5 Ver logs y detener (opcional)
+### 2.4 Ver logs y detener
 
 ```bash
 # Ver logs en tiempo real
@@ -111,11 +108,11 @@ docker compose down
 ### 3.1 Instalar dependencias
 
 ```bash
-cd projcode-frontend
+cd prodsync-frontend
 npm install
 ```
 
-> El comando `npm install` crea automaticamente el archivo `.env.local` con la URL del backend si no existe. Si hay errores de peer dependencies: `npm install --legacy-peer-deps`
+> Si hay errores de peer dependencies: `npm install --legacy-peer-deps`
 
 ### 3.2 Iniciar el servidor de desarrollo
 
@@ -127,40 +124,46 @@ La aplicacion estara disponible en **http://localhost:3000**.
 
 Inicia sesion con las credenciales del admin (`admin@test.com` / `password123`).
 
+> Si necesitas apuntar a otra URL de API, crea un archivo `.env.local` con: `NEXT_PUBLIC_API_URL=http://tu-host:puerto/api`
+
 ---
 
 ## Parte 4: Ejecucion de TODAS las Pruebas
 
-### 4.1 Tests Unitarios del Backend (JUnit 5 + Mockito)
+### 4.1 Tests del Backend (JUnit 5 + Mockito)
 
 Requiere Java 17+ instalado localmente:
 
 ```bash
-cd projcode-backend
+cd prodsync-backend
 ./mvnw test
 ```
 
-**Tests incluidos (178 tests en 13 suites):**
+**Tests incluidos (18 suites):**
 
-| Suite                          | Tests | Descripcion                                        |
-| ------------------------------ | ----- | -------------------------------------------------- |
-| `AuthControllerTest`           | 4     | Registro y login (credenciales y tokens)           |
-| `UserControllerTest`           | 7     | CRUD de usuarios                                   |
-| `ClienteControllerTest`        | 8     | CRUD de clientes                                   |
-| `ProjectControllerTest`        | 7     | CRUD de proyectos                                  |
-| `TaskControllerTest`           | 7     | CRUD de tareas                                     |
-| `TimeEntryControllerTest`      | 8     | CRUD de imputaciones de tiempo                     |
-| `CustomUserDetailsServiceTest` | 3     | Carga de usuarios para autenticacion               |
-| `JwtServiceTest`               | 6     | Generacion y validacion de tokens JWT              |
-| `TaskServiceImplTest`          | 5     | Logica de negocio de tareas                        |
-| `UserServiceImplTest`          | 8     | Logica de negocio de usuarios                      |
-| `ProjectServiceImplTest`       | 7     | Logica de negocio de proyectos                     |
-| `ClienteServiceImplTest`       | 9     | Logica de negocio de clientes                      |
-| `TimeEntryServiceImplTest`     | 5     | Logica de negocio de imputaciones                  |
+| Suite                          | Descripcion                                        |
+| ------------------------------ | -------------------------------------------------- |
+| `AuthControllerTest`           | Registro y login (credenciales y tokens)           |
+| `UserControllerTest`           | CRUD de usuarios                                   |
+| `ClienteControllerTest`        | CRUD de clientes                                   |
+| `ProjectControllerTest`        | CRUD de proyectos                                  |
+| `TaskControllerTest`           | CRUD de tareas                                     |
+| `TimeEntryControllerTest`      | CRUD de imputaciones de tiempo                     |
+| `RbacAccessControlTest`        | Control de acceso por roles                        |
+| `CustomUserDetailsServiceTest` | Carga de usuarios para autenticacion               |
+| `JwtServiceTest`               | Generacion y validacion de tokens JWT              |
+| `TaskServiceImplTest`          | Logica de negocio de tareas                        |
+| `UserServiceImplTest`          | Logica de negocio de usuarios                      |
+| `ProjectServiceImplTest`       | Logica de negocio de proyectos                     |
+| `ClienteServiceImplTest`       | Logica de negocio de clientes                      |
+| `TimeEntryServiceImplTest`     | Logica de negocio de imputaciones                  |
+| `UserPerformanceServiceTest`   | Metricas de rendimiento para el modulo IA          |
+| `AiAssignmentControllerTest`   | Endpoint de asignacion IA                          |
+| `ClaudeServiceTest`            | Comunicacion con la API de Anthropic               |
+| `TaskAssignmentServiceTest`    | Orquestacion del flujo de asignacion IA            |
 
 Salida esperada:
 ```
-[INFO] Tests run: 178, Failures: 0, Errors: 0, Skipped: 0
 [INFO] BUILD SUCCESS
 ```
 
@@ -169,7 +172,7 @@ Salida esperada:
 ### 4.2 Tests Unitarios del Frontend (Jest + Testing Library)
 
 ```bash
-cd projcode-frontend
+cd prodsync-frontend
 npm run test:unit
 ```
 
@@ -185,24 +188,26 @@ npx jest src/components/form/__tests__/CreateUserForm.test.tsx
 npx jest --watch
 ```
 
-**Tests unitarios incluidos (30 suites, 152 tests):**
+**Tests unitarios incluidos (34 suites, 234 tests):**
 
 | Categoria             | Archivos | Tests |
 | --------------------- | -------- | ----- |
 | **Tablas**            | 3        | 23    |
 | **Formularios**       | 8        | 33    |
 | **Vistas detalle**    | 3        | 9     |
+| **Analytics**         | 2        | 35    |
+| **Paginas de tareas** | 2        | 22    |
 | **Paginacion**        | 1        | 3     |
 | **API Routes**        | 8        | 41    |
-| **Servicios**         | 2        | 23    |
-| **Utilidades**        | 1        | 14    |
-| **Layout / Header**   | 2        | 8     |
-| **Paginas**           | 2        | 4     |
+| **Servicios**         | 2        | 17    |
+| **Utilidades**        | 1        | 18    |
+| **Layout / Header**   | 2        | 13    |
+| **Modulo IA**         | 2        | 18    |
 
 Salida esperada:
 ```
-Test Suites: 30 passed, 30 total
-Tests:       152 passed, 152 total
+Test Suites: 34 total
+Tests:       234 total
 ```
 
 > Detalle completo de cada test en [`Test_Unitarios.md`](./Test_Unitarios.md)
@@ -225,8 +230,7 @@ npm run test:e2e
 ```
 
 > Instala automaticamente el navegador Chromium si no esta instalado y ejecuta todos los tests.
-
-> Playwright automaticamente hace `npm run build && npm run start` antes de ejecutar los tests. No necesitas tener `npm run dev` corriendo (si esta corriendo, lo reutiliza).
+> Playwright automaticamente hace `npm run build && npm run start` antes de ejecutar los tests.
 
 #### Que hace el global-setup
 
@@ -236,9 +240,9 @@ Antes de los tests, el archivo `e2e/global-setup.ts` ejecuta automaticamente:
 2. Hace login via `POST /api/auth/login`
 3. Guarda el token JWT en `e2e/token.txt`
 4. Consulta `GET /api/auth/me` para obtener el rol del usuario
-5. Genera `e2e/auth.json` con las cookies `authToken` y `userRole`, y el `localStorage` con `authToken`, para que todos los tests partan de una sesion autenticada con los permisos correctos
+5. Genera `e2e/auth.json` con las cookies `authToken` y `userRole` para que todos los tests partan de una sesion autenticada
 
-#### Tests E2E incluidos (20 tests en 9 archivos)
+#### Tests E2E incluidos
 
 | Archivo                 | Descripcion                                         |
 | ----------------------- | --------------------------------------------------- |
@@ -251,11 +255,6 @@ Antes de los tests, el archivo `e2e/global-setup.ts` ejecuta automaticamente:
 | `projects.spec.ts`      | CRUD de proyectos                                   |
 | `tasks-time.spec.ts`    | Gestion de tareas e imputaciones de tiempo          |
 | `diagnosis.spec.ts`     | Tests de diagnostico del sistema                    |
-
-Salida esperada:
-```
-20 passed
-```
 
 #### Opciones utiles de Playwright
 
@@ -276,12 +275,10 @@ node node_modules/.bin/playwright show-report
 
 ```bash
 # === DESCARGA ===
-mkdir projcode && cd projcode
-git clone -b feature-Task_Id_Bug https://github.com/softcode-sl/projcode-api.git projcode-backend
-git clone -b feature-Actualizacion_Front https://github.com/softcode-sl/projcode.git projcode-frontend
+git clone https://github.com/softcode-sl/prodsync.git && cd prodsync
 
 # === BACKEND ===
-cd projcode-backend
+cd prodsync-backend
 docker compose up --build -d
 # Esperar ~30s a que arranque. Verificar con:
 curl -X POST http://localhost:8080/api/auth/login \
@@ -290,22 +287,20 @@ curl -X POST http://localhost:8080/api/auth/login \
 
 # === TESTS BACKEND ===
 ./mvnw test
-# Resultado esperado: Tests run: 178, Failures: 0
 
 # === FRONTEND ===
-cd ../projcode-frontend
-npm install          # crea .env.local automaticamente
+cd ../prodsync-frontend
+npm install
 npm run seed         # crea usuarios OPERATOR y USER (solo la primera vez)
 npm run dev
 # Abrir http://localhost:3000
 
 # === TESTS UNITARIOS FRONTEND ===
 npm run test:unit
-# Resultado esperado: 30 test suites, 152 tests passed
+# Resultado esperado: 34 suites, 234 tests
 
 # === TESTS E2E ===
-npm run test:e2e     # instala Chromium si falta y ejecuta los tests
-# Resultado esperado: 20 passed
+npm run test:e2e
 ```
 
 ---
@@ -319,9 +314,9 @@ npm run test:e2e     # instala Chromium si falta y ejecuta los tests
 - Reconstruir desde cero: `docker compose down && docker compose up --build -d`
 
 ### Error "port is already allocated" al levantar Docker
-Los puertos 8080 y 5433 estan ocupados por otro entorno del mismo proyecto. Detener los contenedores existentes antes de arrancar:
+Los puertos 8080 y 5433 estan ocupados por otro entorno. Detener los contenedores existentes antes de arrancar:
 ```bash
-docker compose down   # desde la carpeta del otro entorno
+docker compose down
 docker compose up --build -d
 ```
 
@@ -332,12 +327,7 @@ npm install --legacy-peer-deps
 
 ### Los tests E2E fallan con timeout o redirigen a /signin
 - Verifica que el archivo `.env.test` existe con `NEXT_PUBLIC_API_URL=http://localhost:8080/api`
-- Sin este archivo, el frontend no sabe donde esta el backend y el login falla
 - Asegurate de que el backend esta corriendo: `curl -s http://localhost:8080/api/auth/login`
-
-### Los tests E2E fallan con "Could not find config file"
-- Ejecuta siempre desde el directorio `projcode-frontend`
-- Usa `node node_modules/.bin/playwright test` en lugar de `npx playwright test`
 
 ### Los tests unitarios del frontend fallan
 - Asegurate de haber ejecutado `npm install` correctamente
@@ -345,6 +335,5 @@ npm install --legacy-peer-deps
 - Ejecuta en modo verbose para mas detalles: `npx jest --verbose`
 
 ### La base de datos no tiene datos
-- La base de datos se inicializa automaticamente al arrancar el backend
-- El usuario admin se crea automaticamente al primer arranque
-- Si necesitas reiniciar los datos: `docker compose down -v && docker compose up --build`
+- Ejecuta `npm run seed` desde `prodsync-frontend` para crear los usuarios base
+- Si necesitas reiniciar todos los datos: `docker compose down -v && docker compose up --build`

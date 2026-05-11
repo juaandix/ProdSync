@@ -12,8 +12,8 @@ import DashboardMetricCard from '@/components/dashboard/DashboardMetricCard';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const TYPE_COLORS = ['#E93222', '#F59E0B', '#3B82F6'];
-const typeNames = ['Normal', 'Hora extra', 'Viaje'] as const;
+const TYPE_COLORS = ['#E93222', '#F59E0B', '#3B82F6', '#10B981', '#8B5CF6'];
+const typeNames = ['DESARROLLO', 'ANALISIS', 'TESTING', 'REUNION', 'DISEÑO'] as const;
 
 // TaskStatus enum: PENDIENTE | EN_PROGRESO | COMPLETADO
 const STATUS_COLOR_MAP: Record<string, string> = {
