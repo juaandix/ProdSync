@@ -88,7 +88,7 @@ describe('TimeEntryForm', () => {
       date: '2024-01-01',
       hours: '7.5',
       description: 'Worked on feature X',
-      type: 'Normal',
+      type: 'DESARROLLO',
     };
     const createdTimeEntry = { ...newEntryData, id: 'new_time_entry_id', taskId, hours: 7.5 };
 
