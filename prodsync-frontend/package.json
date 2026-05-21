@@ -12,7 +12,7 @@
     "test:unit": "jest --watchAll=false",
     "seed": "node scripts/seed-users.mjs",
     "test:e2e": "node node_modules/.bin/playwright install chromium && node node_modules/.bin/playwright test",
-    "postinstall": "node -e \"const fs=require('fs'); if(!fs.existsSync('.env.local')){fs.copyFileSync('.env.local.example','.env.local'); console.log('✓ .env.local creado desde .env.local.example');}\""
+    "postinstall": "node -e \"const fs=require('fs'); if(!fs.existsSync('.env.local') && fs.existsSync('.env.local.example')){fs.copyFileSync('.env.local.example','.env.local'); console.log('✓ .env.local creado desde .env.local.example');}\""
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.15",

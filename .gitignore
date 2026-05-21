@@ -4,3 +4,6 @@ projcode-frontend/.next/
 projcode-frontend/test-results/
 .DS_Store
 _unused_temp/
+guia_didactica_tfg.md
+memoriatfg.md
+.claude/settings.local.json
