@@ -44,7 +44,7 @@ export default function CreateUserForm() {
     },
   });
 
-  const onSubmit = async ({ confirmPassword: _, ...data }: CreateUserFormData) => {
+  const onSubmit = async ({ confirmPassword: _confirmPassword, ...data }: CreateUserFormData) => {
     createUserMutation.mutate(data);
   };
 

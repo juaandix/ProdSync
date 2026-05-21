@@ -58,7 +58,6 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
   const tasksWithData = tasks.filter(
     t => (t.estimacion ?? 0) > 0 || entries.some(e => e.taskId === t.id)
   );
-  const taskLabels = tasksWithData.map(t => t.descripcion.slice(0, 20));
   const taskEstimadas = tasksWithData.map(t => t.estimacion ?? 0);
   const taskRegistradas = tasksWithData.map(t =>
     entries.filter(e => e.taskId === t.id).reduce((s, e) => s + e.hours, 0)

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { renderWithClient } from 'test-utils/QueryWrapper';
 import '@testing-library/jest-dom';
 import { AiAssignmentPanel } from '@/components/ai/AiAssignmentPanel';

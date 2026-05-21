@@ -12,7 +12,6 @@
  *  PUT    /clientes/:id     → actualiza un cliente existente
  *  DELETE /clientes/:id     → elimina un cliente
  */
-import { ClientFormData } from '@/schemas/clientSchema';
 import { Client, ClientBackend } from '@/types/models';
 import apiClient from '@/lib/apiClient';
 import { CreateClientRequest, UpdateClientRequest } from '@/types/dtos';

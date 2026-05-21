@@ -33,7 +33,7 @@ export default function EditProjectForm({ id }: EditProjectFormProps) {
   const queryClient = useQueryClient();
 
   // 1. Fetch del proyecto a editar
-  const { data: project, isLoading: isLoadingProject, isError: isErrorProject, error: errorProject } = useQuery<Project>({
+  const { data: project, isLoading: isLoadingProject, isError: isErrorProject } = useQuery<Project>({
     queryKey: ["projects", id],
     queryFn: () => projectService.getById(id),
     enabled: !!id, // Solo ejecutar si el ID existe
