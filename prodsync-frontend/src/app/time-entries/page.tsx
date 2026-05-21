@@ -145,7 +145,7 @@ export default function TimeEntriesPage() {
     setEditForm({
       date: entry.date,
       hours: String(entry.hours),
-      type: entry.type ?? 'Normal',
+      type: entry.type,
       description: entry.description ?? '',
     });
     setEditModalOpen(true);

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'; // Import NextRequest
 import { TimeEntry } from '@/types/models';
 
-export const MOCK_TIME_ENTRIES: TimeEntry[] = [];
+const MOCK_TIME_ENTRIES: TimeEntry[] = [];
 
 export async function GET(request: NextRequest) { // Changed Request to NextRequest
   const { searchParams } = new URL(request.url);

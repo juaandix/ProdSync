@@ -26,7 +26,7 @@ const CreateTimeEntryForm: React.FC<CreateTimeEntryFormProps> = ({ taskId, onTim
       date: new Date().toISOString().split('T')[0],
       hours: '',
       description: '',
-      type: 'Normal',
+      type: undefined,
     },
   });
 
