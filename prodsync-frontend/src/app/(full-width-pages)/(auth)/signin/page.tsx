@@ -33,9 +33,9 @@ export default function SignIn() {
   return (
     <div className="flex min-h-screen w-full bg-[#1E1E26]">
       {/* Panel izquierdo: Formulario */}
-      <div className="flex flex-col items-center justify-center w-full lg:w-1/2">
-        <div className="w-full max-w-md bg-white px-6 pt-0 pb-6 rounded-lg shadow-xl border border-[#A7ABB4]">
-          <div className="pt-0 pb-2 flex justify-center">
+      <div className="flex flex-col items-center justify-center w-full lg:w-1/2 px-10 py-10">
+        <div className="w-full max-w-md bg-white rounded-xl shadow-xl px-8 py-8">
+          <div className="pb-2 flex justify-center">
             <Link href="/">
               <Image
                 src="/images/prodsync-sidebar-logo.png"
@@ -179,13 +179,12 @@ export default function SignIn() {
         </div>
       </div>
       {/* Panel derecho: Imagen de marca */}
-      <div className="hidden lg:flex w-1/2">
+      <div className="hidden lg:block w-1/2 relative flex-shrink-0">
         <Image
           src="/images/portada.jpg"
           alt="ProdSync Portada"
-          width={800}
-          height={574}
-          className="object-cover w-full h-full"
+          fill
+          className="object-cover"
         />
       </div>
     </div>

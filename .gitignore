@@ -7,3 +7,5 @@ _unused_temp/
 guia_didactica_tfg.md
 memoriatfg.md
 .claude/settings.local.json
+seed-full.mjs
+seed-time-entries.mjs

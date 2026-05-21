@@ -66,8 +66,8 @@ export default function SignUpForm() {
   return (
     <div className="flex min-h-screen w-full bg-[#1E1E26]">
       {/* Panel izquierdo: Formulario */}
-      <div className="flex flex-col items-center justify-center w-full lg:w-1/2">
-        <div className="w-full max-w-md bg-white px-6 pt-0 pb-6 rounded-lg shadow-xl border border-[#A7ABB4]">
+      <div className="flex flex-col items-center justify-center w-full lg:w-1/2 px-10 py-10">
+        <div className="w-full max-w-md bg-white rounded-xl shadow-xl px-8 py-8">
 
           <div className="pt-0 pb-2 flex justify-center">
             <Link href="/">
