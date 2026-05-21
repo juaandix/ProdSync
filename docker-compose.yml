@@ -60,13 +60,10 @@ services:
       start_period: 40s
 
   seed:
-    image: node:20-alpine
-    working_dir: /app
-    volumes:
-      - ./prodsync-frontend/scripts/seed-users.mjs:/app/scripts/seed-users.mjs:ro
+    build:
+      context: ./prodsync-frontend/scripts
     environment:
       NEXT_PUBLIC_API_URL: http://backend:8080/api
-    command: node scripts/seed-users.mjs
     depends_on:
       backend:
         condition: service_healthy
