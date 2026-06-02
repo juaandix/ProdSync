@@ -1,64 +1,50 @@
 import React, { ReactNode } from "react";
 
-// Props para la Tabla
 interface TableProps {
-  children: ReactNode; // Contenido de la tabla (thead, tbody, etc.)
-  className?: string; // className opcional para estilizar
+  children: ReactNode;
+  className?: string;
 }
 
-// Props para el encabezado de la tabla
 interface TableHeaderProps {
-  children: ReactNode; // Fila(s) de encabezado
-  className?: string; // className opcional para estilizar
+  children: ReactNode;
+  className?: string;
 }
 
-// Props para el cuerpo de la tabla
 interface TableBodyProps {
-  children: ReactNode; // Fila(s) del cuerpo
-  className?: string; // className opcional para estilizar
+  children: ReactNode;
+  className?: string;
 }
 
-// Props para la fila de la tabla
 interface TableRowProps {
-  children: ReactNode; // Celdas (th o td)
-  className?: string; // className opcional para estilizar
+  children: ReactNode;
+  className?: string;
+  onClick?: (e: React.MouseEvent<HTMLTableRowElement>) => void;
 }
 
-// Props para la celda de la tabla
 interface TableCellProps {
-  children: ReactNode; // Contenido de la celda
-  isHeader?: boolean; // Si es verdadero, se renderiza como <th>, de lo contrario <td>
-  className?: string; // className opcional para estilizar
-  onClick?: () => void; // Manejador de clic (usado para ordenación de columnas)
+  children: ReactNode;
+  isHeader?: boolean;
+  className?: string;
+  onClick?: (e: React.MouseEvent<HTMLTableCellElement>) => void;
 }
 
-// Componente de tabla
 const Table: React.FC<TableProps> = ({ children, className }) => {
-  return <table className={`min-w-full  ${className}`}>{children}</table>;
+  return <table className={`min-w-full ${className}`}>{children}</table>;
 };
 
-// Componente de encabezado de tabla
 const TableHeader: React.FC<TableHeaderProps> = ({ children, className }) => {
   return <thead className={className}>{children}</thead>;
 };
 
-// Componente de cuerpo de tabla
 const TableBody: React.FC<TableBodyProps> = ({ children, className }) => {
   return <tbody className={className}>{children}</tbody>;
 };
 
-// Componente de fila de tabla
-const TableRow: React.FC<TableRowProps> = ({ children, className }) => {
-  return <tr className={className}>{children}</tr>;
+const TableRow: React.FC<TableRowProps> = ({ children, className, onClick }) => {
+  return <tr className={className} onClick={onClick}>{children}</tr>;
 };
 
-// Componente de celda de tabla
-const TableCell: React.FC<TableCellProps> = ({
-  children,
-  isHeader = false,
-  className,
-  onClick,
-}) => {
+const TableCell: React.FC<TableCellProps> = ({ children, isHeader = false, className, onClick }) => {
   const CellTag = isHeader ? "th" : "td";
   return <CellTag className={` ${className}`} onClick={onClick}>{children}</CellTag>;
 };

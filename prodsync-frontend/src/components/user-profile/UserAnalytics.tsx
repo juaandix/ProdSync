@@ -75,11 +75,11 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
       <div className="space-y-6 animate-pulse">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 rounded-2xl bg-gray-200 dark:bg-gray-700" />
+            <div key={i} className="h-24 rounded-2xl bg-white/[0.04]" />
           ))}
         </div>
-        <div className="h-64 rounded-2xl bg-gray-200 dark:bg-gray-700" />
-        <div className="h-48 rounded-2xl bg-gray-200 dark:bg-gray-700" />
+        <div className="h-64 rounded-2xl bg-white/[0.04]" />
+        <div className="h-48 rounded-2xl bg-white/[0.04]" />
       </div>
     );
   }
@@ -90,8 +90,9 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
 
   if (userEntries.length === 0) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 text-center text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
-        Este usuario aún no tiene horas registradas
+      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-10 text-center">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" className="text-gray-700 mx-auto mb-2"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><polyline points="12 6 12 12 16 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+        <p className="text-sm text-gray-400">No time entries recorded yet</p>
       </div>
     );
   }
@@ -217,30 +218,35 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
     <div className="space-y-6">
       {/* KPI Cards */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <DashboardMetricCard title="Horas registradas" value={`${totalReal}h`} />
-        <DashboardMetricCard title="Horas estimadas"   value={`${totalEst}h`} />
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-          <span className="text-sm text-gray-500 dark:text-gray-400">Desviación</span>
-          <h4 className={`mt-2 font-bold text-title-sm ${devColor}`}>{devValue}</h4>
+        <DashboardMetricCard title="Logged Hours" value={`${totalReal}h`}
+          icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>}
+        />
+        <DashboardMetricCard title="Estimated Hours" value={`${totalEst}h`}
+          icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>}
+        />
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 hover:bg-white/[0.06] transition-colors">
+          <div className="flex items-start justify-between mb-4">
+            <span className="text-xs font-medium uppercase tracking-wider text-gray-400">Deviation</span>
+            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-brand-500/10 text-brand-400">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            </div>
+          </div>
+          <p className={`text-3xl font-bold tracking-tight ${devColor}`}>{devValue}</p>
           {desviacion !== null && (
-            <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
-              {desviacion > 0 ? 'Por encima del estimado' : 'Por debajo del estimado'}
-            </p>
+            <p className="mt-1 text-xs text-gray-500">{desviacion > 0 ? 'Over estimate' : 'Under estimate'}</p>
           )}
         </div>
-
-        <DashboardMetricCard
-          title="Tareas completadas"
-          value={`${completadas} / ${workedTasks.length}`}
+        <DashboardMetricCard title="Tasks Done" value={`${completadas}/${workedTasks.length}`}
+          icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>}
+          trend={workedTasks.length > 0 ? { value: `${Math.round((completadas/workedTasks.length)*100)}%`, positive: true } : undefined}
         />
       </div>
 
       {/* Charts */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Horas por tipo */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
-          <h3 className="mb-3 text-lg font-semibold text-gray-800 dark:text-white/90">
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 sm:p-6">
+          <h3 className="mb-3 text-sm font-medium text-white uppercase tracking-wider">
             Horas por tipo de entrada
           </h3>
           <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1">
@@ -269,8 +275,8 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
 
         {/* Estado de tareas */}
         {statusLabels.length > 0 && (
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
-            <h3 className="mb-3 text-lg font-semibold text-gray-800 dark:text-white/90">
+          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 sm:p-6">
+            <h3 className="mb-3 text-sm font-medium text-white uppercase tracking-wider">
               Estado de tareas
             </h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -316,21 +322,21 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
 
       {/* Lista de tareas del usuario */}
       {workedTasks.length > 0 && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
-          <h3 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white/90">
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 sm:p-6">
+          <h3 className="mb-4 text-sm font-medium text-white uppercase tracking-wider">
             Tareas asociadas
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Tarea</th>
-                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Proyecto</th>
+                <tr className="border-b border-white/[0.06]">
+                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Tarea</th>
+                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Proyecto</th>
                   <th className="pb-3 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Estado</th>
                   <th className="pb-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Estimación</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <tbody className="divide-y divide-white/[0.04]">
                 {workedTasks.map(task => {
                   const project = projectMap[task.projectId];
                   const statusClass =
@@ -340,7 +346,7 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
 
                   return (
                     <tr key={task.id}>
-                      <td className="py-3 pr-4 max-w-[220px] truncate font-medium text-gray-800 dark:text-white/90">
+                      <td className="py-3 pr-4 max-w-[220px] truncate font-medium text-white/90">
                         {project ? (
                           <Link
                             href={`/projects/${project.id}/tasks/${task.id}`}
@@ -352,7 +358,7 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
                           task.descripcion
                         )}
                       </td>
-                      <td className="py-3 pr-4 text-gray-600 dark:text-gray-300">
+                      <td className="py-3 pr-4 text-gray-400">
                         {project ? (
                           <Link href={`/projects/${project.id}`} className="hover:underline">
                             {project.name}
@@ -364,7 +370,7 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
                           {task.estado}
                         </span>
                       </td>
-                      <td className="py-3 text-right text-gray-600 dark:text-gray-300">
+                      <td className="py-3 text-right text-gray-400">
                         {task.estimacion ? `${task.estimacion}h` : '—'}
                       </td>
                     </tr>
@@ -378,14 +384,14 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
 
       {/* Tabla de proyectos del usuario */}
       {projectStats.length > 0 && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
-          <h3 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white/90">
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 sm:p-6">
+          <h3 className="mb-4 text-sm font-medium text-white uppercase tracking-wider">
             Proyectos trabajados
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
+                <tr className="border-b border-white/[0.06]">
                   <th className="pb-3 text-left   text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Proyecto</th>
                   <th className="pb-3 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Tareas</th>
                   <th className="pb-3 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Completadas</th>
@@ -395,7 +401,7 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
                   <th className="pb-3 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Estado</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <tbody className="divide-y divide-white/[0.04]">
                 {projectStats.map(p => {
                   const devCol =
                     p.deviation === null ? 'text-gray-500 dark:text-gray-400'
@@ -412,20 +418,20 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
 
                   return (
                     <tr key={p.id}>
-                      <td className="py-3 pr-4 font-medium text-gray-800 dark:text-white/90 max-w-[180px] truncate">
+                      <td className="py-3 pr-4 font-medium text-white/90 max-w-[180px] truncate">
                         <Link href={`/projects/${p.id}`} className="hover:underline">
                           {p.name}
                         </Link>
                       </td>
-                      <td className="py-3 text-center text-gray-600 dark:text-gray-300">{p.taskCount}</td>
-                      <td className="py-3 text-center text-gray-600 dark:text-gray-300">
+                      <td className="py-3 text-center text-gray-400">{p.taskCount}</td>
+                      <td className="py-3 text-center text-gray-400">
                         {p.doneCount}
                         <span className="ml-1 text-xs text-gray-400">({completionPct}%)</span>
                       </td>
-                      <td className="py-3 text-right text-gray-600 dark:text-gray-300">
+                      <td className="py-3 text-right text-gray-400">
                         {p.estHours > 0 ? `${p.estHours}h` : '—'}
                       </td>
-                      <td className="py-3 text-right text-gray-600 dark:text-gray-300">
+                      <td className="py-3 text-right text-gray-400">
                         {p.realHours > 0 ? `${p.realHours}h` : '—'}
                       </td>
                       <td className={`py-3 text-right font-semibold ${devCol}`}>{devStr}</td>

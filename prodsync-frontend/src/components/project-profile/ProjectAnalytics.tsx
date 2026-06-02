@@ -72,17 +72,17 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
       <div className="space-y-6 animate-pulse">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 rounded-2xl bg-gray-200 dark:bg-gray-700" />
+            <div key={i} className="h-24 rounded-2xl bg-white/[0.04]" />
           ))}
         </div>
-        <div className="h-64 rounded-2xl bg-gray-200 dark:bg-gray-700" />
+        <div className="h-64 rounded-2xl bg-white/[0.04]" />
       </div>
     );
   }
 
   if (tasks.length === 0) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 text-center text-gray-500 text-gray-900 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
+      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6 text-center text-gray-400">
         Aún no hay tareas en este proyecto
       </div>
     );
@@ -198,35 +198,41 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
     <div className="space-y-6">
       {/* KPI Cards */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <DashboardMetricCard title="Horas registradas" value={`${totalReal}h`} />
-        <DashboardMetricCard title="Horas estimadas" value={`${totalEst}h`} />
+        <DashboardMetricCard title="Logged Hours" value={`${totalReal}h`}
+          icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>}
+        />
+        <DashboardMetricCard title="Estimated Hours" value={`${totalEst}h`}
+          icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>}
+        />
 
-        {/* Deviation card — custom to support conditional color */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 text-gray-900 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-          <span className="text-sm text-gray-500 dark:text-gray-400">Desviación</span>
-          <h4 className={`mt-2 font-bold text-title-sm ${devColor}`}>{devValue}</h4>
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 hover:bg-white/[0.06] transition-colors">
+          <div className="flex items-start justify-between mb-4">
+            <span className="text-xs font-medium uppercase tracking-wider text-gray-400">Deviation</span>
+            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-brand-500/10 text-brand-400">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            </div>
+          </div>
+          <p className={`text-3xl font-bold tracking-tight ${devColor}`}>{devValue}</p>
           {desviacion !== null && (
-            <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
-              {desviacion > 0 ? 'Por encima del estimado' : 'Por debajo del estimado'}
-            </p>
+            <p className="mt-1 text-xs text-gray-500">{desviacion > 0 ? 'Over estimate' : 'Under estimate'}</p>
           )}
         </div>
 
-        <DashboardMetricCard
-          title="Tareas completadas"
-          value={`${completadas} / ${tasks.length}`}
+        <DashboardMetricCard title="Tasks Done" value={`${completadas}/${tasks.length}`}
+          icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>}
+          trend={tasks.length > 0 ? { value: `${Math.round((completadas/tasks.length)*100)}%`, positive: true } : undefined}
         />
       </div>
 
       {/* Charts section */}
       {entries.length === 0 ? (
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 text-center text-gray-500 text-gray-900 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6 text-center text-gray-400">
           Aún no hay horas registradas en este proyecto
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Hours by type / task */}
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 text-gray-900 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 sm:p-6">
             <div className="flex items-start justify-between mb-3 gap-2">
               <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
                 Horas por tipo{selectedTaskId ? ` — ${tasks.find(t => t.id === selectedTaskId)?.descripcion.slice(0, 22)}…` : ' de entrada'}
@@ -281,7 +287,7 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
           </div>
 
           {/* Task status donut + task list */}
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 text-gray-900 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 sm:p-6">
             <h3 className="mb-3 text-lg font-semibold text-gray-800 dark:text-white/90">
               Estado de tareas
             </h3>
@@ -323,7 +329,7 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
 
       {/* Comparative chart: custom vertical bars per task */}
       {tasksWithData.length > 0 && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 text-gray-900 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 sm:p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
               Estimado vs Registrado por tarea

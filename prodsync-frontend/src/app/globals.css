@@ -206,19 +206,19 @@ body {
 }
 
 @utility menu-item-active {
-  @apply bg-white/10 text-[#A7ABB4] dark:bg-white/10 dark:text-[#A7ABB4] hover:bg-[#1E1E26] group-hover:text-[#A7ABB4] dark:hover:bg-[#1E1E26] dark:hover:text-[#A7ABB4] border border-[#A7ABB4];
+  @apply bg-brand-500/10 text-brand-400 dark:bg-brand-500/10 dark:text-brand-400 border border-brand-500/20;
 }
 
 @utility menu-item-inactive {
-  @apply text-white hover:bg-[#1E1E26] group-hover:text-[#A7ABB4] dark:text-white dark:hover:bg-[#1E1E26] dark:hover:text-[#A7ABB4] border border-transparent;
+  @apply text-gray-400 hover:bg-white/[0.05] hover:text-white dark:text-gray-400 dark:hover:bg-white/[0.05] dark:hover:text-white border border-transparent;
 }
 
 @utility menu-item-icon-inactive {
-  @apply text-white group-hover:text-[#A7ABB4] dark:text-white dark:group-hover:text-[#A7ABB4];
+  @apply text-gray-500 group-hover:text-white dark:text-gray-500 dark:group-hover:text-white;
 }
 
 @utility menu-item-icon-active {
-  @apply text-[#A7ABB4] dark:text-[#A7ABB4];
+  @apply text-brand-400 dark:text-brand-400;
 }
 
 @utility menu-item-arrow {
@@ -226,11 +226,11 @@ body {
 }
 
 @utility menu-item-arrow-active {
-  @apply rotate-180 text-[#A7ABB4] dark:text-[#A7ABB4];
+  @apply rotate-180 text-brand-400 dark:text-brand-400;
 }
 
 @utility menu-item-arrow-inactive {
-  @apply text-white group-hover:text-[#A7ABB4] dark:text-white dark:group-hover:text-[#A7ABB4];
+  @apply text-gray-500 group-hover:text-white dark:text-gray-500 dark:group-hover:text-white;
 }
 
 @utility menu-dropdown-item {
@@ -238,11 +238,11 @@ body {
 }
 
 @utility menu-dropdown-item-active {
-  @apply bg-white/10 text-[#A7ABB4] dark:bg-white/10 dark:text-[#A7ABB4] border border-[#A7ABB4];
+  @apply bg-brand-500/10 text-brand-400 dark:bg-brand-500/10 dark:text-brand-400 border border-brand-500/20;
 }
 
 @utility menu-dropdown-item-inactive {
-  @apply text-white hover:bg-[#1E1E26] group-hover:text-[#A7ABB4] dark:text-white dark:hover:bg-[#1E1E26] dark:group-hover:text-[#A7ABB4] border border-transparent;
+  @apply text-gray-400 hover:bg-white/[0.05] hover:text-white dark:text-gray-400 dark:hover:bg-white/[0.05] dark:hover:text-white border border-transparent;
 }
 
 @utility menu-dropdown-badge {

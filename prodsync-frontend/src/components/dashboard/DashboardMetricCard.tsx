@@ -5,16 +5,36 @@ interface DashboardMetricCardProps {
   title: string;
   value: number | string;
   description?: string;
+  icon: React.ReactNode;
+  trend?: { value: string; positive: boolean };
 }
 
-export default function DashboardMetricCard({ title, value, description }: DashboardMetricCardProps) {
+export default function DashboardMetricCard({ title, value, description, icon, trend }: DashboardMetricCardProps) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 text-gray-900 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-      <span className="text-sm text-gray-500 dark:text-gray-400">{title}</span>
-      <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">{value}</h4>
-      {description && (
-        <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">{description}</p>
-      )}
+    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 hover:bg-white/[0.06] transition-colors">
+      <div className="flex items-start justify-between mb-4">
+        <span className="text-xs font-medium uppercase tracking-wider text-gray-400">{title}</span>
+        <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-brand-500/10 text-brand-400">
+          {icon}
+        </div>
+      </div>
+      <div className="flex items-end justify-between">
+        <div>
+          <p className="text-3xl font-bold text-white tracking-tight">{value}</p>
+          {description && (
+            <p className="mt-1 text-xs text-gray-500">{description}</p>
+          )}
+        </div>
+        {trend && (
+          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+            trend.positive
+              ? 'text-success-400 bg-success-500/10'
+              : 'text-error-400 bg-error-500/10'
+          }`}>
+            {trend.positive ? '↑' : '↓'} {trend.value}
+          </span>
+        )}
+      </div>
     </div>
   );
 }

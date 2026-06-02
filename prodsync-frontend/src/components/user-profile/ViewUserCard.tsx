@@ -1,109 +1,122 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { User } from "@/types/models";
 import { userService } from "@/services/userService";
 import UserAnalytics from "@/components/user-profile/UserAnalytics";
+import Badge from "@/components/ui/badge/Badge";
 import { getErrorMessage } from "@/lib/errorUtils";
+import { Pencil, Mail, AtSign } from "lucide-react";
+import RoleGuard from "@/components/auth/RoleGuard";
+
+const ROLE_COLOR: Record<string, 'info' | 'success' | 'warning'> = {
+  ADMIN: 'info',
+  OPERATOR: 'success',
+  USER: 'warning',
+};
 
 export default function ViewUserCard({ id }: { id: string }) {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await userService.getById(id);
-        setUser(userData);
-      } catch (error) {
-        setError(getErrorMessage(error, 'Error al cargar los datos del usuario.'));
-      }
-    };
-    fetchUser();
+    userService.getById(id)
+      .then(setUser)
+      .catch(e => setError(getErrorMessage(e, 'Error al cargar los datos del usuario.')));
   }, [id]);
 
   if (error) {
-    return <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">{error}</div>;
-  }
-
-  if (!user) {
     return (
-      <div className="animate-pulse rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] space-y-4">
-        <div className="h-5 rounded bg-gray-200 dark:bg-gray-700 w-24" />
-        <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 flex gap-6 items-center">
-          <div className="h-20 w-20 rounded-full bg-gray-200 dark:bg-gray-700 flex-shrink-0" />
-          <div className="space-y-2 flex-1">
-            <div className="h-4 rounded bg-gray-200 dark:bg-gray-700 w-1/3" />
-            <div className="h-3 rounded bg-gray-200 dark:bg-gray-700 w-1/4" />
-          </div>
-        </div>
-        <div className="h-32 rounded-2xl bg-gray-200 dark:bg-gray-700" />
+      <div className="rounded-2xl border border-error-500/20 bg-error-500/10 p-6 text-sm text-error-400">
+        {error}
       </div>
     );
   }
 
-  // Adapta la estructura de la plantilla al usuario de tu aplicación
+  if (!user) {
+    return (
+      <div className="space-y-4 animate-pulse">
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6 flex items-center gap-6">
+          <div className="h-20 w-20 rounded-full bg-white/[0.06] shrink-0" />
+          <div className="flex-1 space-y-3">
+            <div className="h-5 rounded bg-white/[0.06] w-1/3" />
+            <div className="h-3 rounded bg-white/[0.06] w-1/4" />
+          </div>
+        </div>
+        <div className="h-40 rounded-2xl bg-white/[0.04]" />
+        <div className="h-64 rounded-2xl bg-white/[0.04]" />
+      </div>
+    );
+  }
+
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
-      <h3 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-7">
-        Profile
-      </h3>
-      <div className="space-y-6">
-        {/* UserMetaCard Adaptado */}
-        <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
-          <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
-            <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
-              <div className="w-20 h-20 flex items-center justify-center rounded-full bg-[#1E1E26] text-white font-bold text-3xl flex-shrink-0">
-                {user.name.charAt(0).toUpperCase()}
-              </div>
-              <div className="order-3 xl:order-2">
-                <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
-                  {user.name}
-                </h4>
-                <div className="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {user.role}
-                  </p>
-                  <div className="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {user.email}
-                  </p>
-                </div>
-              </div>
+    <div className="space-y-5">
+
+      {/* Hero card */}
+      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] overflow-hidden">
+        {/* Top accent bar */}
+        <div className="h-1.5 w-full bg-gradient-to-r from-brand-500 to-theme-purple-500" />
+
+        <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+          {/* Avatar */}
+          <div className="relative shrink-0">
+            <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gradient-to-br from-brand-500/30 to-theme-purple-500/30 border-2 border-brand-500/30 text-brand-400 font-bold text-3xl">
+              {user.name.charAt(0).toUpperCase()}
+            </div>
+            <span className={`absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full border-2 border-[#1E1E26] ${user.status === 'ACTIVE' ? 'bg-success-400' : 'bg-gray-600'}`} />
+          </div>
+
+          {/* Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 flex-wrap mb-1">
+              <h2 className="text-xl font-semibold text-white">{user.name}</h2>
+              <Badge size="sm" color={ROLE_COLOR[user.role] ?? 'info'}>{user.role}</Badge>
+              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${user.status === 'ACTIVE' ? 'text-success-400 bg-success-500/10' : 'text-gray-500 bg-white/[0.04]'}`}>
+                {user.status}
+              </span>
+            </div>
+            <div className="flex items-center gap-4 flex-wrap">
+              <span className="flex items-center gap-1.5 text-sm text-gray-400">
+                <AtSign size={13} className="text-gray-600" />
+                {user.username}
+              </span>
+              <span className="flex items-center gap-1.5 text-sm text-gray-400">
+                <Mail size={13} className="text-gray-600" />
+                {user.email}
+              </span>
             </div>
           </div>
-        </div>
 
-        {/* UserInfoCard Adaptado */}
-        <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
-          <div>
-            <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-              Personal Information
-            </h4>
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
-              <div>
-                <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Username</p>
-                <p className="text-sm font-medium text-gray-800 dark:text-white/90">{user.username}</p>
-              </div>
-              <div>
-                <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Email</p>
-                <p className="text-sm font-medium text-gray-800 dark:text-white/90">{user.email}</p>
-              </div>
-              <div>
-                <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Status</p>
-                <p className="text-sm font-medium text-gray-800 dark:text-white/90">{user.status}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Analytics section */}
-        <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
-          <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-6">
-            Rendimiento del Sistema
-          </h4>
-          <UserAnalytics userId={user.id} />
+          {/* Actions */}
+          <RoleGuard roles={['ADMIN']}>
+            <Link href={`/users/edit/${user.id}`}>
+              <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors shrink-0">
+                <Pencil size={14} /> Edit
+              </button>
+            </Link>
+          </RoleGuard>
         </div>
       </div>
+
+      {/* Info grid */}
+      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
+        <h3 className="text-sm font-medium uppercase tracking-wider text-gray-500 mb-4">Account Details</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {[
+            { label: 'Full Name', value: user.name },
+            { label: 'Username', value: `@${user.username}` },
+            { label: 'Email', value: user.email },
+          ].map(({ label, value }) => (
+            <div key={label}>
+              <p className="text-xs text-gray-600 mb-1">{label}</p>
+              <p className="text-sm font-medium text-white/90">{value}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Analytics */}
+      <UserAnalytics userId={user.id} />
     </div>
   );
 }

@@ -158,24 +158,12 @@ const AppSidebar: React.FC = () => {
                 !isExpanded && !isHovered ? "lg:justify-center lg:px-0 lg:gap-0" : "lg:justify-start"
               }`}
             >
-              <span
-                className={`${
-                  openSubmenu?.type === menuType && openSubmenu?.index === index
-                    ? "text-[#A7ABB4] dark:text-[#A7ABB4]"
-                    : "text-white group-hover:text-[#A7ABB4] dark:text-white dark:group-hover:text-[#A7ABB4]"
-                }`}
-              >
+              <span className={openSubmenu?.type === menuType && openSubmenu?.index === index ? "menu-item-icon-active" : "menu-item-icon-inactive"}>
                 {nav.icon}
               </span>
               {(isExpanded || isHovered || isMobileOpen) && (
                 <>
-                  <span
-                    className={`menu-item-text ${
-                      openSubmenu?.type === menuType && openSubmenu?.index === index
-                        ? "text-[#A7ABB4]"
-                        : "text-white group-hover:text-[#A7ABB4]"
-                    }`}
-                  >
+                  <span className="menu-item-text">
                     {nav.name}
                   </span>
                   <ChevronDownIcon
@@ -198,23 +186,11 @@ const AppSidebar: React.FC = () => {
                   !isExpanded && !isHovered ? "lg:justify-center lg:px-0 lg:gap-0" : "lg:justify-start"
                 }`}
               >
-                <span
-                  className={`${
-                    isActive(nav.path)
-                      ? "text-[#A7ABB4] dark:text-[#A7ABB4]"
-                      : "text-white group-hover:text-[#A7ABB4] dark:text-white dark:group-hover:text-[#A7ABB4]"
-                  }`}
-                >
+                <span className={isActive(nav.path) ? "menu-item-icon-active" : "menu-item-icon-inactive"}>
                   {nav.icon}
                 </span>
                 {(isExpanded || isHovered || isMobileOpen) && (
-                  <span
-                    className={`menu-item-text ${
-                      isActive(nav.path)
-                        ? "text-[#A7ABB4]"
-                        : "text-white group-hover:text-[#A7ABB4]"
-                    }`}
-                  >
+                  <span className="menu-item-text">
                     {nav.name}
                   </span>
                 )}
@@ -288,7 +264,7 @@ const AppSidebar: React.FC = () => {
       <div className="flex flex-1 flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <h2
-            className={`mb-4 text-xs uppercase flex leading-[20px] text-white ${
+            className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-600 tracking-wider ${
               !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
             }`}
           >

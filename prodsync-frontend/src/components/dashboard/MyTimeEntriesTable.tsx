@@ -13,44 +13,54 @@ export default function MyTimeEntriesTable() {
   const recent = entries.slice(0, 5);
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">My Time Entries</h3>
-        <Link href="/time-entries" className="text-sm text-blue-600 hover:underline dark:text-blue-400">
-          Ver todas
+    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-base font-semibold text-white">My Time Entries</h3>
+        <Link
+          href="/time-entries"
+          className="text-xs font-medium text-brand-400 hover:text-brand-300 transition-colors"
+        >
+          View all →
         </Link>
       </div>
       {isLoading ? (
-        <div className="animate-pulse space-y-2">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="flex gap-4">
-              <div className="h-4 rounded bg-gray-200 dark:bg-gray-700 w-1/4" />
-              <div className="h-4 rounded bg-gray-200 dark:bg-gray-700 w-1/6" />
-              <div className="h-4 rounded bg-gray-200 dark:bg-gray-700 w-1/6" />
-              <div className="h-4 rounded bg-gray-200 dark:bg-gray-700 flex-1" />
+        <div className="space-y-3">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="flex gap-4 py-1">
+              <div className="h-4 rounded bg-white/10 w-1/4" />
+              <div className="h-4 rounded bg-white/10 w-1/6" />
+              <div className="h-4 rounded bg-white/10 flex-1" />
             </div>
           ))}
         </div>
       ) : recent.length === 0 ? (
-        <div className="py-4 text-center text-gray-500">No time entries found.</div>
+        <div className="py-8 text-center text-gray-500 text-sm">No time entries found.</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 dark:border-gray-800">
-                <th className="py-2 text-left font-medium text-gray-500 dark:text-gray-400">Date</th>
-                <th className="py-2 text-left font-medium text-gray-500 dark:text-gray-400">Hours</th>
-                <th className="py-2 text-left font-medium text-gray-500 dark:text-gray-400">Type</th>
-                <th className="py-2 text-left font-medium text-gray-500 dark:text-gray-400">Description</th>
+              <tr className="border-b border-white/[0.06]">
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Date</th>
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Hours</th>
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Type</th>
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Description</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+            <tbody>
               {recent.map((entry) => (
-                <tr key={entry.id}>
-                  <td className="py-2 text-gray-800 dark:text-white/90">{entry.date}</td>
-                  <td className="py-2 text-gray-500 dark:text-gray-400">{entry.hours}h</td>
-                  <td className="py-2 text-gray-500 dark:text-gray-400">{entry.type || 'Normal'}</td>
-                  <td className="py-2 text-gray-500 dark:text-gray-400 max-w-xs truncate">{entry.description}</td>
+                <tr
+                  key={entry.id}
+                  className="border-b border-white/[0.04] hover:bg-white/[0.03] transition-colors"
+                >
+                  <td className="py-3.5 pr-4 text-white/90 font-medium whitespace-nowrap">{entry.date}</td>
+                  <td className="py-3.5 pr-4">
+                    <span className="inline-flex items-center gap-1 text-brand-400 font-semibold">
+                      {entry.hours}
+                      <span className="text-gray-500 font-normal text-xs">h</span>
+                    </span>
+                  </td>
+                  <td className="py-3.5 pr-4 text-gray-400">{entry.type || 'Normal'}</td>
+                  <td className="py-3.5 text-gray-500 max-w-xs truncate">{entry.description}</td>
                 </tr>
               ))}
             </tbody>
