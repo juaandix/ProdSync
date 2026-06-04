@@ -1,53 +1,53 @@
-import GridShape from "@/components/common/GridShape";
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Error 404 | TailAdmin - Next.js Dashboard Template",
-  description:
-    "This is Next.js Error 404 page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+  title: "Página no encontrada — ProdSync",
+  description: "La página que buscas no existe.",
 };
 
 export default function Error404() {
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen p-6 overflow-hidden z-1">
-      <GridShape />
-      <div className="mx-auto w-full max-w-[242px] text-center sm:max-w-[472px]">
-        <h1 className="mb-8 font-bold text-gray-800 text-title-md dark:text-white/90 xl:text-title-2xl">
-          ERROR
-        </h1>
+    <div className="min-h-screen bg-[#1E1E26] flex flex-col items-center justify-center px-4">
+      <div className="text-center max-w-md">
 
-        <Image
-          src="/images/error/404.svg"
-          alt="404"
-          className="dark:hidden"
-          width={472}
-          height={152}
-        />
-        <Image
-          src="/images/error/404-dark.svg"
-          alt="404"
-          className="hidden dark:block"
-          width={472}
-          height={152}
-        />
+        {/* Número grande */}
+        <div className="relative mb-8 select-none">
+          <span className="text-[10rem] font-black text-white/[0.04] leading-none">404</span>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex items-center justify-center w-20 h-20 rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
+              <svg className="w-10 h-10 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
 
-        <p className="mt-10 mb-6 text-base text-gray-700 dark:text-gray-400 sm:text-lg">
-          We can’t seem to find the page you are looking for!
+        <h1 className="text-2xl font-bold text-white mb-3">Página no encontrada</h1>
+        <p className="text-gray-500 text-sm mb-8 leading-relaxed">
+          La página que estás buscando no existe o ha sido movida.<br />
+          Comprueba la URL o vuelve al inicio.
         </p>
 
-        <Link
-          href="/"
-          className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-3.5 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
-        >
-          Back to Home Page
-        </Link>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link
+            href="/dashboard"
+            className="px-6 py-2.5 bg-white text-[#1E1E26] rounded-xl text-sm font-semibold hover:bg-white/90 transition-colors"
+          >
+            Ir al Dashboard
+          </Link>
+          <Link
+            href="/projects"
+            className="px-6 py-2.5 border border-white/10 text-gray-400 rounded-xl text-sm font-medium hover:text-white hover:border-white/20 transition-colors"
+          >
+            Ver proyectos
+          </Link>
+        </div>
+
       </div>
-      {/* <!-- Pie de página --> */}
-      <p className="absolute text-sm text-center text-gray-500 -translate-x-1/2 bottom-6 left-1/2 dark:text-gray-400">
-        &copy; {new Date().getFullYear()} - TailAdmin
+
+      <p className="absolute bottom-6 text-xs text-gray-700">
+        © {new Date().getFullYear()} ProdSync
       </p>
     </div>
   );

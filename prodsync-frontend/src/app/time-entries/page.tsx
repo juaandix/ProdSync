@@ -16,7 +16,7 @@ import { parseTime } from '@/lib/timeUtils';
 import { Pencil, Trash2, Loader2 } from 'lucide-react';
 import Pagination from '@/app/users/components/Pagination';
 
-const TYPE_TABS = ['All', 'DESARROLLO', 'ANALISIS', 'TESTING', 'REUNION', 'DISEÑO'] as const;
+const TYPE_TABS = ['Todos', 'DESARROLLO', 'ANALISIS', 'TESTING', 'REUNION', 'DISEÑO'] as const;
 
 function SortIcon({ active, dir }: { active: boolean; dir: 'asc' | 'desc' }) {
   return (
@@ -38,7 +38,7 @@ export default function TimeEntriesPage() {
   const [selectedProjectId, setSelectedProjectId] = useState<string>('all');
   const [selectedUserId, setSelectedUserId] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [typeTab, setTypeTab] = useState<typeof TYPE_TABS[number]>('All');
+  const [typeTab, setTypeTab] = useState<typeof TYPE_TABS[number]>('Todos');
   const [sortKey, setSortKey] = useState<keyof TimeEntry | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
@@ -88,7 +88,7 @@ export default function TimeEntriesPage() {
       const info = taskInfoMap.get(entry.taskId);
       if (selectedProjectId !== 'all' && info?.projectId !== selectedProjectId) return false;
       if (selectedUserId !== 'all' && entry.userId !== selectedUserId) return false;
-      if (typeTab !== 'All' && (entry.type ?? 'Normal') !== typeTab) return false;
+      if (typeTab !== 'Todos' && (entry.type ?? 'Normal') !== typeTab) return false;
       if (!term) return true;
       return (
         entry.description?.toLowerCase().includes(term) ||
@@ -150,7 +150,7 @@ export default function TimeEntriesPage() {
     e.preventDefault();
     if (!entryToEdit) return;
     const hours = parseTime(editForm.hours);
-    if (isNaN(hours) || hours <= 0) { toast.error('Hours must be a positive number'); return; }
+    if (isNaN(hours) || hours <= 0) { toast.error('Las horas deben ser un número positivo'); return; }
     updateMutation.mutate({ id: entryToEdit.id, data: { date: editForm.date, hours, type: editForm.type, description: editForm.description } });
   };
 
@@ -168,25 +168,25 @@ export default function TimeEntriesPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 mb-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-base font-semibold text-white">Time Entries</h3>
-          <p className="text-xs text-gray-500 mt-0.5">{filteredEntries.length} entries · {totalHours % 1 === 0 ? totalHours : totalHours.toFixed(1)}h total</p>
+          <h3 className="text-base font-semibold text-white">Registro de tiempo</h3>
+          <p className="text-xs text-gray-500 mt-0.5">{filteredEntries.length} registros · {totalHours % 1 === 0 ? totalHours : totalHours.toFixed(1)}h total</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <div className="relative">
             <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" width="14" height="14" viewBox="0 0 20 20" fill="none">
               <path fillRule="evenodd" clipRule="evenodd" d="M3.04175 9.37363C3.04175 5.87693 5.87711 3.04199 9.37508 3.04199C12.8731 3.04199 15.7084 5.87693 15.7084 9.37363C15.7084 12.8703 12.8731 15.7053 9.37508 15.7053C5.87711 15.7053 3.04175 12.8703 3.04175 9.37363ZM9.37508 1.54199C5.04902 1.54199 1.54175 5.04817 1.54175 9.37363C1.54175 13.6991 5.04902 17.2053 9.37508 17.2053C11.2674 17.2053 13.003 16.5344 14.357 15.4176L17.177 18.238C17.4699 18.5309 17.9448 18.5309 18.2377 18.238C18.5306 17.9451 18.5306 17.4703 18.2377 17.1774L15.418 14.3573C16.5365 13.0033 17.2084 11.2669 17.2084 9.37363C17.2084 5.04817 13.7011 1.54199 9.37508 1.54199Z" fill="currentColor"/>
             </svg>
-            <input type="text" placeholder="Search..." value={searchTerm}
+            <input type="text" placeholder="Buscar..." value={searchTerm}
               onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); }}
               className="pl-9 pr-3 py-2 border border-white/[0.08] rounded-lg bg-white/[0.04] text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-500/50 w-44 transition-colors"
             />
           </div>
           <select value={selectedProjectId} onChange={e => { setSelectedProjectId(e.target.value); setCurrentPage(1); }} className={selectClass}>
-            <option value="all" className="bg-[#161820]">All Projects</option>
+            <option value="all" className="bg-[#161820]">Todos los proyectos</option>
             {projects.map(p => <option key={p.id} value={p.id} className="bg-[#161820]">{p.name}</option>)}
           </select>
           <select value={selectedUserId} onChange={e => { setSelectedUserId(e.target.value); setCurrentPage(1); }} className={selectClass}>
-            <option value="all" className="bg-[#161820]">All Users</option>
+            <option value="all" className="bg-[#161820]">Todos los usuarios</option>
             {users.map(u => <option key={u.id} value={u.id} className="bg-[#161820]">{u.name || u.username}</option>)}
           </select>
         </div>
@@ -200,7 +200,7 @@ export default function TimeEntriesPage() {
           >
             {tab}
             <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${typeTab === tab ? 'bg-brand-500/20 text-brand-400' : 'bg-white/[0.06] text-gray-500'}`}>
-              {tab === 'All' ? timeEntries.length : (typeCounts[tab] || 0)}
+              {tab === 'Todos' ? timeEntries.length : (typeCounts[tab] || 0)}
             </span>
           </button>
         ))}
@@ -211,7 +211,7 @@ export default function TimeEntriesPage() {
         <div className="flex items-center justify-between mb-3 px-3 py-2 rounded-lg bg-brand-500/10 border border-brand-500/20">
           <span className="text-sm text-brand-400 font-medium">{selectedIds.size} entr{selectedIds.size > 1 ? 'ies' : 'y'} selected</span>
           <div className="flex items-center gap-2">
-            <button onClick={() => setSelectedIds(new Set())} className="text-xs text-gray-400 hover:text-white transition-colors">Clear</button>
+            <button onClick={() => setSelectedIds(new Set())} className="text-xs text-gray-400 hover:text-white transition-colors">Limpiar</button>
             <button onClick={() => { setIsBulkModal(true); setDeleteModalOpen(true); }}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-error-500/20 text-error-400 hover:bg-error-500/30 rounded-lg transition-colors border border-error-500/20">
               <Trash2 size={13} /> Delete {selectedIds.size} selected
@@ -261,9 +261,9 @@ export default function TimeEntriesPage() {
                   <TableCell isHeader className={thClass} onClick={() => handleSort('hours')}>
                     <span className="flex items-center">Hours <SortIcon active={sortKey === 'hours'} dir={sortDir} /></span>
                   </TableCell>
-                  <TableCell isHeader className={thClass}>Type</TableCell>
-                  <TableCell isHeader className="py-3 pr-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500 border-b border-white/[0.06]">Description</TableCell>
-                  <TableCell isHeader className="py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 border-b border-white/[0.06]">Actions</TableCell>
+                  <TableCell isHeader className={thClass}>Tipo</TableCell>
+                  <TableCell isHeader className="py-3 pr-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500 border-b border-white/[0.06]">Descripción</TableCell>
+                  <TableCell isHeader className="py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 border-b border-white/[0.06]">Acciones</TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -323,7 +323,7 @@ export default function TimeEntriesPage() {
           <h2 className="text-base font-semibold text-white mb-1">{isBulkModal ? `Delete ${selectedIds.size} entries` : 'Delete Entry'}</h2>
           <p className="text-sm text-gray-400 mb-6">This action cannot be undone.</p>
           <div className="flex justify-end gap-2">
-            <button onClick={() => setDeleteModalOpen(false)} className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">Cancel</button>
+            <button onClick={() => setDeleteModalOpen(false)} className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">Cancelar</button>
             <button onClick={confirmDelete} disabled={deleteMutation.isPending} className="px-4 py-2 text-sm font-medium bg-error-500 hover:bg-error-600 text-white rounded-lg transition-colors disabled:opacity-50">
               {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
             </button>
@@ -343,20 +343,20 @@ export default function TimeEntriesPage() {
                   className={`${inputClass} [color-scheme:dark]`} required />
               </div>
               <div>
-                <label className={labelClass}>Hours</label>
+                <label className={labelClass}>Horas</label>
                 <input type="text" value={editForm.hours} onChange={e => setEditForm(f => ({ ...f, hours: e.target.value }))}
                   placeholder="e.g. 1.5" className={inputClass} required />
               </div>
             </div>
             <div>
-              <label className={labelClass}>Type</label>
+              <label className={labelClass}>Tipo</label>
               <select value={editForm.type} onChange={e => setEditForm(f => ({ ...f, type: e.target.value as TimeEntry['type'] }))}
                 className={`${inputClass} [color-scheme:dark]`}>
                 {timeEntryTypes.map(t => <option key={t} value={t} className="bg-[#1E1E26]">{t}</option>)}
               </select>
             </div>
             <div>
-              <label className={labelClass}>Description</label>
+              <label className={labelClass}>Descripción</label>
               <textarea value={editForm.description} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
                 rows={3} className={`${inputClass} resize-none`} />
             </div>
@@ -364,7 +364,7 @@ export default function TimeEntriesPage() {
               <button type="button" onClick={() => setEditModalOpen(false)} className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">Cancel</button>
               <button type="submit" disabled={updateMutation.isPending} className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-brand-500 hover:bg-brand-600 text-white rounded-lg transition-colors disabled:opacity-50">
                 {updateMutation.isPending && <Loader2 size={14} className="animate-spin" />}
-                {updateMutation.isPending ? 'Saving...' : 'Save'}
+                {updateMutation.isPending ? 'Guardando...' : 'Guardar'}
               </button>
             </div>
           </form>

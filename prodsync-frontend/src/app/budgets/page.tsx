@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components
 import Badge from '@/components/ui/badge/Badge';
 import { Modal } from '@/components/ui/modal';
 import { toast } from 'sonner';
+import TableSkeleton from '@/components/ui/skeleton/TableSkeleton';
 import { Budget, BudgetStatus, budgetStatuses } from '@/types/models';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import RoleGuard from '@/components/auth/RoleGuard';
@@ -178,23 +179,11 @@ export default function BudgetsPage() {
         )}
 
         {isLoading ? (
-          <div className="space-y-3">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="flex items-center gap-4 py-2">
-                <div className="h-4 w-4 rounded bg-white/[0.06] shrink-0" />
-                <div className="h-3 rounded bg-white/[0.06] w-24 shrink-0" />
-                <div className="flex-1 h-3 rounded bg-white/[0.06]" />
-                <div className="h-3 rounded bg-white/[0.06] w-1/5" />
-                <div className="h-5 w-16 rounded-full bg-white/[0.06]" />
-                <div className="h-3 rounded bg-white/[0.06] w-20" />
-                <div className="h-7 w-20 rounded-lg bg-white/[0.06]" />
-              </div>
-            ))}
-          </div>
+          <TableSkeleton rows={5} cols={6} />
         ) : filtered.length === 0 ? (
           <div className="py-14 flex flex-col items-center gap-2">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-gray-700"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><polyline points="14 2 14 8 20 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-            <p className="text-sm font-medium text-gray-400">No budgets found</p>
+            <p className="text-sm font-medium text-gray-400">Sin presupuestos</p>
             <p className="text-xs text-gray-600">Try adjusting your search or filters</p>
           </div>
         ) : (

@@ -29,12 +29,12 @@ export default function RecentClientsTable() {
   return (
     <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-base font-semibold text-white">Recent Clients</h3>
+        <h3 className="text-base font-semibold text-white">Clientes recientes</h3>
         <Link
           href="/clients"
           className="text-xs font-medium text-brand-400 hover:text-brand-300 transition-colors"
         >
-          View all →
+          Ver todos →
         </Link>
       </div>
       {isLoading ? (

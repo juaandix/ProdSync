@@ -64,7 +64,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ taskId, projectId, onTaskUp
     updateTaskMutation.mutate(data);
   };
 
-  if (isLoading) return <div>Loading task...</div>;
+  if (isLoading) return <div className="text-gray-400 text-sm p-4">Cargando tarea...</div>;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -120,7 +120,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ taskId, projectId, onTaskUp
           disabled={updateTaskMutation.isPending}
           className="px-4 py-2 bg-[#1E1E26] text-white rounded-md hover:bg-[#13131a] disabled:opacity-50"
         >
-          {updateTaskMutation.isPending ? 'Updating...' : 'Update Task'}
+          {updateTaskMutation.isPending ? 'Guardando...' : 'Guardar cambios'}
         </button>
       </RoleGuard>
     </form>

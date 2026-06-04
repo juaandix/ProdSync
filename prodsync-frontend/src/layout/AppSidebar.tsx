@@ -53,33 +53,43 @@ const navItems: NavItem[] = [
   },
   {
     icon: <FolderIcon />,
-    name: "Projects",
+    name: "Proyectos",
     path: "/projects",
   },
   {
     icon: <GroupIcon />,
-    name: "Clients",
+    name: "Clientes",
     path: "/clients",
   },
   {
     icon: <UserCircleIcon />,
-    name: "Users",
+    name: "Usuarios",
     path: "/users",
   },
   {
     icon: <TimeIcon />,
-    name: "Time Entries",
+    name: "Registro de tiempo",
     path: "/time-entries",
   },
   {
     icon: <CalenderIcon />,
-    name: "Calendar",
+    name: "Calendario",
     path: "/calendar",
   },
   {
     icon: <DollarLineIcon />,
     name: "Presupuestos",
     path: "/budgets",
+  },
+  {
+    icon: <HorizontaLDots />,
+    name: "Informes",
+    path: "/reports",
+  },
+  {
+    icon: <TimeIcon />,
+    name: "Actividad",
+    path: "/activity",
   },
 ];
 
@@ -103,10 +113,12 @@ const AppSidebar: React.FC = () => {
    * Solo se muestran los ítems para los que el usuario tiene permiso.
    */
   const visibleNavItems = navItems.filter((item) => {
-    if (item.path === "/users") return isAdmin;                              // Solo ADMIN
-    if (item.path === "/clients") return hasPermission(["ADMIN", "OPERATOR"]); // ADMIN y OPERATOR
-    if (item.path === "/budgets") return isAdmin;                            // Solo ADMIN
-    return true; // El resto de rutas son accesibles para todos los roles
+    if (item.path === "/users") return isAdmin;
+    if (item.path === "/clients") return hasPermission(["ADMIN", "OPERATOR"]);
+    if (item.path === "/budgets") return isAdmin;
+    if (item.path === "/reports") return hasPermission(["ADMIN", "OPERATOR"]);
+    if (item.path === "/activity") return hasPermission(["ADMIN", "OPERATOR"]);
+    return true;
   });
 
   useEffect(() => {

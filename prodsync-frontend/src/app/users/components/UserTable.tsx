@@ -132,7 +132,7 @@ export default function UserTable() {
             </svg>
             <input
               type="text"
-              placeholder="Search users..."
+              placeholder="Buscar usuarios..."
               value={searchTerm}
               onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); setSelectedIds(new Set()); }}
               className="pl-9 pr-3 py-2 border border-white/[0.08] rounded-lg bg-white/[0.04] text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-500/50 w-52 transition-colors"
@@ -142,7 +142,7 @@ export default function UserTable() {
             <Link href="/users/create">
               <button className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium text-white whitespace-nowrap transition-all duration-200 bg-gradient-to-r from-brand-500 to-theme-purple-500 hover:opacity-90 hover:shadow-lg hover:shadow-brand-500/25 active:scale-95">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                New User
+                Nuevo usuario
               </button>
             </Link>
           </RoleGuard>
@@ -172,15 +172,15 @@ export default function UserTable() {
       {/* Bulk bar */}
       {selectedIds.size > 0 && (
         <div className="flex items-center justify-between mb-3 px-3 py-2 rounded-lg bg-brand-500/10 border border-brand-500/20">
-          <span className="text-sm text-brand-400 font-medium">{selectedIds.size} user{selectedIds.size > 1 ? 's' : ''} selected</span>
+          <span className="text-sm text-brand-400 font-medium">{selectedIds.size} usuario{selectedIds.size > 1 ? 's' : ''} seleccionado{selectedIds.size > 1 ? 's' : ''}</span>
           <div className="flex items-center gap-2">
-            <button onClick={() => setSelectedIds(new Set())} className="text-xs text-gray-400 hover:text-white transition-colors">Clear</button>
+            <button onClick={() => setSelectedIds(new Set())} className="text-xs text-gray-400 hover:text-white transition-colors">Limpiar</button>
             <RoleGuard roles={['ADMIN']}>
               <button
                 onClick={() => { setIsBulkModal(true); setIsModalOpen(true); }}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-error-500/20 text-error-400 hover:bg-error-500/30 rounded-lg transition-colors border border-error-500/20"
               >
-                <Trash2 size={13} /> Delete {selectedIds.size} selected
+                <Trash2 size={13} /> Eliminar {selectedIds.size} seleccionados
               </button>
             </RoleGuard>
           </div>
@@ -204,12 +204,12 @@ export default function UserTable() {
           ))}
         </div>
       ) : error ? (
-        <div className="py-10 text-center text-error-400 text-sm">Error fetching users</div>
+        <div className="py-10 text-center text-error-400 text-sm">Error al cargar los usuarios</div>
       ) : filteredUsers.length === 0 ? (
         <div className="py-14 flex flex-col items-center gap-2">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-gray-700"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.5"/></svg>
-          <p className="text-sm font-medium text-gray-400">No users found</p>
-          <p className="text-xs text-gray-600">Try adjusting your search or filters</p>
+          <p className="text-sm font-medium text-gray-400">No se encontraron usuarios</p>
+          <p className="text-xs text-gray-600">Prueba ajustando la búsqueda o los filtros</p>
         </div>
       ) : (
         <>
@@ -225,18 +225,18 @@ export default function UserTable() {
                     />
                   </TableCell>
                   <TableCell isHeader className={thClass} onClick={() => handleSort('name')}>
-                    <span className="flex items-center">Name <SortIcon active={sortKey === 'name'} dir={sortDir} /></span>
+                    <span className="flex items-center">Nombre <SortIcon active={sortKey === 'name'} dir={sortDir} /></span>
                   </TableCell>
                   <TableCell isHeader className={thClass} onClick={() => handleSort('email')}>
                     <span className="flex items-center">Email <SortIcon active={sortKey === 'email'} dir={sortDir} /></span>
                   </TableCell>
                   <TableCell isHeader className={thClass} onClick={() => handleSort('role')}>
-                    <span className="flex items-center">Role <SortIcon active={sortKey === 'role'} dir={sortDir} /></span>
+                    <span className="flex items-center">Rol <SortIcon active={sortKey === 'role'} dir={sortDir} /></span>
                   </TableCell>
                   <TableCell isHeader className={thClass} onClick={() => handleSort('status')}>
-                    <span className="flex items-center">Status <SortIcon active={sortKey === 'status'} dir={sortDir} /></span>
+                    <span className="flex items-center">Estado <SortIcon active={sortKey === 'status'} dir={sortDir} /></span>
                   </TableCell>
-                  <TableCell isHeader className="py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 border-b border-white/[0.06]">Actions</TableCell>
+                  <TableCell isHeader className="py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 border-b border-white/[0.06]">Acciones</TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -297,11 +297,11 @@ export default function UserTable() {
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="p-6 bg-[#1E1E26] rounded-2xl">
-          <h2 className="text-base font-semibold text-white mb-1">{isBulkModal ? `Delete ${selectedIds.size} users` : 'Delete User'}</h2>
-          <p className="text-sm text-gray-400 mb-6">This action cannot be undone.</p>
+          <h2 className="text-base font-semibold text-white mb-1">{isBulkModal ? `Eliminar ${selectedIds.size} usuarios` : 'Eliminar usuario'}</h2>
+          <p className="text-sm text-gray-400 mb-6">Esta acción no se puede deshacer.</p>
           <div className="flex justify-end gap-2">
-            <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">Cancel</button>
-            <button onClick={confirmDelete} className="px-4 py-2 text-sm font-medium bg-error-500 hover:bg-error-600 text-white rounded-lg transition-colors">Delete</button>
+            <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">Cancelar</button>
+            <button onClick={confirmDelete} className="px-4 py-2 text-sm font-medium bg-error-500 hover:bg-error-600 text-white rounded-lg transition-colors">Eliminar</button>
           </div>
         </div>
       </Modal>

@@ -15,12 +15,12 @@ export default function MyTimeEntriesTable() {
   return (
     <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-base font-semibold text-white">My Time Entries</h3>
+        <h3 className="text-base font-semibold text-white">Registros de tiempo recientes</h3>
         <Link
           href="/time-entries"
           className="text-xs font-medium text-brand-400 hover:text-brand-300 transition-colors"
         >
-          View all →
+          Ver todos →
         </Link>
       </div>
       {isLoading ? (
@@ -40,10 +40,10 @@ export default function MyTimeEntriesTable() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/[0.06]">
-                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Date</th>
-                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Hours</th>
-                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Type</th>
-                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Description</th>
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Fecha</th>
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Horas</th>
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Tipo</th>
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Descripción</th>
               </tr>
             </thead>
             <tbody>

@@ -31,7 +31,7 @@ export default function UserDropdown() {
     return (
       <Link href="/signin">
         <button className="px-4 py-1.5 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-colors">
-          Sign in
+          Iniciar sesión
         </button>
       </Link>
     );
@@ -84,13 +84,13 @@ export default function UserDropdown() {
             <Link href="/profile" onClick={() => setIsOpen(false)}>
               <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.05] transition-colors text-left">
                 <User size={15} className="shrink-0" />
-                Profile
+                Mi perfil
               </button>
             </Link>
             <Link href="/profile" onClick={() => setIsOpen(false)}>
               <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.05] transition-colors text-left">
                 <Settings size={15} className="shrink-0" />
-                Settings
+                Configuración
               </button>
             </Link>
           </div>
@@ -102,7 +102,7 @@ export default function UserDropdown() {
               className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-error-400 hover:bg-error-500/[0.06] transition-colors text-left"
             >
               <LogOut size={15} className="shrink-0" />
-              Sign out
+              Cerrar sesión
             </button>
           </div>
         </div>

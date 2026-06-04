@@ -195,7 +195,7 @@ export default function ClientTable() {
                 onClick={() => { setIsBulkModal(true); setIsModalOpen(true); }}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-error-500/20 text-error-400 hover:bg-error-500/30 rounded-lg transition-colors border border-error-500/20"
               >
-                <Trash2 size={13} /> Delete {selectedIds.size} selected
+                <Trash2 size={13} /> Eliminar {selectedIds.size} seleccionados
               </button>
             </RoleGuard>
           </div>
@@ -216,12 +216,12 @@ export default function ClientTable() {
           ))}
         </div>
       ) : error ? (
-        <div className="py-10 text-center text-error-400 text-sm">Error fetching clients</div>
+        <div className="py-10 text-center text-error-400 text-sm">Error al cargar los clientes</div>
       ) : filteredClients.length === 0 ? (
         <div className="py-14 flex flex-col items-center gap-2 text-center">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-gray-700"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.5"/></svg>
-          <p className="text-sm font-medium text-gray-400">No clients found</p>
-          <p className="text-xs text-gray-600">Try adjusting your search or filters</p>
+          <p className="text-sm font-medium text-gray-400">No se encontraron clientes</p>
+          <p className="text-xs text-gray-600">Prueba ajustando la búsqueda</p>
         </div>
       ) : (
         <>
@@ -239,21 +239,21 @@ export default function ClientTable() {
                     />
                   </TableCell>
                   <TableCell isHeader className={`${thClass} cursor-pointer hover:text-gray-300`} onClick={() => handleSort('name')}>
-                    <span className="flex items-center">Name <SortIcon active={sortKey === 'name'} dir={sortDir} /></span>
+                    <span className="flex items-center">Nombre <SortIcon active={sortKey === 'name'} dir={sortDir} /></span>
                   </TableCell>
                   <TableCell isHeader className={`${thClass} cursor-pointer hover:text-gray-300`} onClick={() => handleSort('identification')}>
-                    <span className="flex items-center">ID <SortIcon active={sortKey === 'identification'} dir={sortDir} /></span>
+                    <span className="flex items-center">NIF/CIF <SortIcon active={sortKey === 'identification'} dir={sortDir} /></span>
                   </TableCell>
                   <TableCell isHeader className={`${thClass} cursor-pointer hover:text-gray-300`} onClick={() => handleSort('email')}>
                     <span className="flex items-center">Email <SortIcon active={sortKey === 'email'} dir={sortDir} /></span>
                   </TableCell>
                   <TableCell isHeader className={`${thClass} cursor-pointer hover:text-gray-300`} onClick={() => handleSort('contactPerson')}>
-                    <span className="flex items-center">Contact <SortIcon active={sortKey === 'contactPerson'} dir={sortDir} /></span>
+                    <span className="flex items-center">Contacto <SortIcon active={sortKey === 'contactPerson'} dir={sortDir} /></span>
                   </TableCell>
                   <TableCell isHeader className={`${thClass} cursor-pointer hover:text-gray-300`} onClick={() => handleSort('location')}>
-                    <span className="flex items-center">Location <SortIcon active={sortKey === 'location'} dir={sortDir} /></span>
+                    <span className="flex items-center">Localidad <SortIcon active={sortKey === 'location'} dir={sortDir} /></span>
                   </TableCell>
-                  <TableCell isHeader className="py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 border-b border-white/[0.06]">Actions</TableCell>
+                  <TableCell isHeader className="py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 border-b border-white/[0.06]">Acciones</TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -315,15 +315,15 @@ export default function ClientTable() {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="p-6 bg-[#1E1E26] rounded-2xl">
           <h2 className="text-base font-semibold text-white mb-1">
-            {isBulkModal ? `Delete ${selectedIds.size} clients` : 'Delete Client'}
+            {isBulkModal ? `Eliminar ${selectedIds.size} clientes` : 'Eliminar cliente'}
           </h2>
-          <p className="text-sm text-gray-400 mb-6">This action cannot be undone.</p>
+          <p className="text-sm text-gray-400 mb-6">Esta acción no se puede deshacer.</p>
           <div className="flex justify-end gap-2">
             <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">
-              Cancel
+              Cancelar
             </button>
             <button onClick={confirmDelete} className="px-4 py-2 text-sm font-medium bg-error-500 hover:bg-error-600 text-white rounded-lg transition-colors">
-              Delete
+              Eliminar
             </button>
           </div>
         </div>

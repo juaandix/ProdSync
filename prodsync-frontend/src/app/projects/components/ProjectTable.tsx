@@ -17,7 +17,7 @@ import ClientTooltip from './ClientTooltip';
 import StatusSelect from './StatusSelect';
 import CreateProjectDrawer from './CreateProjectDrawer';
 
-const STATUS_TABS = ['All', 'ACTIVO', 'EN_PROGRESO', 'COMPLETADO', 'PAUSADO'] as const;
+const STATUS_TABS = ['Todos', 'ACTIVO', 'EN_PROGRESO', 'COMPLETADO', 'CANCELADO'] as const;
 
 function SortIcon({ active, dir }: { active: boolean; dir: 'asc' | 'desc' }) {
   return (
@@ -40,7 +40,7 @@ export default function ProjectTable() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [projectsPerPage] = useState(15);
-  const [statusTab, setStatusTab] = useState<typeof STATUS_TABS[number]>('All');
+  const [statusTab, setStatusTab] = useState<typeof STATUS_TABS[number]>('Todos');
   const [sortKey, setSortKey] = useState<keyof Project | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -102,7 +102,7 @@ export default function ProjectTable() {
   // Filters
   const filteredProjects = projects.filter((project) => {
     const term = searchTerm.toLowerCase();
-    const matchesStatus = statusTab === 'All' || project.status === statusTab;
+    const matchesStatus = statusTab === 'Todos' || project.status === statusTab;
     if (!matchesStatus) return false;
     return (
       project.name.toLowerCase().includes(term) ||
@@ -162,7 +162,7 @@ export default function ProjectTable() {
       {/* Header */}
       <div className="flex flex-col gap-3 mb-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-base font-semibold text-white">Projects</h3>
+          <h3 className="text-base font-semibold text-white">Proyectos</h3>
           <p className="text-xs text-gray-500 mt-0.5">{filteredProjects.length} total</p>
         </div>
         <div className="flex items-center gap-2">
@@ -172,7 +172,7 @@ export default function ProjectTable() {
             </svg>
             <input
               type="text"
-              placeholder="Search projects..."
+              placeholder="Buscar proyectos..."
               value={searchTerm}
               onChange={handleSearch}
               className="pl-9 pr-3 py-2 border border-white/[0.08] rounded-lg bg-white/[0.04] text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-500/50 w-52 transition-colors"
@@ -186,7 +186,7 @@ export default function ProjectTable() {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <path d="M12 5v14M5 12h14"/>
               </svg>
-              New Project
+              Nuevo proyecto
             </button>
           </RoleGuard>
         </div>
@@ -204,11 +204,11 @@ export default function ProjectTable() {
                 : 'text-gray-500 hover:text-gray-300'
             }`}
           >
-            {tab === 'All' ? 'All' : tab.replace('_', ' ')}
+            {tab === 'Todos' ? 'Todos' : tab.replace('_', ' ')}
             <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
               statusTab === tab ? 'bg-brand-500/20 text-brand-400' : 'bg-white/[0.06] text-gray-500'
             }`}>
-              {tab === 'All' ? projects.length : (statusCounts[tab] || 0)}
+              {tab === 'Todos' ? projects.length : (statusCounts[tab] || 0)}
             </span>
           </button>
         ))}
@@ -218,21 +218,21 @@ export default function ProjectTable() {
       {selectedIds.size > 0 && (
         <div className="flex items-center justify-between mb-3 px-3 py-2 rounded-lg bg-brand-500/10 border border-brand-500/20">
           <span className="text-sm text-brand-400 font-medium">
-            {selectedIds.size} project{selectedIds.size > 1 ? 's' : ''} selected
+            {selectedIds.size} proyecto{selectedIds.size > 1 ? 's' : ''} seleccionado{selectedIds.size > 1 ? 's' : ''}
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSelectedIds(new Set())}
               className="text-xs text-gray-400 hover:text-white transition-colors"
             >
-              Clear
+              Limpiar
             </button>
             <RoleGuard roles={['ADMIN', 'OPERATOR']}>
               <button
                 onClick={() => { setIsBulkModal(true); setIsModalOpen(true); }}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-error-500/20 text-error-400 hover:bg-error-500/30 rounded-lg transition-colors border border-error-500/20"
               >
-                <Trash2 size={13} /> Delete {selectedIds.size} selected
+                <Trash2 size={13} /> Eliminar {selectedIds.size} seleccionados
               </button>
             </RoleGuard>
           </div>
@@ -253,12 +253,12 @@ export default function ProjectTable() {
           ))}
         </div>
       ) : error ? (
-        <div className="py-10 text-center text-error-400 text-sm">Error fetching projects</div>
+        <div className="py-10 text-center text-error-400 text-sm">Error al cargar los proyectos</div>
       ) : filteredProjects.length === 0 ? (
         <div className="py-14 flex flex-col items-center gap-2 text-center">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-gray-700"><path d="M3 7H21M3 12H21M3 17H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-          <p className="text-sm font-medium text-gray-400">No projects found</p>
-          <p className="text-xs text-gray-600">Try adjusting your search or filters</p>
+          <p className="text-sm font-medium text-gray-400">No se encontraron proyectos</p>
+          <p className="text-xs text-gray-600">Prueba ajustando la búsqueda o los filtros</p>
         </div>
       ) : (
         <>
@@ -276,17 +276,17 @@ export default function ProjectTable() {
                     />
                   </TableCell>
                   <TableCell isHeader className={`${thClass} cursor-pointer hover:text-gray-300`} onClick={() => handleSort('name')}>
-                    <span className="flex items-center">Name <SortIcon active={sortKey === 'name'} dir={sortDir} /></span>
+                    <span className="flex items-center">Nombre <SortIcon active={sortKey === 'name'} dir={sortDir} /></span>
                   </TableCell>
-                  <TableCell isHeader className={thClass}>Client</TableCell>
+                  <TableCell isHeader className={thClass}>Cliente</TableCell>
                   <TableCell isHeader className={`${thClass} cursor-pointer hover:text-gray-300`} onClick={() => handleSort('startDate')}>
-                    <span className="flex items-center">Start <SortIcon active={sortKey === 'startDate'} dir={sortDir} /></span>
+                    <span className="flex items-center">Inicio <SortIcon active={sortKey === 'startDate'} dir={sortDir} /></span>
                   </TableCell>
                   <TableCell isHeader className={`${thClass} cursor-pointer hover:text-gray-300`} onClick={() => handleSort('endDate')}>
-                    <span className="flex items-center">End <SortIcon active={sortKey === 'endDate'} dir={sortDir} /></span>
+                    <span className="flex items-center">Fin <SortIcon active={sortKey === 'endDate'} dir={sortDir} /></span>
                   </TableCell>
-                  <TableCell isHeader className={thClass}>Status</TableCell>
-                  <TableCell isHeader className="py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 border-b border-white/[0.06]">Actions</TableCell>
+                  <TableCell isHeader className={thClass}>Estado</TableCell>
+                  <TableCell isHeader className="py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 border-b border-white/[0.06]">Acciones</TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -370,15 +370,15 @@ export default function ProjectTable() {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="p-6 bg-[#1E1E26] rounded-2xl">
           <h2 className="text-base font-semibold text-white mb-1">
-            {isBulkModal ? `Delete ${selectedIds.size} projects` : 'Delete Project'}
+            {isBulkModal ? `Eliminar ${selectedIds.size} proyectos` : 'Eliminar proyecto'}
           </h2>
-          <p className="text-sm text-gray-400 mb-6">This action cannot be undone.</p>
+          <p className="text-sm text-gray-400 mb-6">Esta acción no se puede deshacer.</p>
           <div className="flex justify-end gap-2">
             <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">
-              Cancel
+              Cancelar
             </button>
             <button onClick={confirmDelete} className="px-4 py-2 text-sm font-medium bg-error-500 hover:bg-error-600 text-white rounded-lg transition-colors">
-              Delete
+              Eliminar
             </button>
           </div>
         </div>

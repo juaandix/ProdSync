@@ -5,17 +5,9 @@ import { projectService } from '@/services/projectService';
 import { FolderIcon, TimeIcon } from '@/icons/index';
 
 function StatCard({
-  label,
-  value,
-  icon,
-  accent,
-  sub,
+  label, value, icon, accent, sub,
 }: {
-  label: string;
-  value: number;
-  icon: React.ReactNode;
-  accent: string;
-  sub?: string;
+  label: string; value: number; icon: React.ReactNode; accent: string; sub?: string;
 }) {
   return (
     <div className="flex items-center gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.04] px-5 py-4">
@@ -52,40 +44,40 @@ export default function ProjectStats() {
   return (
     <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
       <StatCard
-        label="Total Projects"
+        label="Total proyectos"
         value={total}
-        accent="bg-brand-500/10 text-brand-400"
+        accent="bg-indigo-500/10 text-indigo-400"
         icon={<FolderIcon />}
-        sub={`${total - completed} still open`}
+        sub={`${total - completed} abiertos`}
       />
       <StatCard
-        label="In Progress"
+        label="En progreso"
         value={inProgress}
-        accent="bg-warning-500/10 text-warning-400"
+        accent="bg-amber-500/10 text-amber-400"
         icon={
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
             <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
           </svg>
         }
-        sub={total > 0 ? `${Math.round((inProgress / total) * 100)}% of total` : undefined}
+        sub={total > 0 ? `${Math.round((inProgress / total) * 100)}% del total` : undefined}
       />
       <StatCard
-        label="Completed"
+        label="Completados"
         value={completed}
-        accent="bg-success-500/10 text-success-400"
+        accent="bg-emerald-500/10 text-emerald-400"
         icon={
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
           </svg>
         }
-        sub={total > 0 ? `${Math.round((completed / total) * 100)}% completion rate` : undefined}
+        sub={total > 0 ? `${Math.round((completed / total) * 100)}% completados` : undefined}
       />
       <StatCard
-        label="Overdue"
+        label="Vencidos"
         value={overdue}
-        accent={overdue > 0 ? 'bg-error-500/10 text-error-400' : 'bg-white/[0.04] text-gray-600'}
+        accent={overdue > 0 ? 'bg-red-500/10 text-red-400' : 'bg-white/[0.04] text-gray-600'}
         icon={<TimeIcon />}
-        sub={overdue > 0 ? 'Require attention' : 'All on track'}
+        sub={overdue > 0 ? 'Requieren atención' : 'Todo al día'}
       />
     </div>
   );

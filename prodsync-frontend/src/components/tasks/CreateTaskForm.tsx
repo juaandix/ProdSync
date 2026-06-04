@@ -120,7 +120,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ projectId, onTaskCreate
           disabled={createTaskMutation.isPending}
           className="px-4 py-2 bg-[#1E1E26] text-white rounded-md hover:bg-[#13131a] disabled:opacity-50"
         >
-          {createTaskMutation.isPending ? 'Creating...' : 'Create Task'}
+          {createTaskMutation.isPending ? 'Creando...' : 'Crear tarea'}
         </button>
       </RoleGuard>
     </form>

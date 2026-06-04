@@ -7,25 +7,27 @@ import { projectService } from "@/services/projectService";
 import { userService } from "@/services/userService";
 import { clientService } from "@/services/clientService";
 import { budgetService } from "@/services/budgetService";
+import { taskService } from "@/services/taskService";
 import { Search, X } from "lucide-react";
 
 type ResultItem = {
   id: string;
   label: string;
   sublabel?: string;
-  category: "Project" | "User" | "Client" | "Budget";
+  category: "Proyecto" | "Usuario" | "Cliente" | "Presupuesto" | "Tarea";
   href: string;
 };
 
 const CATEGORY_STYLE: Record<ResultItem["category"], string> = {
-  Project: "text-brand-400 bg-brand-500/10",
-  User:    "text-blue-light-400 bg-blue-light-500/10",
-  Client:  "text-success-400 bg-success-500/10",
-  Budget:  "text-warning-400 bg-warning-500/10",
+  Proyecto:     "text-brand-400 bg-brand-500/10",
+  Usuario:      "text-blue-light-400 bg-blue-light-500/10",
+  Cliente:      "text-success-400 bg-success-500/10",
+  Presupuesto:  "text-warning-400 bg-warning-500/10",
+  Tarea:        "text-purple-400 bg-purple-500/10",
 };
 
 const CATEGORY_ICON: Record<ResultItem["category"], string> = {
-  Project: "📁", User: "👤", Client: "🏢", Budget: "📄",
+  Proyecto: "📁", Usuario: "👤", Cliente: "🏢", Presupuesto: "📄", Tarea: "✅",
 };
 
 export default function GlobalSearch() {
@@ -39,17 +41,19 @@ export default function GlobalSearch() {
   const { data: users = [] } = useQuery({ queryKey: ["users"], queryFn: userService.getAll });
   const { data: clients = [] } = useQuery({ queryKey: ["clients"], queryFn: clientService.getAll });
   const { data: budgets = [] } = useQuery({ queryKey: ["budgets"], queryFn: budgetService.getAll });
+  const { data: tasks = [] } = useQuery({ queryKey: ["tasks"], queryFn: taskService.getAll });
 
   const results = useMemo<ResultItem[]>(() => {
     const term = query.toLowerCase().trim();
     if (!term) return [];
     const matched: ResultItem[] = [];
-    projects.forEach(p => { if (p.name.toLowerCase().includes(term)) matched.push({ id: p.id, label: p.name, category: "Project", href: `/projects/${p.id}` }); });
-    users.forEach(u => { const label = u.name || u.username; if (label.toLowerCase().includes(term) || u.email?.toLowerCase().includes(term)) matched.push({ id: u.id, label, sublabel: u.email, category: "User", href: `/users/${u.id}` }); });
-    clients.forEach(c => { if (c.name.toLowerCase().includes(term)) matched.push({ id: c.id, label: c.name, category: "Client", href: `/clients/${c.id}` }); });
-    budgets.forEach(b => { if (b.title.toLowerCase().includes(term) || b.numero.toLowerCase().includes(term)) matched.push({ id: b.id, label: b.title, sublabel: b.numero, category: "Budget", href: `/budgets/${b.id}` }); });
+    projects.forEach(p => { if (p.name.toLowerCase().includes(term)) matched.push({ id: p.id, label: p.name, sublabel: p.client?.name, category: "Proyecto", href: `/projects/${p.id}` }); });
+    clients.forEach(c => { if (c.name.toLowerCase().includes(term) || c.email?.toLowerCase().includes(term)) matched.push({ id: c.id, label: c.name, sublabel: c.email, category: "Cliente", href: `/clients/${c.id}` }); });
+    tasks.forEach(t => { if (t.descripcion.toLowerCase().includes(term)) matched.push({ id: t.id, label: t.descripcion, sublabel: t.estado, category: "Tarea", href: `/projects` }); });
+    users.forEach(u => { const label = u.name || u.username; if (label.toLowerCase().includes(term) || u.email?.toLowerCase().includes(term)) matched.push({ id: u.id, label, sublabel: u.email, category: "Usuario", href: `/users/${u.id}` }); });
+    budgets.forEach(b => { if (b.title.toLowerCase().includes(term) || b.numero.toLowerCase().includes(term)) matched.push({ id: b.id, label: b.title, sublabel: b.numero, category: "Presupuesto", href: `/budgets/${b.id}` }); });
     return matched;
-  }, [query, projects, users, clients, budgets]);
+  }, [query, projects, users, clients, budgets, tasks]);
 
   useEffect(() => { setActiveIndex(0); }, [results]);
 
@@ -91,7 +95,7 @@ export default function GlobalSearch() {
         className="flex items-center gap-2 h-8 px-3 rounded-lg border border-white/[0.08] bg-white/[0.04] text-gray-500 hover:text-gray-300 hover:bg-white/[0.07] hover:border-white/[0.12] transition-colors"
       >
         <Search size={14} />
-        <span className="hidden sm:block text-sm">Search</span>
+        <span className="hidden sm:block text-sm">Buscar</span>
         <div className="hidden sm:flex items-center gap-0.5 ml-1">
           <kbd className="flex items-center justify-center h-4 px-1 rounded border border-white/[0.10] bg-white/[0.06] text-[10px] text-gray-600 font-mono">⌘</kbd>
           <kbd className="flex items-center justify-center h-4 px-1 rounded border border-white/[0.10] bg-white/[0.06] text-[10px] text-gray-600 font-mono">K</kbd>
@@ -117,7 +121,7 @@ export default function GlobalSearch() {
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Search projects, users, clients, budgets..."
+                placeholder="Buscar proyectos, clientes, tareas, usuarios..."
                 className="flex-1 bg-transparent text-sm text-white placeholder-gray-500 focus:outline-none"
               />
               {query ? (
@@ -158,18 +162,18 @@ export default function GlobalSearch() {
               ) : (
                 <div className="px-4 py-10 text-center">
                   <p className="text-sm text-gray-400">No results for <span className="text-white">"{query}"</span></p>
-                  <p className="text-xs text-gray-600 mt-1">Try a different search term</p>
+                  <p className="text-xs text-gray-600 mt-1">Prueba con otro término</p>
                 </div>
               )
             ) : (
               <div className="px-4 py-4">
-                <p className="text-xs font-medium uppercase tracking-wider text-gray-600 mb-3">Quick access</p>
+                <p className="text-xs font-medium uppercase tracking-wider text-gray-600 mb-3">Acceso rápido</p>
                 <div className="grid grid-cols-2 gap-1">
                   {[
-                    { label: "Projects", href: "/projects", icon: "📁" },
-                    { label: "Clients", href: "/clients", icon: "🏢" },
-                    { label: "Time Entries", href: "/time-entries", icon: "⏱️" },
-                    { label: "Calendar", href: "/calendar", icon: "📅" },
+                    { label: "Proyectos", href: "/projects", icon: "📁" },
+                    { label: "Clientes", href: "/clients", icon: "🏢" },
+                    { label: "Registro de tiempo", href: "/time-entries", icon: "⏱️" },
+                    { label: "Calendario", href: "/calendar", icon: "📅" },
                   ].map(item => (
                     <button key={item.href} onClick={() => navigate(item.href)}
                       className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.05] transition-colors text-left">
@@ -185,15 +189,15 @@ export default function GlobalSearch() {
             <div className="flex items-center gap-4 px-4 py-2.5 border-t border-white/[0.06]">
               <span className="flex items-center gap-1.5 text-xs text-gray-600">
                 <kbd className="flex items-center justify-center h-4 px-1 rounded border border-white/[0.08] bg-white/[0.04] font-mono text-[10px]">↑↓</kbd>
-                navigate
+                navegar
               </span>
               <span className="flex items-center gap-1.5 text-xs text-gray-600">
                 <kbd className="flex items-center justify-center h-4 px-1 rounded border border-white/[0.08] bg-white/[0.04] font-mono text-[10px]">↵</kbd>
-                open
+                abrir
               </span>
               <span className="flex items-center gap-1.5 text-xs text-gray-600">
                 <kbd className="flex items-center justify-center h-4 px-1 rounded border border-white/[0.08] bg-white/[0.04] font-mono text-[10px]">ESC</kbd>
-                close
+                cerrar
               </span>
             </div>
           </div>

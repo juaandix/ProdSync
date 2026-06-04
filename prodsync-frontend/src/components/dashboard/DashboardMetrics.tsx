@@ -26,29 +26,29 @@ export default function DashboardMetrics() {
   return (
     <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
       <DashboardMetricCard
-        title="Total Projects"
+        title="Proyectos"
         value={projects.length}
-        description={`${activeProjects} in progress · ${completedProjects} completed`}
+        description={`${activeProjects} en progreso · ${completedProjects} completados`}
         icon={<FolderIcon />}
-        trend={{ value: `${activeProjects} active`, positive: activeProjects > 0 }}
+        trend={{ value: `${activeProjects} activos`, positive: activeProjects > 0 }}
       />
       <DashboardMetricCard
-        title="Total Clients"
+        title="Clientes"
         value={clients.length}
-        description="Registered clients"
+        description="Clientes registrados"
         icon={<GroupIcon />}
       />
       <DashboardMetricCard
-        title="Total Hours"
+        title="Horas totales"
         value={`${totalHours}h`}
-        description={`${thisMonthHours}h this month`}
+        description={`${thisMonthHours}h este mes`}
         icon={<TimeIcon />}
         trend={{ value: `${thisMonthHours}h`, positive: true }}
       />
       <DashboardMetricCard
-        title="Time Entries"
+        title="Registros de tiempo"
         value={entries.length}
-        description={`${thisMonthEntries.length} this month`}
+        description={`${thisMonthEntries.length} este mes`}
         icon={<UserCircleIcon />}
       />
     </div>

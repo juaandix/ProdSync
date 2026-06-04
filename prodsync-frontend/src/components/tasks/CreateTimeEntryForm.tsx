@@ -34,7 +34,7 @@ const CreateTimeEntryForm: React.FC<CreateTimeEntryFormProps> = ({ taskId, onTim
     mutationFn: (data: TimeEntryFormData) => {
       const hoursNumber = parseTime(data.hours);
       if (isNaN(hoursNumber) || hoursNumber <= 0) {
-        return Promise.reject(new Error('Hours must be a positive number (e.g., 1.5, 1h 30m, 1:30).'));
+        return Promise.reject(new Error('Las horas deben ser un número positivo (ej: 1.5, 1h 30m, 1:30).'));
       }
       return timeEntryService.create({
         taskId,
@@ -114,7 +114,7 @@ const CreateTimeEntryForm: React.FC<CreateTimeEntryFormProps> = ({ taskId, onTim
         disabled={createMutation.isPending}
         className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
       >
-        {createMutation.isPending ? 'Saving...' : 'Save'}
+        {createMutation.isPending ? 'Guardando...' : 'Guardar'}
       </button>
     </form>
   );
