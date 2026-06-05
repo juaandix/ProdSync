@@ -3,3 +3,13 @@ projcode-backend/target/
 projcode-frontend/.next/
 projcode-frontend/test-results/
 .DS_Store
+_unused_temp/
+guia_didactica_tfg.md
+memoriatfg.md
+.claude/settings.local.json
+seed-full.mjs
+seed-time-entries.mjs
+
+# Variables de entorno — nunca subir al repositorio
+.env
+prodsync-frontend/.env.local
