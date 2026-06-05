@@ -1,5 +1,5 @@
 // Importar el array MOCK_TIME_ENTRIES real
-import { MOCK_TIME_ENTRIES } from '@/app/api/time-entries/route';
+import { MOCK_TIME_ENTRIES } from '@/lib/data/mock-db';
 
 // Simular next/server para proporcionar un NextRequest y NextResponse personalizados
 jest.mock('next/server', () => {

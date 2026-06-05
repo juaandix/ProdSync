@@ -161,7 +161,7 @@ export default function GlobalSearch() {
                 </div>
               ) : (
                 <div className="px-4 py-10 text-center">
-                  <p className="text-sm text-gray-400">No results for <span className="text-white">"{query}"</span></p>
+                  <p className="text-sm text-gray-400">No results for <span className="text-white">&quot;{query}&quot;</span></p>
                   <p className="text-xs text-gray-600 mt-1">Prueba con otro término</p>
                 </div>
               )

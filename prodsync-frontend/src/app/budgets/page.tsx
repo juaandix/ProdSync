@@ -114,7 +114,7 @@ export default function BudgetsPage() {
     if (allCurrentSelected) setSelectedIds(prev => { const n = new Set(prev); currentBudgets.forEach(b => n.delete(b.id)); return n; });
     else setSelectedIds(prev => { const n = new Set(prev); currentBudgets.forEach(b => n.add(b.id)); return n; });
   };
-  const toggleSelect = (id: string) => setSelectedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  const toggleSelect = (id: string) => setSelectedIds(prev => { const n = new Set(prev); if (n.has(id)) { n.delete(id); } else { n.add(id); } return n; });
 
   const statusCounts = budgets.reduce<Record<string, number>>((acc, b) => {
     acc[b.status] = (acc[b.status] || 0) + 1;

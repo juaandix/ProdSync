@@ -114,7 +114,7 @@ export default function TimeEntriesPage() {
     if (allCurrentSelected) setSelectedIds(prev => { const n = new Set(prev); currentEntries.forEach(e => n.delete(e.id)); return n; });
     else setSelectedIds(prev => { const n = new Set(prev); currentEntries.forEach(e => n.add(e.id)); return n; });
   };
-  const toggleSelect = (id: string) => setSelectedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  const toggleSelect = (id: string) => setSelectedIds(prev => { const n = new Set(prev); if (n.has(id)) { n.delete(id); } else { n.add(id); } return n; });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => timeEntryService.delete(id),
