@@ -36,7 +36,7 @@ describe('Clients API Route', () => {
   it('GET should return all clients', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(mockClients));
     await GET();
-    expect(fetchMock).toHaveBeenCalledWith(`${process.env.NEXT_PUBLIC_API_URL}/clients`);
+    expect(fetchMock).toHaveBeenCalledWith(`${process.env.API_URL}/clients`);
     expect(NextResponse.json).toHaveBeenCalledWith(mockClients);
   });
 
@@ -51,7 +51,7 @@ describe('Clients API Route', () => {
 
     await POST(request);
     
-    expect(fetchMock).toHaveBeenCalledWith(`${process.env.NEXT_PUBLIC_API_URL}/clients`, expect.any(Object));
+    expect(fetchMock).toHaveBeenCalledWith(`${process.env.API_URL}/clients`, expect.any(Object));
     expect(NextResponse.json).toHaveBeenCalledWith(
       { message: 'Client created successfully', client: { id: '3', ...newClientData } },
       { status: 201 }

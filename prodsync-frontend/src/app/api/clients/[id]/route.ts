@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = process.env.API_URL || 'http://localhost:8080/api';
 
 // GET a single client by ID
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {

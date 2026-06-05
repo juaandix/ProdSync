@@ -10,7 +10,7 @@
  * Uso:
  *   npm run seed
  *
- * Requiere que el backend esté corriendo en NEXT_PUBLIC_API_URL
+ * Requiere que el backend esté corriendo en API_URL
  * (por defecto http://localhost:8080/api).
  */
 
@@ -20,13 +20,13 @@ import { fileURLToPath } from 'url';
 
 // Prioridad: variable de entorno > .env.local > valor por defecto
 const __dirname = dirname(fileURLToPath(import.meta.url));
-let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+let API_URL = process.env.API_URL || 'http://localhost:8080/api';
 
-if (!process.env.NEXT_PUBLIC_API_URL) {
+if (!process.env.API_URL) {
   try {
     const envPath = resolve(__dirname, '../.env.local');
     const envContent = readFileSync(envPath, 'utf-8');
-    const match = envContent.match(/NEXT_PUBLIC_API_URL=(.+)/);
+    const match = envContent.match(/API_URL=(.+)/);
     if (match) API_URL = match[1].trim();
   } catch {
     // .env.local no existe, se usa el valor por defecto

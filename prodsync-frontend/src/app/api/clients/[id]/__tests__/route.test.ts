@@ -36,14 +36,14 @@ describe('Single Client API Route', () => {
     it('should return a single client', async () => {
       fetchMock.mockResponseOnce(JSON.stringify(mockClients[0]));
       await GET(new Request('http://localhost'), { params: Promise.resolve({ id: '1' }) });
-      expect(fetchMock).toHaveBeenCalledWith(`${process.env.NEXT_PUBLIC_API_BASE_URL}/clients/1`);
+      expect(fetchMock).toHaveBeenCalledWith(`${process.env.API_URL}/clients/1`);
       expect(NextResponse.json).toHaveBeenCalledWith(mockClients[0]);
     });
 
     it('should return 404 for a non-existent client', async () => {
       fetchMock.mockResponseOnce(JSON.stringify({ message: 'Client not found' }), { status: 404 });
       await GET(new Request('http://localhost'), { params: Promise.resolve({ id: '999' }) });
-      expect(fetchMock).toHaveBeenCalledWith(`${process.env.NEXT_PUBLIC_API_BASE_URL}/clients/999`);
+      expect(fetchMock).toHaveBeenCalledWith(`${process.env.API_URL}/clients/999`);
       expect(NextResponse.json).toHaveBeenCalledWith({ message: 'Client not found' }, { status: 404 });
     });
   });

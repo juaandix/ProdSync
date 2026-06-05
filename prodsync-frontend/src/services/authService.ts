@@ -17,7 +17,7 @@ import { AuthResponse } from '@/types/models';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = '/backend-api';
 
 export const authService = {
   /** Inicia sesión y persiste el token JWT en una cookie segura. */

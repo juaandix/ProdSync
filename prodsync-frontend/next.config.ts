@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const API_URL = process.env.API_URL || 'http://localhost:8080/api';
+
 const nextConfig: NextConfig = {
   output: 'standalone',
   images: {
@@ -10,9 +12,13 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  /* opciones de configuración aquí */
-  env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+  async rewrites() {
+    return [
+      {
+        source: '/backend-api/:path*',
+        destination: `${API_URL}/:path*`,
+      },
+    ];
   },
   webpack(config) {
     config.module.rules.push({

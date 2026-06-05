@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { toast } from 'sonner';
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: '/backend-api',
   headers: {
     'Content-Type': 'application/json',
   },
