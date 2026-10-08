@@ -9,6 +9,8 @@ const mapBudget = (b: Budget): Budget => ({
   id: String(b.id),
   clientId: String(b.clientId),
   projectId: b.projectId ? String(b.projectId) : undefined,
+  // El backend devuelve el enum en mayúsculas (ACCEPTED); el frontend trabaja en minúsculas
+  status: String(b.status).toLowerCase() as Budget['status'],
 });
 
 export const budgetService = {
