@@ -99,7 +99,7 @@ export default function ViewClientCard({ id }: { id: string }) {
           <RoleGuard roles={["ADMIN", "OPERATOR"]}>
             <Link href={`/clients/edit/${id}`}>
               <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors shrink-0">
-                <Pencil size={14} /> Edit
+                <Pencil size={14} /> Editar
               </button>
             </Link>
           </RoleGuard>
@@ -108,18 +108,18 @@ export default function ViewClientCard({ id }: { id: string }) {
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <DashboardMetricCard title="Total Projects" value={loadingProjects ? "—" : clientProjects.length}
+        <DashboardMetricCard title="Proyectos totales" value={loadingProjects ? "—" : clientProjects.length}
           icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>}
         />
-        <DashboardMetricCard title="Active" value={loadingProjects ? "—" : activeProjects.length}
+        <DashboardMetricCard title="Activos" value={loadingProjects ? "—" : activeProjects.length}
           icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>}
           trend={clientProjects.length > 0 ? { value: `${Math.round((activeProjects.length / clientProjects.length) * 100)}%`, positive: true } : undefined}
         />
-        <DashboardMetricCard title="Completed" value={loadingProjects ? "—" : completedProjects.length}
+        <DashboardMetricCard title="Completados" value={loadingProjects ? "—" : completedProjects.length}
           icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>}
         />
-        <DashboardMetricCard title="Other" value={loadingProjects ? "—" : otherProjects}
-          description="Cancelled or paused"
+        <DashboardMetricCard title="Otros" value={loadingProjects ? "—" : otherProjects}
+          description="Cancelados o en pausa"
           icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>}
         />
       </div>
@@ -127,13 +127,13 @@ export default function ViewClientCard({ id }: { id: string }) {
       {/* Info grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
-          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">Contact</h3>
+          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">Contacto</h3>
           <div className="space-y-4">
             {[
-              { icon: <User size={14} />, label: "Contact person", value: client.contactPerson },
+              { icon: <User size={14} />, label: "Persona de contacto", value: client.contactPerson },
               { icon: <Mail size={14} />, label: "Email", value: client.email },
-              { icon: <Phone size={14} />, label: "Phone", value: client.phone ?? "—" },
-              { icon: <CreditCard size={14} />, label: "ID / NIF", value: client.identification },
+              { icon: <Phone size={14} />, label: "Teléfono", value: client.phone ?? "—" },
+              { icon: <CreditCard size={14} />, label: "NIF/CIF", value: client.identification },
             ].map(({ icon, label, value }) => (
               <div key={label} className="flex items-start gap-3">
                 <span className="text-gray-600 mt-0.5 shrink-0">{icon}</span>
@@ -147,11 +147,11 @@ export default function ViewClientCard({ id }: { id: string }) {
         </div>
 
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
-          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">Location</h3>
+          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">Ubicación</h3>
           <div className="space-y-4">
             {[
-              { icon: <MapPin size={14} />, label: "City", value: client.location },
-              { icon: <MapPin size={14} />, label: "Province", value: client.province },
+              { icon: <MapPin size={14} />, label: "Localidad", value: client.location },
+              { icon: <MapPin size={14} />, label: "Provincia", value: client.province },
             ].map(({ icon, label, value }) => (
               <div key={label} className="flex items-start gap-3">
                 <span className="text-gray-600 mt-0.5 shrink-0">{icon}</span>
@@ -168,7 +168,7 @@ export default function ViewClientCard({ id }: { id: string }) {
       {/* Projects */}
       <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-base font-semibold text-white">Associated Projects</h3>
+          <h3 className="text-base font-semibold text-white">Proyectos asociados</h3>
           <span className="text-xs text-gray-500">{clientProjects.length} total</span>
         </div>
 
@@ -178,7 +178,7 @@ export default function ViewClientCard({ id }: { id: string }) {
           </div>
         ) : clientProjects.length === 0 ? (
           <div className="py-10 text-center">
-            <p className="text-sm text-gray-500">No projects associated with this client.</p>
+            <p className="text-sm text-gray-500">Este cliente no tiene proyectos asociados.</p>
           </div>
         ) : (
           <div className="space-y-2">

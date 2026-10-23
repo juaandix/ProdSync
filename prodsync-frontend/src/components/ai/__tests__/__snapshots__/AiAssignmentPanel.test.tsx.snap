@@ -142,7 +142,7 @@ exports[`AiAssignmentPanel matches snapshot with recommendations 1`] = `
             <th
               class="px-3 py-2 text-left font-medium"
             >
-              Score
+              Puntuación
             </th>
             <th
               class="px-3 py-2 text-left font-medium"

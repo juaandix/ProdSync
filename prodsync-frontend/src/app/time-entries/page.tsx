@@ -124,11 +124,11 @@ export default function TimeEntriesPage() {
   const confirmDelete = async () => {
     if (isBulkModal) {
       await Promise.all([...selectedIds].map(id => deleteMutation.mutateAsync(id)));
-      toast.success(`${selectedIds.size} entries deleted`);
+      toast.success(`${selectedIds.size} registros eliminados`);
       setSelectedIds(new Set());
     } else if (entryToDelete) {
-      await deleteMutation.mutateAsync(entryToDelete).catch(() => toast.error('Failed to delete entry'));
-      toast.success('Entry deleted');
+      await deleteMutation.mutateAsync(entryToDelete).catch(() => toast.error('No se pudo eliminar el registro'));
+      toast.success('Registro eliminado');
       setEntryToDelete(null);
     }
     setDeleteModalOpen(false);
@@ -136,8 +136,8 @@ export default function TimeEntriesPage() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<TimeEntry> }) => timeEntryService.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['time-entries'] }); toast.success('Entry updated'); setEditModalOpen(false); setEntryToEdit(null); },
-    onError: () => toast.error('Failed to update entry'),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['time-entries'] }); toast.success('Registro actualizado'); setEditModalOpen(false); setEntryToEdit(null); },
+    onError: () => toast.error('No se pudo actualizar el registro'),
   });
 
   const handleEditClick = (entry: TimeEntry) => {
@@ -214,7 +214,7 @@ export default function TimeEntriesPage() {
             <button onClick={() => setSelectedIds(new Set())} className="text-xs text-gray-400 hover:text-white transition-colors">Limpiar</button>
             <button onClick={() => { setIsBulkModal(true); setDeleteModalOpen(true); }}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-error-500/20 text-error-400 hover:bg-error-500/30 rounded-lg transition-colors border border-error-500/20">
-              <Trash2 size={13} /> Delete {selectedIds.size} selected
+              <Trash2 size={13} /> Eliminar {selectedIds.size} seleccionados
             </button>
           </div>
         </div>
@@ -236,8 +236,8 @@ export default function TimeEntriesPage() {
       ) : filteredEntries.length === 0 ? (
         <div className="py-14 flex flex-col items-center gap-2">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-gray-700"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><polyline points="12 6 12 12 16 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-          <p className="text-sm font-medium text-gray-400">No time entries found</p>
-          <p className="text-xs text-gray-600">Try adjusting your filters</p>
+          <p className="text-sm font-medium text-gray-400">No se encontraron registros de tiempo</p>
+          <p className="text-xs text-gray-600">Prueba a cambiar los filtros</p>
         </div>
       ) : (
         <>
@@ -253,13 +253,13 @@ export default function TimeEntriesPage() {
                     />
                   </TableCell>
                   <TableCell isHeader className={thClass} onClick={() => handleSort('date')}>
-                    <span className="flex items-center">Project / Task <SortIcon active={sortKey === 'date'} dir={sortDir} /></span>
+                    <span className="flex items-center">Proyecto / Tarea <SortIcon active={sortKey === 'date'} dir={sortDir} /></span>
                   </TableCell>
                   <TableCell isHeader className={thClass} onClick={() => handleSort('date')}>
-                    <span className="flex items-center">Date <SortIcon active={sortKey === 'date'} dir={sortDir} /></span>
+                    <span className="flex items-center">Fecha <SortIcon active={sortKey === 'date'} dir={sortDir} /></span>
                   </TableCell>
                   <TableCell isHeader className={thClass} onClick={() => handleSort('hours')}>
-                    <span className="flex items-center">Hours <SortIcon active={sortKey === 'hours'} dir={sortDir} /></span>
+                    <span className="flex items-center">Horas <SortIcon active={sortKey === 'hours'} dir={sortDir} /></span>
                   </TableCell>
                   <TableCell isHeader className={thClass}>Tipo</TableCell>
                   <TableCell isHeader className="py-3 pr-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500 border-b border-white/[0.06]">Descripción</TableCell>
@@ -320,12 +320,12 @@ export default function TimeEntriesPage() {
       {/* Delete modal */}
       <Modal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
         <div className="p-6 bg-[#1E1E26] rounded-2xl">
-          <h2 className="text-base font-semibold text-white mb-1">{isBulkModal ? `Delete ${selectedIds.size} entries` : 'Delete Entry'}</h2>
-          <p className="text-sm text-gray-400 mb-6">This action cannot be undone.</p>
+          <h2 className="text-base font-semibold text-white mb-1">{isBulkModal ? `Eliminar ${selectedIds.size} registros` : 'Eliminar registro'}</h2>
+          <p className="text-sm text-gray-400 mb-6">Esta acción no se puede deshacer.</p>
           <div className="flex justify-end gap-2">
             <button onClick={() => setDeleteModalOpen(false)} className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">Cancelar</button>
             <button onClick={confirmDelete} disabled={deleteMutation.isPending} className="px-4 py-2 text-sm font-medium bg-error-500 hover:bg-error-600 text-white rounded-lg transition-colors disabled:opacity-50">
-              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+              {deleteMutation.isPending ? 'Eliminando...' : 'Eliminar'}
             </button>
           </div>
         </div>
@@ -334,18 +334,18 @@ export default function TimeEntriesPage() {
       {/* Edit modal */}
       <Modal isOpen={editModalOpen} onClose={() => setEditModalOpen(false)}>
         <div className="p-6 bg-[#1E1E26] rounded-2xl w-full max-w-md">
-          <h2 className="text-base font-semibold text-white mb-5">Edit Time Entry</h2>
+          <h2 className="text-base font-semibold text-white mb-5">Editar registro de tiempo</h2>
           <form onSubmit={handleEditSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className={labelClass}>Date</label>
+                <label className={labelClass}>Fecha</label>
                 <input type="date" value={editForm.date} onChange={e => setEditForm(f => ({ ...f, date: e.target.value }))}
                   className={`${inputClass} [color-scheme:dark]`} required />
               </div>
               <div>
                 <label className={labelClass}>Horas</label>
                 <input type="text" value={editForm.hours} onChange={e => setEditForm(f => ({ ...f, hours: e.target.value }))}
-                  placeholder="e.g. 1.5" className={inputClass} required />
+                  placeholder="Ej.: 1.5" className={inputClass} required />
               </div>
             </div>
             <div>
@@ -361,7 +361,7 @@ export default function TimeEntriesPage() {
                 rows={3} className={`${inputClass} resize-none`} />
             </div>
             <div className="flex justify-end gap-2 pt-2">
-              <button type="button" onClick={() => setEditModalOpen(false)} className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">Cancel</button>
+              <button type="button" onClick={() => setEditModalOpen(false)} className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">Cancelar</button>
               <button type="submit" disabled={updateMutation.isPending} className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-brand-500 hover:bg-brand-600 text-white rounded-lg transition-colors disabled:opacity-50">
                 {updateMutation.isPending && <Loader2 size={14} className="animate-spin" />}
                 {updateMutation.isPending ? 'Guardando...' : 'Guardar'}

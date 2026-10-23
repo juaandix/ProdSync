@@ -36,7 +36,7 @@ export default function CreateClientForm() {
     mutationFn: (data: CreateClientRequest) => clientService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
-      toast.success("Client created successfully!");
+      toast.success("Cliente creado");
       router.push("/clients");
     },
     onError: (error: unknown) => {
@@ -52,7 +52,7 @@ export default function CreateClientForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium mb-1 dark:text-gray-200">Name</label>
+          <label htmlFor="name" className="block text-sm font-medium mb-1 dark:text-gray-200">Nombre</label>
           <input
             type="text"
             id="name"
@@ -72,7 +72,7 @@ export default function CreateClientForm() {
           {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
         </div>
         <div>
-          <label htmlFor="identification" className="block text-sm font-medium mb-1 dark:text-gray-200">Identification</label>
+          <label htmlFor="identification" className="block text-sm font-medium mb-1 dark:text-gray-200">NIF/CIF</label>
           <input
             type="text"
             id="identification"
@@ -82,7 +82,7 @@ export default function CreateClientForm() {
           {errors.identification && <p className="text-xs text-red-500 mt-1">{errors.identification.message}</p>}
         </div>
         <div>
-          <label htmlFor="location" className="block text-sm font-medium mb-1 dark:text-gray-200">Location</label>
+          <label htmlFor="location" className="block text-sm font-medium mb-1 dark:text-gray-200">Localidad</label>
           <input
             type="text"
             id="location"
@@ -92,7 +92,7 @@ export default function CreateClientForm() {
           {errors.location && <p className="text-xs text-red-500 mt-1">{errors.location.message}</p>}
         </div>
         <div>
-          <label htmlFor="province" className="block text-sm font-medium mb-1 dark:text-gray-200">Province</label>
+          <label htmlFor="province" className="block text-sm font-medium mb-1 dark:text-gray-200">Provincia</label>
           <input
             type="text"
             id="province"
@@ -102,7 +102,7 @@ export default function CreateClientForm() {
           {errors.province && <p className="text-xs text-red-500 mt-1">{errors.province.message}</p>}
         </div>
         <div>
-          <label htmlFor="contactPerson" className="block text-sm font-medium mb-1 dark:text-gray-200">Contact Person</label>
+          <label htmlFor="contactPerson" className="block text-sm font-medium mb-1 dark:text-gray-200">Persona de contacto</label>
           <input
             type="text"
             id="contactPerson"
@@ -118,7 +118,7 @@ export default function CreateClientForm() {
         disabled={createClientMutation.isPending}
         className="px-4 py-2 bg-[#1E1E26] text-white rounded-md hover:bg-[#13131a] disabled:opacity-50"
       >
-        {createClientMutation.isPending ? "Creating..." : "Create Client"}
+        {createClientMutation.isPending ? "Creando..." : "Crear cliente"}
       </button>
     </form>
   );

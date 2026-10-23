@@ -74,7 +74,7 @@ export default function CreateProjectForm() {
         {/* Nombre del Proyecto */}
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
-            Nombre del Proyecto
+            Nombre del proyecto
           </label>
           <input
             type="text"
@@ -123,7 +123,7 @@ export default function CreateProjectForm() {
         {/* Fecha de Inicio */}
         <div>
           <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
-            Fecha de Inicio
+            Fecha de inicio
           </label>
           <input
             type="date"
@@ -137,7 +137,7 @@ export default function CreateProjectForm() {
         {/* Fecha de Fin */}
         <div>
           <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
-            Fecha de Fin (Opcional)
+            Fecha de fin (opcional)
           </label>
           <input
             type="date"
@@ -159,7 +159,7 @@ export default function CreateProjectForm() {
             className={`w-full px-4 py-2 border rounded-md focus:ring-2 dark:bg-[#1E1E26] dark:text-white/90 ${errors.status ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-blue-500 dark:border-gray-700'}`}
           >
             <option value="ACTIVO">Activo</option>
-            <option value="EN_PROGRESO">En Progreso</option>
+            <option value="EN_PROGRESO">En progreso</option>
             <option value="COMPLETADO">Completado</option>
             <option value="CANCELADO">Cancelado</option>
           </select>
@@ -174,7 +174,7 @@ export default function CreateProjectForm() {
           disabled={createProjectMutation.isPending}
           className="px-6 py-2 bg-[#1E1E26] text-white font-semibold rounded-md shadow-sm hover:bg-[#13131a] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {createProjectMutation.isPending ? "Creando..." : "Crear Proyecto"}
+          {createProjectMutation.isPending ? "Creando..." : "Crear proyecto"}
         </button>
       </div>
     </form>

@@ -36,7 +36,7 @@ export default function RecentProjectsTable() {
           ))}
         </div>
       ) : recent.length === 0 ? (
-        <div className="py-8 text-center text-gray-500 text-sm">No projects found.</div>
+        <div className="py-8 text-center text-gray-500 text-sm">Todavía no hay proyectos.</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

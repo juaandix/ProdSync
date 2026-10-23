@@ -40,7 +40,7 @@ export default function EditUserForm({ id }: { id: string }) {
     onSuccess: (updatedUser: User) => {
       queryClient.setQueryData(['users', id], updatedUser);
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      toast.success("User updated successfully!");
+      toast.success("Usuario actualizado");
       router.push("/users");
     },
     onError: (error: Error) => {
@@ -66,7 +66,7 @@ export default function EditUserForm({ id }: { id: string }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 dark:bg-transparent">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Name</label>
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Nombre</label>
         <input
           type="text"
           id="name"
@@ -76,7 +76,7 @@ export default function EditUserForm({ id }: { id: string }) {
         {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
       </div>
       <div>
-        <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Username</label>
+        <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Nombre de usuario</label>
         <input
           type="text"
           id="username"
@@ -96,30 +96,30 @@ export default function EditUserForm({ id }: { id: string }) {
         {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
       </div>
       <div>
-        <label htmlFor="role" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Role</label>
+        <label htmlFor="role" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Rol</label>
         <select
           id="role"
           {...register("role")}
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:border-gray-700 dark:bg-[#1E1E26] dark:text-gray-400"
         >
-          <option value="USER">User</option>
-          <option value="ADMIN">Admin</option>
-          <option value="OPERATOR">Operator</option>
+          <option value="USER">Usuario</option>
+          <option value="ADMIN">Administrador</option>
+          <option value="OPERATOR">Operador</option>
         </select>
       </div>
       <div>
-        <label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Status</label>
+        <label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Estado</label>
         <select
           id="status"
           {...register("status")}
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:border-gray-700 dark:bg-[#1E1E26] dark:text-gray-400"
         >
-          <option value="ACTIVE">Active</option>
-          <option value="INACTIVE">Inactive</option>
+          <option value="ACTIVE">Activo</option>
+          <option value="INACTIVE">Inactivo</option>
         </select>
       </div>
       <button type="submit" disabled={mutation.isPending} className="px-4 py-2 bg-[#1E1E26] text-white rounded-md hover:bg-[#13131a] disabled:opacity-50">
-        {mutation.isPending ? "Updating..." : "Update User"}
+        {mutation.isPending ? "Guardando..." : "Guardar cambios"}
       </button>
     </form>
   );

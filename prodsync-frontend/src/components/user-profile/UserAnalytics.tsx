@@ -92,7 +92,7 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
     return (
       <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-10 text-center">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" className="text-gray-700 mx-auto mb-2"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><polyline points="12 6 12 12 16 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-        <p className="text-sm text-gray-400">No time entries recorded yet</p>
+        <p className="text-sm text-gray-400">Todavía no hay horas registradas</p>
       </div>
     );
   }
@@ -218,25 +218,25 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
     <div className="space-y-6">
       {/* KPI Cards */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <DashboardMetricCard title="Logged Hours" value={`${totalReal}h`}
+        <DashboardMetricCard title="Horas registradas" value={`${totalReal}h`}
           icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>}
         />
-        <DashboardMetricCard title="Estimated Hours" value={`${totalEst}h`}
+        <DashboardMetricCard title="Horas estimadas" value={`${totalEst}h`}
           icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>}
         />
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 hover:bg-white/[0.06] transition-colors">
           <div className="flex items-start justify-between mb-4">
-            <span className="text-xs font-medium uppercase tracking-wider text-gray-400">Deviation</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-gray-400">Desviación</span>
             <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-brand-500/10 text-brand-400">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
             </div>
           </div>
           <p className={`text-3xl font-bold tracking-tight ${devColor}`}>{devValue}</p>
           {desviacion !== null && (
-            <p className="mt-1 text-xs text-gray-500">{desviacion > 0 ? 'Over estimate' : 'Under estimate'}</p>
+            <p className="mt-1 text-xs text-gray-500">{desviacion > 0 ? 'Por encima del estimado' : 'Por debajo del estimado'}</p>
           )}
         </div>
-        <DashboardMetricCard title="Tasks Done" value={`${completadas}/${workedTasks.length}`}
+        <DashboardMetricCard title="Tareas completadas" value={`${completadas}/${workedTasks.length}`}
           icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>}
           trend={workedTasks.length > 0 ? { value: `${Math.round((completadas/workedTasks.length)*100)}%`, positive: true } : undefined}
         />

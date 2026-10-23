@@ -91,7 +91,7 @@ export default function ViewUserCard({ id }: { id: string }) {
           <RoleGuard roles={['ADMIN']}>
             <Link href={`/users/edit/${user.id}`}>
               <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors shrink-0">
-                <Pencil size={14} /> Edit
+                <Pencil size={14} /> Editar
               </button>
             </Link>
           </RoleGuard>
@@ -100,11 +100,11 @@ export default function ViewUserCard({ id }: { id: string }) {
 
       {/* Info grid */}
       <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
-        <h3 className="text-sm font-medium uppercase tracking-wider text-gray-500 mb-4">Account Details</h3>
+        <h3 className="text-sm font-medium uppercase tracking-wider text-gray-500 mb-4">Datos de la cuenta</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {[
-            { label: 'Full Name', value: user.name },
-            { label: 'Username', value: `@${user.username}` },
+            { label: 'Nombre completo', value: user.name },
+            { label: 'Nombre de usuario', value: `@${user.username}` },
             { label: 'Email', value: user.email },
           ].map(({ label, value }) => (
             <div key={label}>

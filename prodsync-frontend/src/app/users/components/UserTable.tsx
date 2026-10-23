@@ -14,6 +14,7 @@ import RoleGuard from '@/components/auth/RoleGuard';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 
 const ROLE_TABS = ['All', 'ADMIN', 'OPERATOR', 'USER'] as const;
+const ROLE_LABEL: Record<string, string> = { All: 'Todos', ADMIN: 'Administrador', OPERATOR: 'Operador', USER: 'Usuario' };
 
 function SortIcon({ active, dir }: { active: boolean; dir: 'asc' | 'desc' }) {
   return (
@@ -65,13 +66,13 @@ export default function UserTable() {
   const confirmDelete = async () => {
     if (isBulkModal) {
       await Promise.all([...selectedIds].map(id => deleteMutation.mutateAsync(id)));
-      toast.success(`${selectedIds.size} users deleted`);
+      toast.success(`${selectedIds.size} usuarios eliminados`);
       setSelectedIds(new Set());
     } else if (userToDelete) {
       await deleteMutation.mutateAsync(userToDelete).catch((e: Error) =>
         toast.error(getErrorMessage(e, 'Error al eliminar el usuario.'))
       );
-      toast.success('User deleted');
+      toast.success('Usuario eliminado');
       setUserToDelete(null);
     }
     setIsModalOpen(false);
@@ -122,7 +123,7 @@ export default function UserTable() {
       {/* Header */}
       <div className="flex flex-col gap-3 mb-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-base font-semibold text-white">Users</h3>
+          <h3 className="text-base font-semibold text-white">Usuarios</h3>
           <p className="text-xs text-gray-500 mt-0.5">{filteredUsers.length} total</p>
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -161,7 +162,7 @@ export default function UserTable() {
                 : 'text-gray-500 hover:text-gray-300'
             }`}
           >
-            {tab}
+            {ROLE_LABEL[tab]}
             <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${roleTab === tab ? 'bg-brand-500/20 text-brand-400' : 'bg-white/[0.06] text-gray-500'}`}>
               {tab === 'All' ? users.length : (roleCounts[tab] || 0)}
             </span>
@@ -263,21 +264,21 @@ export default function UserTable() {
                     <TableCell className={tdClass}>{user.email}</TableCell>
                     <TableCell className="py-3.5 pr-4">
                       <Badge size="sm" color={user.role === 'ADMIN' ? 'info' : user.role === 'OPERATOR' ? 'success' : 'warning'}>
-                        {user.role}
+                        {ROLE_LABEL[user.role] ?? user.role}
                       </Badge>
                     </TableCell>
                     <TableCell className="py-3.5 pr-4">
                       <Badge size="sm" color={user.status === 'ACTIVE' ? 'success' : 'error'}>
-                        {user.status}
+                        {user.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
                       </Badge>
                     </TableCell>
                     <TableCell className="py-3.5">
                       <div className="flex items-center gap-1">
-                        <Link href={`/users/${user.id}`} title="View">
+                        <Link href={`/users/${user.id}`} title="Ver">
                           <button className="p-2 text-gray-500 hover:text-brand-400 hover:bg-white/[0.06] rounded-lg transition-colors"><Eye size={15} /></button>
                         </Link>
                         <RoleGuard roles={['ADMIN']}>
-                          <Link href={`/users/edit/${user.id}`} title="Edit">
+                          <Link href={`/users/edit/${user.id}`} title="Editar">
                             <button className="p-2 text-gray-500 hover:text-warning-400 hover:bg-white/[0.06] rounded-lg transition-colors"><Pencil size={15} /></button>
                           </Link>
                           <button onClick={() => handleDelete(user.id)} className="p-2 text-gray-500 hover:text-error-400 hover:bg-white/[0.06] rounded-lg transition-colors">

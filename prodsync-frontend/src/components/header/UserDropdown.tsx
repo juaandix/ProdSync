@@ -4,6 +4,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { LogOut, Settings, User } from "lucide-react";
 
+const ROLE_LABEL: Record<string, string> = {
+  ADMIN:    "Administrador",
+  OPERATOR: "Operador",
+  USER:     "Usuario",
+};
+
 const ROLE_COLOR: Record<string, string> = {
   ADMIN:    "text-blue-light-400 bg-blue-light-500/10",
   OPERATOR: "text-success-400 bg-success-500/10",
@@ -74,7 +80,7 @@ export default function UserDropdown() {
             </div>
             <div className="mt-2">
               <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${ROLE_COLOR[user.role] ?? ROLE_COLOR.USER}`}>
-                {user.role}
+                {ROLE_LABEL[user.role] ?? user.role}
               </span>
             </div>
           </div>

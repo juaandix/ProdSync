@@ -23,9 +23,9 @@ const optionalNumber = z
 
 /** Esquema completo para creación de tareas (incluye projectId). */
 export const taskSchema = z.object({
-  projectId: z.string().min(1, 'Project ID is required'),
-  descripcion: z.string().min(1, 'Description is required'),
-  estado: z.enum(['PENDIENTE', 'EN_PROGRESO', 'COMPLETADO'], { error: 'Status is required' }),
+  projectId: z.string().min(1, 'El proyecto es obligatorio'),
+  descripcion: z.string().min(1, 'La descripción es obligatoria'),
+  estado: z.enum(['PENDIENTE', 'EN_PROGRESO', 'COMPLETADO'], { error: 'El estado es obligatorio' }),
   estimacion: optionalNumber,    // Estimación en horas (opcional)
   storyPoints: optionalNumber,   // Story points ágiles (opcional)
 });

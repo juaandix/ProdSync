@@ -34,7 +34,7 @@ export default function ClientTable() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [clientsPerPage] = useState(15);
-  const [filterOption, setFilterOption] = useState('All');
+  const [filterOption, setFilterOption] = useState('Todos');
   const [sortKey, setSortKey] = useState<keyof Client | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -79,13 +79,13 @@ export default function ClientTable() {
   const confirmDelete = async () => {
     if (isBulkModal) {
       await Promise.all([...selectedIds].map(id => deleteMutation.mutateAsync(id)));
-      toast.success(`${selectedIds.size} clients deleted`);
+      toast.success(`${selectedIds.size} clientes eliminados`);
       setSelectedIds(new Set());
     } else if (clientToDelete) {
       await deleteMutation.mutateAsync(clientToDelete).catch((e: Error) => {
         toast.error(getErrorMessage(e, 'Error al eliminar el cliente.'));
       });
-      toast.success('Client deleted');
+      toast.success('Cliente eliminado');
       setClientToDelete(null);
     }
     setIsModalOpen(false);
@@ -93,15 +93,15 @@ export default function ClientTable() {
 
   const filteredClients = clients.filter((client) => {
     const term = searchTerm.toLowerCase();
-    if (filterOption === 'All') {
+    if (filterOption === 'Todos') {
       return (
         client.name.toLowerCase().includes(term) ||
         client.identification.toLowerCase().includes(term) ||
         client.email.toLowerCase().includes(term)
       );
     }
-    if (filterOption === 'Name') return client.name.toLowerCase().includes(term);
-    if (filterOption === 'Identification') return client.identification.toLowerCase().includes(term);
+    if (filterOption === 'Nombre') return client.name.toLowerCase().includes(term);
+    if (filterOption === 'NIF/CIF') return client.identification.toLowerCase().includes(term);
     if (filterOption === 'Email') return client.email.toLowerCase().includes(term);
     return true;
   });
@@ -145,7 +145,7 @@ export default function ClientTable() {
     });
   };
 
-  const filterOptions = ['All', 'Name', 'Identification', 'Email'];
+  const filterOptions = ['Todos', 'Nombre', 'NIF/CIF', 'Email'];
 
   return (
     <div className="w-full rounded-2xl border border-white/[0.06] bg-white/[0.04] px-6 py-5">
@@ -153,7 +153,7 @@ export default function ClientTable() {
       {/* Header */}
       <div className="flex flex-col gap-3 mb-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-base font-semibold text-white">Clients</h3>
+          <h3 className="text-base font-semibold text-white">Clientes</h3>
           <p className="text-xs text-gray-500 mt-0.5">{filteredClients.length} total</p>
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -163,7 +163,7 @@ export default function ClientTable() {
             </svg>
             <input
               type="text"
-              placeholder={`Search by ${filterOption}...`}
+              placeholder={filterOption === 'Todos' ? 'Buscar clientes...' : `Buscar por ${filterOption}...`}
               value={searchTerm}
               onChange={handleSearch}
               className="pl-9 pr-3 py-2 border border-white/[0.08] rounded-lg bg-white/[0.04] text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-500/50 w-full sm:w-52 transition-colors"
@@ -173,7 +173,7 @@ export default function ClientTable() {
           <RoleGuard roles={['ADMIN', 'OPERATOR']}>
             <Link href="/clients/create">
               <button className="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap">
-                + New Client
+                + Nuevo cliente
               </button>
             </Link>
           </RoleGuard>
@@ -184,11 +184,11 @@ export default function ClientTable() {
       {selectedIds.size > 0 && (
         <div className="flex items-center justify-between mb-4 px-3 py-2 rounded-lg bg-brand-500/10 border border-brand-500/20">
           <span className="text-sm text-brand-400 font-medium">
-            {selectedIds.size} client{selectedIds.size > 1 ? 's' : ''} selected
+            {selectedIds.size} cliente{selectedIds.size > 1 ? 's' : ''} seleccionado{selectedIds.size > 1 ? 's' : ''}
           </span>
           <div className="flex items-center gap-2">
             <button onClick={() => setSelectedIds(new Set())} className="text-xs text-gray-400 hover:text-white transition-colors">
-              Clear
+              Limpiar
             </button>
             <RoleGuard roles={['ADMIN', 'OPERATOR']}>
               <button
@@ -286,14 +286,14 @@ export default function ClientTable() {
                     <TableCell className={tdClass}>{`${client.location}, ${client.province}`}</TableCell>
                     <TableCell className="py-3.5">
                       <div className="flex items-center gap-1">
-                        <Link href={`/clients/${client.id}`} title="View">
+                        <Link href={`/clients/${client.id}`} title="Ver">
                           <button className="p-2 text-gray-500 hover:text-brand-400 hover:bg-white/[0.06] rounded-lg transition-colors"><Eye size={15} /></button>
                         </Link>
                         <RoleGuard roles={['ADMIN', 'OPERATOR']}>
-                          <Link href={`/clients/edit/${client.id}`} title="Edit">
+                          <Link href={`/clients/edit/${client.id}`} title="Editar">
                             <button className="p-2 text-gray-500 hover:text-warning-400 hover:bg-white/[0.06] rounded-lg transition-colors"><Pencil size={15} /></button>
                           </Link>
-                          <button onClick={() => handleDelete(client.id)} title="Delete" className="p-2 text-gray-500 hover:text-error-400 hover:bg-white/[0.06] rounded-lg transition-colors">
+                          <button onClick={() => handleDelete(client.id)} title="Eliminar" className="p-2 text-gray-500 hover:text-error-400 hover:bg-white/[0.06] rounded-lg transition-colors">
                             <Trash2 size={15} />
                           </button>
                         </RoleGuard>

@@ -71,13 +71,13 @@ export default function ViewProjectCard({ id }: { id: string }) {
           <div className="flex items-center gap-2 shrink-0">
             <Link href={`/projects/${id}/tasks`}>
               <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">
-                <ClipboardList size={14} /> Tasks
+                <ClipboardList size={14} /> Tareas
               </button>
             </Link>
             <RoleGuard roles={['ADMIN', 'OPERATOR']}>
               <Link href={`/projects/edit/${id}`}>
                 <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">
-                  <Pencil size={14} /> Edit
+                  <Pencil size={14} /> Editar
                 </button>
               </Link>
             </RoleGuard>
@@ -89,27 +89,27 @@ export default function ViewProjectCard({ id }: { id: string }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Description */}
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
-          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-3">Description</h3>
+          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-3">Descripción</h3>
           <p className="text-sm text-gray-300 leading-relaxed">
-            {project.description || <span className="text-gray-600">No description provided.</span>}
+            {project.description || <span className="text-gray-600">Sin descripción.</span>}
           </p>
         </div>
 
         {/* Dates + Client */}
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
-          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">Details</h3>
+          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">Detalles</h3>
           <div className="space-y-4">
             <div className="flex items-start gap-3">
               <Calendar size={14} className="text-gray-600 mt-0.5 shrink-0" />
               <div>
-                <p className="text-xs text-gray-600 mb-0.5">Start Date</p>
+                <p className="text-xs text-gray-600 mb-0.5">Fecha de inicio</p>
                 <p className="text-sm text-white/90">{project.startDate || "—"}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <Calendar size={14} className="text-gray-600 mt-0.5 shrink-0" />
               <div>
-                <p className="text-xs text-gray-600 mb-0.5">End Date</p>
+                <p className="text-xs text-gray-600 mb-0.5">Fecha de fin</p>
                 <p className="text-sm text-white/90">{project.endDate || "—"}</p>
               </div>
             </div>
@@ -117,7 +117,7 @@ export default function ViewProjectCard({ id }: { id: string }) {
               <div className="flex items-start gap-3">
                 <User size={14} className="text-gray-600 mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-xs text-gray-600 mb-0.5">Client</p>
+                  <p className="text-xs text-gray-600 mb-0.5">Cliente</p>
                   <Link href={`/clients/${project.client.id}`} className="text-sm text-brand-400 hover:text-brand-300 transition-colors">
                     {project.client.name}
                   </Link>

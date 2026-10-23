@@ -34,7 +34,7 @@ export default function MyTimeEntriesTable() {
           ))}
         </div>
       ) : recent.length === 0 ? (
-        <div className="py-8 text-center text-gray-500 text-sm">No time entries found.</div>
+        <div className="py-8 text-center text-gray-500 text-sm">Todavía no hay horas registradas.</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

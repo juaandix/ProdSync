@@ -46,12 +46,12 @@ export default function CreateProjectDrawer({ open, onClose }: Props) {
     mutationFn: (data: CreateProjectRequest) => projectService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
-      toast.success('Project created successfully');
+      toast.success('Proyecto creado');
       reset();
       onClose();
     },
     onError: () => {
-      toast.error('Failed to create project');
+      toast.error('No se pudo crear el proyecto');
     },
   });
 
@@ -81,8 +81,8 @@ export default function CreateProjectDrawer({ open, onClose }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06]">
           <div>
-            <h2 className="text-base font-semibold text-white">New Project</h2>
-            <p className="text-xs text-gray-500 mt-0.5">Fill in the details to create a project</p>
+            <h2 className="text-base font-semibold text-white">Nuevo proyecto</h2>
+            <p className="text-xs text-gray-500 mt-0.5">Completa los datos para crear el proyecto</p>
           </div>
           <button onClick={onClose} className="p-2 text-gray-500 hover:text-white hover:bg-white/[0.06] rounded-lg transition-colors">
             <X size={18} />
@@ -95,10 +95,10 @@ export default function CreateProjectDrawer({ open, onClose }: Props) {
 
             {/* Name */}
             <div>
-              <label className={labelClass}>Project Name</label>
+              <label className={labelClass}>Nombre del proyecto</label>
               <input
                 type="text"
-                placeholder="e.g. Website Redesign"
+                placeholder="Ej.: Rediseño de la web"
                 {...register('name')}
                 className={`${inputClass} ${errors.name ? 'border-error-500/50' : ''}`}
               />
@@ -107,14 +107,14 @@ export default function CreateProjectDrawer({ open, onClose }: Props) {
 
             {/* Client */}
             <div>
-              <label className={labelClass}>Client</label>
+              <label className={labelClass}>Cliente</label>
               <select
                 {...register('clientId')}
                 disabled={loadingClients}
                 className={`${inputClass} ${errors.clientId ? 'border-error-500/50' : ''}`}
               >
                 <option value="" className="bg-[#161820]">
-                  {loadingClients ? 'Loading...' : 'Select a client'}
+                  {loadingClients ? 'Cargando...' : 'Selecciona un cliente'}
                 </option>
                 {clients.map(c => (
                   <option key={c.id} value={c.id} className="bg-[#161820]">{c.name}</option>
@@ -125,10 +125,10 @@ export default function CreateProjectDrawer({ open, onClose }: Props) {
 
             {/* Description */}
             <div>
-              <label className={labelClass}>Description</label>
+              <label className={labelClass}>Descripción</label>
               <textarea
                 rows={3}
-                placeholder="Brief project description..."
+                placeholder="Breve descripción del proyecto..."
                 {...register('description')}
                 className={`${inputClass} resize-none ${errors.description ? 'border-error-500/50' : ''}`}
               />
@@ -138,7 +138,7 @@ export default function CreateProjectDrawer({ open, onClose }: Props) {
             {/* Dates */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className={labelClass}>Start Date</label>
+                <label className={labelClass}>Fecha de inicio</label>
                 <input
                   type="date"
                   {...register('startDate')}
@@ -147,7 +147,7 @@ export default function CreateProjectDrawer({ open, onClose }: Props) {
                 {errors.startDate && <p className={errorClass}>{errors.startDate.message}</p>}
               </div>
               <div>
-                <label className={labelClass}>End Date <span className="text-gray-600 normal-case">(optional)</span></label>
+                <label className={labelClass}>Fecha de fin <span className="text-gray-600 normal-case">(opcional)</span></label>
                 <input
                   type="date"
                   {...register('endDate')}
@@ -159,7 +159,7 @@ export default function CreateProjectDrawer({ open, onClose }: Props) {
 
             {/* Status */}
             <div>
-              <label className={labelClass}>Initial Status</label>
+              <label className={labelClass}>Estado inicial</label>
               <div className="grid grid-cols-2 gap-2">
                 {(['ACTIVO', 'EN_PROGRESO', 'COMPLETADO', 'CANCELADO'] as const).map(s => (
                   <label key={s} className="relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg border border-white/[0.06] cursor-pointer hover:border-white/20 transition-colors has-[:checked]:border-brand-500/40 has-[:checked]:bg-brand-500/[0.06]">
@@ -193,7 +193,7 @@ export default function CreateProjectDrawer({ open, onClose }: Props) {
               disabled={isPending}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium bg-brand-500 hover:bg-brand-600 disabled:opacity-50 text-white rounded-lg transition-colors"
             >
-              {isPending ? <><Loader2 size={14} className="animate-spin" /> Creating...</> : 'Create Project'}
+              {isPending ? <><Loader2 size={14} className="animate-spin" /> Creando...</> : 'Crear proyecto'}
             </button>
           </div>
         </form>

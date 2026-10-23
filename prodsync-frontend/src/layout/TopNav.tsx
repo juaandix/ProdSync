@@ -11,13 +11,13 @@ import UserDropdown from "@/components/header/UserDropdown";
 type NavItem = { name: string; path: string };
 
 const navItems: NavItem[] = [
-  { name: "Dashboard", path: "/dashboard" },
-  { name: "Projects", path: "/projects" },
-  { name: "Clients", path: "/clients" },
-  { name: "Users", path: "/users" },
-  { name: "Time Entries", path: "/time-entries" },
-  { name: "Calendar", path: "/calendar" },
-  { name: "Budgets", path: "/budgets" },
+  { name: "Inicio", path: "/dashboard" },
+  { name: "Proyectos", path: "/projects" },
+  { name: "Clientes", path: "/clients" },
+  { name: "Usuarios", path: "/users" },
+  { name: "Horas", path: "/time-entries" },
+  { name: "Calendario", path: "/calendar" },
+  { name: "Presupuestos", path: "/budgets" },
 ];
 
 export default function TopNav() {

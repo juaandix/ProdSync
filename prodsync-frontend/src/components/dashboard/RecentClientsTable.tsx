@@ -48,7 +48,7 @@ export default function RecentClientsTable() {
           ))}
         </div>
       ) : recent.length === 0 ? (
-        <div className="py-8 text-center text-gray-500 text-sm">No clients found.</div>
+        <div className="py-8 text-center text-gray-500 text-sm">Todavía no hay clientes.</div>
       ) : (
         <div className="space-y-1 stagger-children">
           {recent.map((client) => (

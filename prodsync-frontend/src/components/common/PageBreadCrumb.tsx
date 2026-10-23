@@ -4,12 +4,19 @@ import { usePathname } from "next/navigation";
 import React from "react";
 
 const segmentMap: { [key: string]: string } = {
-  "users": "Users",
-  "create": "Create",
-  "edit": "Edit",
-  "clients": "Clients",
-  "projects": "Projects",
-  "dashboard": "Dashboard",
+  "users": "Usuarios",
+  "create": "Crear",
+  "edit": "Editar",
+  "clients": "Clientes",
+  "projects": "Proyectos",
+  "dashboard": "Inicio",
+  "tasks": "Tareas",
+  "time-entries": "Horas",
+  "calendar": "Calendario",
+  "budgets": "Presupuestos",
+  "reports": "Informes",
+  "activity": "Actividad",
+  "profile": "Perfil",
 };
 
 const PageBreadcrumb: React.FC = () => {
@@ -35,7 +42,7 @@ const PageBreadcrumb: React.FC = () => {
   const pathSegments = uniqueSegments;
   const formatSegment = (segment: string) => {
     if (!isNaN(Number(segment))) {
-      return "View"; // Muestra 'View' para IDs numéricos en el breadcrumb
+      return "Detalle"; // Muestra 'Detalle' para IDs numéricos en el breadcrumb
     }
     if (segmentMap[segment]) return segmentMap[segment];
     return segment.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -46,7 +53,7 @@ const PageBreadcrumb: React.FC = () => {
       <ol className="flex items-center gap-1.5 justify-start">
         <li>
           <Link className="inline-flex items-center gap-1.5 text-sm text-white/70 hover:text-white" href="/dashboard">
-            Home
+            Inicio
           </Link>
         </li>
         {pathSegments.map((segment, index) => {

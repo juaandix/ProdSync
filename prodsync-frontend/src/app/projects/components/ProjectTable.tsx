@@ -89,13 +89,13 @@ export default function ProjectTable() {
   const confirmDelete = async () => {
     if (isBulkModal) {
       await Promise.all([...selectedIds].map(id => deleteMutation.mutateAsync(id)));
-      toast.success(`${selectedIds.size} projects deleted`);
+      toast.success(`${selectedIds.size} proyectos eliminados`);
       setSelectedIds(new Set());
     } else if (projectToDelete) {
       await deleteMutation.mutateAsync(projectToDelete).catch((e: Error) => {
         toast.error(getErrorMessage(e, 'Error al eliminar el proyecto.'));
       });
-      toast.success('Project deleted');
+      toast.success('Proyecto eliminado');
       setProjectToDelete(null);
     }
     setIsModalOpen(false);
@@ -349,17 +349,17 @@ export default function ProjectTable() {
                     </TableCell>
                     <TableCell className="py-3.5">
                       <div className="flex items-center gap-1">
-                        <Link href={`/projects/${project.id}/tasks`} title="Tasks">
+                        <Link href={`/projects/${project.id}/tasks`} title="Tareas">
                           <button className="p-2 text-gray-500 hover:text-success-400 hover:bg-white/[0.06] rounded-lg transition-colors"><ClipboardList size={15} /></button>
                         </Link>
-                        <Link href={`/projects/${project.id}`} title="View">
+                        <Link href={`/projects/${project.id}`} title="Ver">
                           <button className="p-2 text-gray-500 hover:text-brand-400 hover:bg-white/[0.06] rounded-lg transition-colors"><Eye size={15} /></button>
                         </Link>
                         <RoleGuard roles={['ADMIN', 'OPERATOR']}>
-                          <Link href={`/projects/edit/${project.id}`} title="Edit">
+                          <Link href={`/projects/edit/${project.id}`} title="Editar">
                             <button className="p-2 text-gray-500 hover:text-warning-400 hover:bg-white/[0.06] rounded-lg transition-colors"><Pencil size={15} /></button>
                           </Link>
-                          <button onClick={() => handleDelete(project.id)} title="Delete" className="p-2 text-gray-500 hover:text-error-400 hover:bg-white/[0.06] rounded-lg transition-colors">
+                          <button onClick={() => handleDelete(project.id)} title="Eliminar" className="p-2 text-gray-500 hover:text-error-400 hover:bg-white/[0.06] rounded-lg transition-colors">
                             <Trash2 size={15} />
                           </button>
                         </RoleGuard>

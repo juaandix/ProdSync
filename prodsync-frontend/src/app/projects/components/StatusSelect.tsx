@@ -30,11 +30,11 @@ export default function StatusSelect({ projectId, current }: Props) {
       projectService.update(projectId, { status }),
     onSuccess: (_, status) => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
-      toast.success(`Status updated to ${status.replace('_', ' ')}`);
+      toast.success(`Estado cambiado a ${status.replace('_', ' ')}`);
       setOpen(false);
     },
     onError: () => {
-      toast.error('Failed to update status');
+      toast.error('No se pudo cambiar el estado');
     },
   });
 

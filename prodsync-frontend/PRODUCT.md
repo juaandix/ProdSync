@@ -38,7 +38,7 @@ Todo en uno y simple. Clientes, proyectos, tareas, horas y presupuestos viven ju
 - Entidades: clientes, proyectos (pasan solos a COMPLETADO cuando terminan todas sus tareas), tareas con story points y estimación, imputaciones de tiempo por tipo, presupuestos con rentabilidad real (horas registradas frente a presupuestadas) y usuarios.
 - Informes filtrables con exportación a CSV, dashboard distinto según el rol, historial de actividad y búsqueda global.
 - Existe un panel de asignación de tareas con IA (`src/components/ai/`), pero no es el rasgo diferencial.
-- **Idioma: todo en español.** Hoy la interfaz mezcla inglés (navegación, algunos botones y mensajes) y español (contenido); hay que unificarla en español.
+- **Idioma: todo en español.** Cualquier texto nuevo (etiquetas, avisos, validaciones, títulos de página) va en español. Los valores internos del backend (`ACTIVE`, `ADMIN`, `draft`…) se traducen solo al mostrarlos.
 - Solo hay tema oscuro: el tema claro no tiene diseño.
 - La ruta del repositorio contiene `:`, lo que rompe el `PATH` de `npx`; hay que llamar a los binarios con `node node_modules/<pkg>/...`.
 

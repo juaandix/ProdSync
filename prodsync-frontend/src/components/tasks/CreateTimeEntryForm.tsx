@@ -45,7 +45,7 @@ const CreateTimeEntryForm: React.FC<CreateTimeEntryFormProps> = ({ taskId, onTim
       });
     },
     onSuccess: () => {
-      toast.success("Time entry created successfully!");
+      toast.success("Horas registradas");
       if (onTimeEntryCreated) {
         onTimeEntryCreated();
       }
@@ -64,7 +64,7 @@ const CreateTimeEntryForm: React.FC<CreateTimeEntryFormProps> = ({ taskId, onTim
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="date" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Date</label>
+          <label htmlFor="date" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Fecha</label>
           <input
             type="date"
             id="date"
@@ -74,18 +74,18 @@ const CreateTimeEntryForm: React.FC<CreateTimeEntryFormProps> = ({ taskId, onTim
           {errors.date && <p className="text-xs text-red-500 mt-1">{errors.date.message}</p>}
         </div>
         <div>
-          <label htmlFor="hours" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Hours</label>
+          <label htmlFor="hours" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Horas</label>
           <input
             type="text"
             id="hours"
-            placeholder="e.g., 1.5, 1h 30m, 1:30"
+            placeholder="Ej.: 1.5, 1h 30m, 1:30"
             {...register("hours")}
             className={`w-full px-3 py-2 border rounded-md bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.hours ? 'border-red-500' : 'border-gray-300'}`}
           />
           {errors.hours && <p className="text-xs text-red-500 mt-1">{errors.hours.message}</p>}
         </div>
         <div>
-          <label htmlFor="type" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Type</label>
+          <label htmlFor="type" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Tipo</label>
           <select
             id="type"
             {...register("type")}
@@ -98,7 +98,7 @@ const CreateTimeEntryForm: React.FC<CreateTimeEntryFormProps> = ({ taskId, onTim
           {errors.type && <p className="text-xs text-red-500 mt-1">{errors.type.message}</p>}
         </div>
         <div className="md:col-span-2">
-          <label htmlFor="description" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Description</label>
+          <label htmlFor="description" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Descripción</label>
           <textarea
             id="description"
             rows={3}

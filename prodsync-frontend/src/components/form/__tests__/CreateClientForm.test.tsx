@@ -69,24 +69,24 @@ describe('CreateClientForm', () => {
   it('renders the form correctly', () => {
     renderWithClient(<CreateClientForm />);
 
-    expect(screen.getByLabelText('Name')).toBeInTheDocument();
+    expect(screen.getByLabelText('Nombre')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
-    expect(screen.getByLabelText('Identification')).toBeInTheDocument();
-    expect(screen.getByLabelText('Contact Person')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Create Client' })).toBeInTheDocument();
+    expect(screen.getByLabelText('NIF/CIF')).toBeInTheDocument();
+    expect(screen.getByLabelText('Persona de contacto')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Crear cliente' })).toBeInTheDocument();
   });
 
   it('shows an error message if name or email are not provided', async () => {
     renderWithClient(<CreateClientForm />);
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Create Client' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Crear cliente' }));
     });
 
-    expect(await screen.findByText('Name must be at least 2 characters')).toBeInTheDocument();
-    expect(await screen.findByText('Please enter a valid email')).toBeInTheDocument();
-    expect(await screen.findByText('Identification must be at least 2 characters')).toBeInTheDocument();
-    expect(await screen.findByText('Contact Person must be at least 2 characters')).toBeInTheDocument();
+    expect(await screen.findByText('El nombre debe tener al menos 2 caracteres')).toBeInTheDocument();
+    expect(await screen.findByText('Introduce un email válido')).toBeInTheDocument();
+    expect(await screen.findByText('El NIF/CIF debe tener al menos 2 caracteres')).toBeInTheDocument();
+    expect(await screen.findByText('La persona de contacto debe tener al menos 2 caracteres')).toBeInTheDocument();
   });
 
   it('submits the form with the correct data', async () => {
@@ -101,15 +101,15 @@ describe('CreateClientForm', () => {
       contactPerson: '123456789',
     };
 
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: clientData.name } });
+    fireEvent.change(screen.getByLabelText('Nombre'), { target: { value: clientData.name } });
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: clientData.email } });
-    fireEvent.change(screen.getByLabelText('Identification'), { target: { value: clientData.identification } });
-    fireEvent.change(screen.getByLabelText('Location'), { target: { value: clientData.location } });
-    fireEvent.change(screen.getByLabelText('Province'), { target: { value: clientData.province } });
-    fireEvent.change(screen.getByLabelText('Contact Person'), { target: { value: clientData.contactPerson } });
+    fireEvent.change(screen.getByLabelText('NIF/CIF'), { target: { value: clientData.identification } });
+    fireEvent.change(screen.getByLabelText('Localidad'), { target: { value: clientData.location } });
+    fireEvent.change(screen.getByLabelText('Provincia'), { target: { value: clientData.province } });
+    fireEvent.change(screen.getByLabelText('Persona de contacto'), { target: { value: clientData.contactPerson } });
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Create Client' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Crear cliente' }));
     });
 
     await waitFor(() => {
@@ -123,16 +123,16 @@ describe('CreateClientForm', () => {
 
   
 
-      fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Test Client' } });
+      fireEvent.change(screen.getByLabelText('Nombre'), { target: { value: 'Test Client' } });
 
       fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
 
-      fireEvent.change(screen.getByLabelText('Identification'), { target: { value: 'ID-123' } });
+      fireEvent.change(screen.getByLabelText('NIF/CIF'), { target: { value: 'ID-123' } });
 
-      fireEvent.change(screen.getByLabelText('Contact Person'), { target: { value: '123456789' } });
+      fireEvent.change(screen.getByLabelText('Persona de contacto'), { target: { value: '123456789' } });
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Create Client' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Crear cliente' }));
     });
 
     await act(async () => {
@@ -140,7 +140,7 @@ describe('CreateClientForm', () => {
     });
 
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Client created successfully!');
+      expect(toast.success).toHaveBeenCalledWith('Cliente creado');
     });
 
     expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: ['clients'] });
@@ -158,12 +158,12 @@ describe('CreateClientForm', () => {
     const mockError = new ApiServiceError('Failed to create client.', 400);
     renderWithClient(<CreateClientForm />);
 
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Test Client' } });
+    fireEvent.change(screen.getByLabelText('Nombre'), { target: { value: 'Test Client' } });
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByLabelText('Identification'), { target: { value: 'ID-123' } });
+    fireEvent.change(screen.getByLabelText('NIF/CIF'), { target: { value: 'ID-123' } });
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Create Client' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Crear cliente' }));
     });
 
     await act(async () => {

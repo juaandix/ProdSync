@@ -75,12 +75,12 @@ describe('TimeEntryForm', () => {
   it('renders the form correctly', () => {
     renderWithClient(<TimeEntryForm taskId={taskId} onTimeEntryCreated={mockOnTimeEntryCreated} />);
 
-    expect(screen.getByLabelText(/date/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/hours spent/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/fecha/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/horas dedicadas/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Ej: 1.5 o 1:30')).toBeInTheDocument();
-    expect(screen.getByLabelText(/type/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /log time/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/tipo/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/descripción/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /registrar horas/i })).toBeInTheDocument();
   });
 
   it('submits the form with the correct data and calls onTimeEntryCreated', async () => {
@@ -96,12 +96,12 @@ describe('TimeEntryForm', () => {
 
     renderWithClient(<TimeEntryForm taskId={taskId} onTimeEntryCreated={mockOnTimeEntryCreated} />);
 
-    fireEvent.change(screen.getByLabelText(/date/i), { target: { value: newEntryData.date } });
-    fireEvent.change(screen.getByLabelText(/hours spent/i), { target: { value: newEntryData.hours } });
-    fireEvent.change(screen.getByLabelText(/type/i), { target: { value: newEntryData.type } });
-    fireEvent.change(screen.getByLabelText(/description/i), { target: { value: newEntryData.description } });
+    fireEvent.change(screen.getByLabelText(/fecha/i), { target: { value: newEntryData.date } });
+    fireEvent.change(screen.getByLabelText(/horas dedicadas/i), { target: { value: newEntryData.hours } });
+    fireEvent.change(screen.getByLabelText(/tipo/i), { target: { value: newEntryData.type } });
+    fireEvent.change(screen.getByLabelText(/descripción/i), { target: { value: newEntryData.description } });
 
-    fireEvent.click(screen.getByRole('button', { name: /log time/i }));
+    fireEvent.click(screen.getByRole('button', { name: /registrar horas/i }));
 
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalledWith({ ...newEntryData });
@@ -112,7 +112,7 @@ describe('TimeEntryForm', () => {
     });
 
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Time entry created successfully!');
+      expect(toast.success).toHaveBeenCalledWith('Horas registradas');
       expect(mockOnTimeEntryCreated).toHaveBeenCalledWith(createdTimeEntry);
     });
   });
@@ -120,9 +120,9 @@ describe('TimeEntryForm', () => {
   it('shows an error message if hours are not provided or invalid', async () => {
     renderWithClient(<TimeEntryForm taskId={taskId} onTimeEntryCreated={mockOnTimeEntryCreated} />);
 
-    fireEvent.change(screen.getByLabelText(/date/i), { target: { value: '2024-01-01' } });
-    fireEvent.change(screen.getByLabelText(/hours spent/i), { target: { value: '' } }); // Horas inválidas
-    fireEvent.click(screen.getByRole('button', { name: /log time/i }));
+    fireEvent.change(screen.getByLabelText(/fecha/i), { target: { value: '2024-01-01' } });
+    fireEvent.change(screen.getByLabelText(/horas dedicadas/i), { target: { value: '' } }); // Horas inválidas
+    fireEvent.click(screen.getByRole('button', { name: /registrar horas/i }));
 
     await waitFor(() => {
       expect(screen.getByText('Las horas son obligatorias')).toBeInTheDocument();
@@ -137,9 +137,9 @@ describe('TimeEntryForm', () => {
 
     renderWithClient(<TimeEntryForm taskId={taskId} onTimeEntryCreated={mockOnTimeEntryCreated} />);
 
-    fireEvent.change(screen.getByLabelText(/date/i), { target: { value: '2024-01-01' } });
-    fireEvent.change(screen.getByLabelText(/hours spent/i), { target: { value: '1' } });
-    fireEvent.click(screen.getByRole('button', { name: /log time/i }));
+    fireEvent.change(screen.getByLabelText(/fecha/i), { target: { value: '2024-01-01' } });
+    fireEvent.change(screen.getByLabelText(/horas dedicadas/i), { target: { value: '1' } });
+    fireEvent.click(screen.getByRole('button', { name: /registrar horas/i }));
 
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({ hours: '1' }));

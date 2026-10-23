@@ -36,7 +36,7 @@ export default function CreateUserForm() {
     mutationFn: userService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      toast.success("User created successfully!");
+      toast.success("Usuario creado");
       router.push("/users");
     },
     onError: (error: unknown) => {
@@ -52,7 +52,7 @@ export default function CreateUserForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium mb-1 dark:text-gray-200">Name</label>
+          <label htmlFor="name" className="block text-sm font-medium mb-1 dark:text-gray-200">Nombre</label>
           <input
             type="text"
             id="name"
@@ -62,7 +62,7 @@ export default function CreateUserForm() {
           {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
         </div>
         <div>
-          <label htmlFor="username" className="block text-sm font-medium mb-1 dark:text-gray-200">Username</label>
+          <label htmlFor="username" className="block text-sm font-medium mb-1 dark:text-gray-200">Nombre de usuario</label>
           <input
             type="text"
             id="username"
@@ -72,7 +72,7 @@ export default function CreateUserForm() {
           {errors.username && <p className="text-xs text-red-500 mt-1">{errors.username.message}</p>}
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium mb-1 dark:text-gray-200">Password</label>
+          <label htmlFor="password" className="block text-sm font-medium mb-1 dark:text-gray-200">Contraseña</label>
           <input
             type="password"
             id="password"
@@ -82,7 +82,7 @@ export default function CreateUserForm() {
           {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>}
         </div>
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1 dark:text-gray-200">Confirm Password</label>
+          <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1 dark:text-gray-200">Confirmar contraseña</label>
           <input
             type="password"
             id="confirmPassword"
@@ -102,26 +102,26 @@ export default function CreateUserForm() {
           {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
         </div>
         <div>
-          <label htmlFor="role" className="block text-sm font-medium mb-1 dark:text-gray-200">Role</label>
+          <label htmlFor="role" className="block text-sm font-medium mb-1 dark:text-gray-200">Rol</label>
           <select
             id="role"
             {...register("role")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md dark:border-gray-700 dark:bg-[#1E1E26] dark:text-gray-400"
           >
-            <option value="USER">User</option>
-            <option value="ADMIN">Admin</option>
-            <option value="OPERATOR">Operator</option>
+            <option value="USER">Usuario</option>
+            <option value="ADMIN">Administrador</option>
+            <option value="OPERATOR">Operador</option>
           </select>
         </div>
         <div>
-          <label htmlFor="status" className="block text-sm font-medium mb-1 dark:text-gray-200">Status</label>
+          <label htmlFor="status" className="block text-sm font-medium mb-1 dark:text-gray-200">Estado</label>
           <select
             id="status"
             {...register("status")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md dark:border-gray-700 dark:bg-[#1E1E26] dark:text-gray-400"
           >
-            <option value="ACTIVE">Active</option>
-            <option value="INACTIVE">Inactive</option>
+            <option value="ACTIVE">Activo</option>
+            <option value="INACTIVE">Inactivo</option>
           </select>
         </div>
       </div>
@@ -131,7 +131,7 @@ export default function CreateUserForm() {
         disabled={createUserMutation.isPending}
         className="px-4 py-2 bg-[#1E1E26] text-white rounded-md hover:bg-[#13131a] disabled:opacity-50"
       >
-        {createUserMutation.isPending ? "Creating..." : "Create User"}
+        {createUserMutation.isPending ? "Creando..." : "Crear usuario"}
       </button>
     </form>
   );
