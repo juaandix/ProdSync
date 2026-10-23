@@ -142,7 +142,7 @@ export default function CalendarPage() {
       </div>
 
       {/* Calendar */}
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 overflow-hidden
+      <div className="rounded-2xl glass p-5 overflow-hidden
         [&_.fc-button]:!bg-white/[0.06] [&_.fc-button]:!border-white/[0.08] [&_.fc-button]:!text-gray-300 [&_.fc-button]:!text-xs [&_.fc-button]:!px-3 [&_.fc-button]:!py-1.5 [&_.fc-button]:!rounded-lg [&_.fc-button]:!font-medium
         [&_.fc-button:hover]:!bg-white/[0.10] [&_.fc-button:hover]:!text-white [&_.fc-button:hover]:!border-white/[0.12]
         [&_.fc-button-primary:not(:disabled).fc-button-active]:!bg-brand-500/20 [&_.fc-button-primary:not(:disabled).fc-button-active]:!text-brand-400 [&_.fc-button-primary:not(:disabled).fc-button-active]:!border-brand-500/30

@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import PersonAvatar from "@/components/ui/avatar/PersonAvatar";
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { LogOut, Settings, User } from "lucide-react";
@@ -50,9 +51,7 @@ export default function UserDropdown() {
         className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-lg hover:bg-white/[0.05] transition-colors group"
       >
         {/* Avatar */}
-        <div className="w-7 h-7 flex items-center justify-center rounded-full bg-gradient-to-br from-brand-500/40 to-theme-purple-500/40 border border-brand-500/30 text-brand-300 font-semibold text-xs shrink-0">
-          {user.name.charAt(0).toUpperCase()}
-        </div>
+        <PersonAvatar seed={String(user.id)} name={user.name} size={28} />
         {/* Name */}
         <span className="hidden sm:block text-sm font-medium text-gray-300 group-hover:text-white transition-colors max-w-[100px] truncate">
           {user.name.split(' ')[0]}
@@ -70,9 +69,7 @@ export default function UserDropdown() {
           {/* Header */}
           <div className="px-4 py-3 border-b border-white/[0.06]">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 flex items-center justify-center rounded-full bg-gradient-to-br from-brand-500/30 to-theme-purple-500/30 border border-brand-500/20 text-brand-400 font-semibold text-sm shrink-0">
-                {user.name.charAt(0).toUpperCase()}
-              </div>
+              <PersonAvatar seed={String(user.id)} name={user.name} size={36} />
               <div className="min-w-0">
                 <p className="text-sm font-medium text-white truncate">{user.name}</p>
                 <p className="text-xs text-gray-500 truncate">{user.email}</p>

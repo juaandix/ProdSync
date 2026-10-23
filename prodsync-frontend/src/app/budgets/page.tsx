@@ -13,6 +13,10 @@ import { Budget, BudgetStatus, budgetStatuses } from '@/types/models';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import RoleGuard from '@/components/auth/RoleGuard';
 import Pagination from '@/app/users/components/Pagination';
+import { PageHeader, ViewToggle, FilterPills, SearchField, useViewMode } from '@/components/list/ListChrome';
+import { useWorkStats } from '@/hooks/useWorkStats';
+import { clientService } from '@/services/clientService';
+import BudgetCard from './components/BudgetCard';
 
 const STATUS_LABEL: Record<BudgetStatus, string> = {
   draft: 'Borrador',
@@ -53,6 +57,7 @@ export default function BudgetsPage() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(15);
+  const [view, setView] = useViewMode('budgets');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [budgetToDelete, setBudgetToDelete] = useState<string | null>(null);
@@ -121,47 +126,47 @@ export default function BudgetsPage() {
     return acc;
   }, {});
 
+  // Logos de cliente y horas ya imputadas en el proyecto de cada presupuesto
+  const { data: clients = [] } = useQuery({ queryKey: ['clients'], queryFn: clientService.getAll });
+  const clientById = new Map(clients.map((c) => [c.id, c]));
+  const work = useWorkStats();
+
+  const sumBy = (st: BudgetStatus) => budgets.filter((b) => b.status === st).reduce((s, b) => s + b.totalAmount, 0);
+  const decided = (statusCounts.accepted || 0) + (statusCounts.rejected || 0);
+  const acceptance = decided > 0 ? Math.round(((statusCounts.accepted || 0) / decided) * 100) : 0;
+  const compactEur = (n: number) =>
+    new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', notation: 'compact', maximumFractionDigits: 1 }).format(n);
+
   return (
     <RoleGuard roles={['ADMIN']}>
-      <div className="w-full rounded-2xl border border-white/[0.06] bg-white/[0.04] px-6 py-5">
+      <div className="w-full">
+        <PageHeader
+          title="Presupuestos"
+          subtitle={`${filtered.length} presupuestos · ${formatCurrency(totalFiltered)}`}
+          kpis={[
+            { label: 'Aceptado', value: compactEur(sumBy('accepted')), chip: `${statusCounts.accepted || 0} presupuestos`, tone: 'neutral' },
+            { label: 'Pendiente de respuesta', value: compactEur(sumBy('sent')) },
+            { label: 'Tasa de aceptación', value: `${acceptance}%` },
+          ]}
+        />
 
-        {/* Header */}
-        <div className="flex flex-col gap-3 mb-5 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h3 className="text-base font-semibold text-white">Presupuestos</h3>
-            <p className="text-xs text-gray-500 mt-0.5">{filtered.length} presupuestos · {formatCurrency(totalFiltered)}</p>
-          </div>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="relative flex-1 min-w-0 sm:flex-none">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" width="14" height="14" viewBox="0 0 20 20" fill="none">
-                <path fillRule="evenodd" clipRule="evenodd" d="M3.04175 9.37363C3.04175 5.87693 5.87711 3.04199 9.37508 3.04199C12.8731 3.04199 15.7084 5.87693 15.7084 9.37363C15.7084 12.8703 12.8731 15.7053 9.37508 15.7053C5.87711 15.7053 3.04175 12.8703 3.04175 9.37363ZM9.37508 1.54199C5.04902 1.54199 1.54175 5.04817 1.54175 9.37363C1.54175 13.6991 5.04902 17.2053 9.37508 17.2053C11.2674 17.2053 13.003 16.5344 14.357 15.4176L17.177 18.238C17.4699 18.5309 17.9448 18.5309 18.2377 18.238C18.5306 17.9451 18.5306 17.4703 18.2377 17.1774L15.418 14.3573C16.5365 13.0033 17.2084 11.2669 17.2084 9.37363C17.2084 5.04817 13.7011 1.54199 9.37508 1.54199Z" fill="currentColor"/>
-              </svg>
-              <input type="text" placeholder="Buscar presupuestos..." value={searchTerm}
-                onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                className="pl-9 pr-3 py-2 border border-white/[0.08] rounded-lg bg-white/[0.04] text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-500/50 w-full sm:w-52 transition-colors"
-              />
-            </div>
-            <Link href="/budgets/create">
-              <button className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium text-white whitespace-nowrap transition-all duration-200 bg-gradient-to-r from-brand-500 to-theme-purple-500 hover:opacity-90 hover:shadow-lg hover:shadow-brand-500/25 active:scale-[0.97]">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                Nuevo presupuesto
-              </button>
+        {/* Barra de herramientas */}
+        <div className="flex flex-col gap-3 mb-5 lg:flex-row lg:items-center lg:justify-between">
+          <FilterPills
+            options={STATUS_TABS.map((tab) => ({ value: tab, label: tab === 'all' ? 'Todos' : STATUS_LABEL[tab as BudgetStatus], count: tab === 'all' ? budgets.length : statusCounts[tab] || 0 }))}
+            value={statusTab}
+            onChange={(t) => { setStatusTab(t); setCurrentPage(1); setSelectedIds(new Set()); }}
+          />
+          <div className="flex items-center gap-2 w-full lg:w-auto">
+            <SearchField value={searchTerm} onChange={(v) => { setSearchTerm(v); setCurrentPage(1); }} placeholder="Buscar presupuestos…" />
+            <ViewToggle value={view} onChange={setView} />
+            <Link
+              href="/budgets/create"
+              className="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-full transition-colors whitespace-nowrap press"
+            >
+              + Nuevo presupuesto
             </Link>
           </div>
-        </div>
-
-        {/* Status tabs */}
-        <div className="flex items-center gap-1 mb-4 border-b border-white/[0.06] overflow-x-auto no-scrollbar">
-          {STATUS_TABS.map(tab => (
-            <button key={tab} onClick={() => { setStatusTab(tab); setCurrentPage(1); setSelectedIds(new Set()); }}
-              className={`relative px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors pb-3 ${statusTab === tab ? 'text-brand-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-brand-400' : 'text-gray-500 hover:text-gray-300'}`}
-            >
-              {tab === 'all' ? 'Todos' : STATUS_LABEL[tab as BudgetStatus]}
-              <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${statusTab === tab ? 'bg-brand-500/20 text-brand-400' : 'bg-white/[0.06] text-gray-500'}`}>
-                {tab === 'all' ? budgets.length : (statusCounts[tab] || 0)}
-              </span>
-            </button>
-          ))}
         </div>
 
         {/* Bulk bar */}
@@ -178,7 +183,12 @@ export default function BudgetsPage() {
           </div>
         )}
 
-        {isLoading ? (
+        <div className={view === 'list' ? 'rounded-2xl glass px-6 py-5' : ''}>
+        {isLoading && view === 'grid' ? (
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {[...Array(6)].map((_, i) => <div key={i} className="h-[300px] rounded-2xl glass shimmer" />)}
+          </div>
+        ) : isLoading ? (
           <TableSkeleton rows={5} cols={6} />
         ) : filtered.length === 0 ? (
           <div className="py-14 flex flex-col items-center gap-2">
@@ -186,6 +196,24 @@ export default function BudgetsPage() {
             <p className="text-sm font-medium text-gray-400">Sin presupuestos</p>
             <p className="text-xs text-gray-600">Prueba a cambiar la búsqueda o los filtros</p>
           </div>
+        ) : view === 'grid' ? (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 stagger-children">
+              {currentBudgets.map((b: Budget) => (
+                <BudgetCard
+                  key={b.id}
+                  budget={b}
+                  client={clientById.get(b.clientId)}
+                  projectHours={b.projectId ? work.byProject.get(b.projectId)?.total ?? 0 : undefined}
+                  selected={selectedIds.has(b.id)}
+                  selecting={selectedIds.size > 0}
+                  onToggleSelect={() => toggleSelect(b.id)}
+                  onDelete={() => { setBudgetToDelete(b.id); setIsBulkModal(false); setDeleteModalOpen(true); }}
+                />
+              ))}
+            </div>
+            <Pagination totalPages={Math.ceil(filtered.length / perPage)} currentPage={currentPage} onPageChange={setCurrentPage} />
+          </>
         ) : (
           <>
             <div className="w-full overflow-x-auto">
@@ -278,6 +306,7 @@ export default function BudgetsPage() {
             <Pagination totalPages={Math.ceil(filtered.length / perPage)} currentPage={currentPage} onPageChange={setCurrentPage} />
           </>
         )}
+        </div>
 
         <Modal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
           <div className="p-6 bg-[#1E1E26] rounded-2xl">

@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className="dark">
-      <body className={`${lexend.className} bg-[#1E1E26] dark:bg-[#1E1E26]`}>
+      <body className={`${lexend.className} bg-canvas`}>
         <Toaster position="top-center" theme="dark" richColors />
         <ThemeProvider>
           <SidebarProvider>

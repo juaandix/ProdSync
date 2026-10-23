@@ -1,16 +1,14 @@
 'use client';
 import React from 'react';
-import Link from 'next/link';
 import { useRole } from '@/hooks/useRole';
 import { useAuth } from '@/context/AuthContext';
-import DashboardMetrics from '@/components/dashboard/DashboardMetrics';
-import PersonalMetrics from '@/components/dashboard/PersonalMetrics';
+import TodayRings from '@/components/dashboard/TodayRings';
+import { HeaderKpis, HoursAccentCard } from '@/components/dashboard/TeamOverview';
 import RecentProjectsTable from '@/components/dashboard/RecentProjectsTable';
 import RecentClientsTable from '@/components/dashboard/RecentClientsTable';
 import MyTimeEntriesTable from '@/components/dashboard/MyTimeEntriesTable';
 import HorasChart from '@/components/dashboard/HorasChart';
 import TareasStatusChart from '@/components/dashboard/TareasStatusChart';
-import { BarChart2 } from 'lucide-react';
 
 function Greeting() {
   const { user } = useAuth();
@@ -19,8 +17,8 @@ function Greeting() {
   const firstName = user?.name?.split(' ')[0] ?? '';
   return (
     <div>
-      <h1 className="text-xl font-semibold text-white">{saludo}{firstName ? `, ${firstName}` : ''}</h1>
-      <p className="text-sm text-gray-500 mt-0.5">
+      <h1 className="text-2xl font-semibold text-white tracking-tight">{saludo}{firstName ? `, ${firstName}` : ''}</h1>
+      <p className="text-sm text-gray-500 mt-0.5 first-letter:uppercase">
         {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
       </p>
     </div>
@@ -29,91 +27,31 @@ function Greeting() {
 
 export default function Dashboard() {
   const { isAdmin, isOperator, isUser } = useRole();
+  if (!isAdmin && !isOperator && !isUser) return null;
 
-  /* ── ADMIN ─────────────────────────────────────────────── */
-  if (isAdmin) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-start justify-between">
-          <Greeting />
-          <Link
-            href="/reports"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] border border-white/[0.08] text-sm text-gray-300 hover:text-white hover:bg-white/[0.08] press"
-          >
-            <BarChart2 size={15} />
-            Ver informes
-          </Link>
-        </div>
+  // USER no ve clientes: su primera fila se reparte entre anillos, horas y tareas
+  const team = isAdmin || isOperator;
 
-        <DashboardMetrics />
-
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <HorasChart />
-          <TareasStatusChart />
-        </div>
-
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <RecentProjectsTable />
-          <RecentClientsTable />
-        </div>
-
-        <MyTimeEntriesTable />
-      </div>
-    );
-  }
-
-  /* ── OPERATOR ───────────────────────────────────────────── */
-  if (isOperator) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-start justify-between">
-          <Greeting />
-          <Link
-            href="/reports"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] border border-white/[0.08] text-sm text-gray-300 hover:text-white hover:bg-white/[0.08] press"
-          >
-            <BarChart2 size={15} />
-            Ver informes
-          </Link>
-        </div>
-
-        <DashboardMetrics />
-
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <HorasChart />
-          <TareasStatusChart />
-        </div>
-
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <RecentProjectsTable />
-          <RecentClientsTable />
-        </div>
-
-        <MyTimeEntriesTable />
-      </div>
-    );
-  }
-
-  /* ── USER ───────────────────────────────────────────────── */
-  if (isUser) {
-    return (
-      <div className="space-y-6">
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-6">
         <Greeting />
-
-        <PersonalMetrics />
-
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <HorasChart />
-          <TareasStatusChart />
-        </div>
-
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <RecentProjectsTable />
-          <MyTimeEntriesTable />
-        </div>
+        <HeaderKpis />
       </div>
-    );
-  }
 
-  return null;
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 stagger-children">
+        <div className={`md:col-span-2 ${team ? 'xl:col-span-4' : 'xl:col-span-5'}`}><TodayRings /></div>
+        <div className="xl:col-span-2"><HoursAccentCard /></div>
+        <div className={team ? 'xl:col-span-3' : 'xl:col-span-5'}><TareasStatusChart compact /></div>
+        {team && <div className="md:col-span-2 xl:col-span-3"><RecentClientsTable compact /></div>}
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
+        <div className="xl:col-span-5"><HorasChart /></div>
+        <div className="xl:col-span-7"><RecentProjectsTable /></div>
+      </div>
+
+      <MyTimeEntriesTable />
+    </div>
+  );
 }

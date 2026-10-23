@@ -8,6 +8,8 @@ export type Client = {
   contactPerson: string; // Añadido
   phone?: string; // Campo extra si lo necesitas
   avatar?: string;
+  /** Versión del logo subido; ausente si el cliente no tiene logo. */
+  logoVersion?: number;
 };
 
 // Define la estructura del cliente tal como viene del backend
@@ -19,6 +21,7 @@ export interface ClientBackend {
   localidad: string;
   provincia: string;
   contactPerson: string; // Añadido
+  logoVersion?: number | null;
   // Añadir otros campos del backend si existen
 }
 

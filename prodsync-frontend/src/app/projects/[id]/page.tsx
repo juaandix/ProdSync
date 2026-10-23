@@ -2,6 +2,7 @@
 import ViewProjectCard from '@/components/project-profile/ViewProjectCard';
 import ProjectAnalytics from '@/components/project-profile/ProjectAnalytics';
 import ProjectProfitability from '@/components/project-profile/ProjectProfitability';
+import TeamPanel from '@/components/common/TeamPanel';
 import { useParams } from 'next/navigation';
 
 export default function ViewProjectPage() {
@@ -10,8 +11,8 @@ export default function ViewProjectPage() {
   if (!id || typeof id !== 'string') {
     return (
       <div className="animate-pulse space-y-4 mt-4">
-        <div className="h-40 rounded-2xl bg-gray-200 dark:bg-gray-700" />
-        <div className="h-64 rounded-2xl bg-gray-200 dark:bg-gray-700" />
+        <div className="h-40 rounded-2xl glass" />
+        <div className="h-64 rounded-2xl glass" />
       </div>
     );
   }
@@ -26,8 +27,9 @@ export default function ViewProjectPage() {
       <div className="col-span-12 xl:col-span-8">
         <ProjectAnalytics projectId={id} />
       </div>
-      <div className="col-span-12 xl:col-span-4">
+      <div className="col-span-12 xl:col-span-4 space-y-6">
         <ProjectProfitability projectId={id} />
+        <TeamPanel projectIds={[id]} />
       </div>
     </div>
   );

@@ -3,6 +3,8 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import { useQuery } from '@tanstack/react-query';
 import { timeEntryService } from '@/services/timeEntryService';
+import { CATEGORICAL, MUTED_BAR } from '@/lib/chartColors';
+import { monthToDateDelta } from './TeamOverview';
 import { ApexOptions } from 'apexcharts';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -32,6 +34,10 @@ export default function HorasChart() {
     return Math.round(total * 10) / 10;
   });
 
+  const current = data[data.length - 1];
+  const delta = monthToDateDelta(entries);
+  const sixMonthTotal = Math.round(data.reduce((a, b) => a + b, 0));
+
   const options: ApexOptions = {
     chart: {
       type: 'bar',
@@ -47,10 +53,20 @@ export default function HorasChart() {
     },
     theme: { mode: 'dark' },
     plotOptions: {
-      bar: { borderRadius: 6, columnWidth: '50%' },
+      bar: { borderRadius: 6, columnWidth: '50%', distributed: true, dataLabels: { position: 'top' } },
     },
-    dataLabels: { enabled: false },
-    colors: ['#6366f1'],
+    legend: { show: false },
+    // Solo la barra del mes en curso lleva su valor encima
+    dataLabels: {
+      enabled: true,
+      formatter: (v, { dataPointIndex }) => (dataPointIndex === last6.length - 1 ? `${v}h` : ''),
+      offsetY: -22,
+      style: { fontSize: '11px', fontWeight: 600, colors: ['#ffffff'] },
+      background: { enabled: true, foreColor: '#ffffff', borderRadius: 999, padding: 6, borderWidth: 0, opacity: 0.12 },
+    },
+    // Solo el mes en curso lleva el acento; el resto queda en segundo plano
+    colors: last6.map((_, i) => (i === last6.length - 1 ? CATEGORICAL[0] : MUTED_BAR)),
+    states: { hover: { filter: { type: 'lighten' } } },
     grid: {
       borderColor: 'rgba(255,255,255,0.06)',
       yaxis: { lines: { show: true } },
@@ -75,10 +91,26 @@ export default function HorasChart() {
   };
 
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
-      <div className="mb-5">
-        <h3 className="text-base font-semibold text-white">Horas registradas</h3>
-        <p className="text-xs text-gray-500 mt-0.5">Últimos 6 meses</p>
+    <div className="rounded-2xl glass p-6 h-full">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-base font-semibold text-white">Horas registradas</h3>
+          <p className="text-xs text-gray-500 mt-0.5">Últimos 6 meses · {sixMonthTotal}h</p>
+        </div>
+        <div className="text-right">
+          <p className="text-2xl font-semibold text-white tracking-tight tabular-nums">{current}h</p>
+          <p className="text-[11px] text-gray-500">
+            este mes
+            {delta !== null && (
+              <span className={`ml-1.5 font-medium px-1.5 py-0.5 rounded-full ${delta >= 0 ? 'text-success-400 bg-success-500/10' : 'text-error-400 bg-error-500/10'}`}>
+                {delta >= 0 ? '↑' : '↓'} {Math.abs(delta)}%
+              </span>
+            )}
+          </p>
+          {delta !== null && (
+            <p className="text-[10px] text-gray-600 mt-0.5">vs mismo tramo del mes anterior</p>
+          )}
+        </div>
       </div>
       {isLoading ? (
         <div className="h-[220px] flex items-center justify-center">

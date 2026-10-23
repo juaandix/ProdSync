@@ -1,5 +1,8 @@
 'use client';
 import React, { useState, useMemo } from 'react';
+import PersonAvatar from '@/components/ui/avatar/PersonAvatar';
+import { TIME_ENTRY_TYPE } from '@/lib/chartColors';
+import { TYPE_LABEL } from '@/app/time-entries/components/EntryDiary';
 import { useQuery, useQueries } from '@tanstack/react-query';
 import { timeEntryService } from '@/services/timeEntryService';
 import { projectService } from '@/services/projectService';
@@ -16,6 +19,8 @@ interface ActivityItem {
   date: string;
   userName: string;
   userInitial: string;
+  /** Solo en acciones de una persona: da su avatar. */
+  userId?: string;
   title: string;
   description: string;
   projectName?: string;
@@ -26,13 +31,6 @@ interface ActivityItem {
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
-const TYPE_COLORS: Record<string, string> = {
-  DESARROLLO: 'bg-indigo-500/10 text-indigo-400',
-  ANALISIS:   'bg-amber-500/10 text-amber-400',
-  TESTING:    'bg-emerald-500/10 text-emerald-400',
-  REUNION:    'bg-blue-500/10 text-blue-400',
-  DISEÑO:     'bg-pink-500/10 text-pink-400',
-};
 
 const ACTIVITY_ICON: Record<ActivityType, React.ReactNode> = {
   time_entry: (
@@ -130,7 +128,8 @@ export default function ActivityPage() {
         date: e.date,
         userName: user?.name ?? 'Usuario desconocido',
         userInitial: user?.initial ?? '?',
-        title: `Registró ${e.hours}h de ${e.type ?? 'trabajo'}`,
+        userId: user ? e.userId : undefined,
+        title: `Registró ${e.hours}h de ${(e.type ? TYPE_LABEL[e.type] ?? e.type : 'trabajo').toLowerCase()}`,
         description: e.description || task?.descripcion || '—',
         projectName: task?.projectName,
         projectId: task?.projectId,
@@ -289,8 +288,9 @@ export default function ActivityPage() {
                             <span className="text-xs font-semibold text-brand-400">{item.hours}h</span>
                           )}
                           {item.entryType && (
-                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_COLORS[item.entryType] ?? 'bg-white/[0.06] text-gray-400'}`}>
-                              {item.entryType}
+                            <span className="flex items-center gap-1.5 text-[11px] px-2 py-0.5 rounded-full font-medium text-gray-200 bg-white/[0.05]">
+                              <span className="h-2 w-2 rounded-full" style={{ background: TIME_ENTRY_TYPE[item.entryType] ?? '#6b7280' }} />
+                              {TYPE_LABEL[item.entryType] ?? item.entryType}
                             </span>
                           )}
                         </div>
@@ -299,9 +299,13 @@ export default function ActivityPage() {
                       <div className="flex items-center gap-3 mt-2">
                         {/* Avatar usuario */}
                         <div className="flex items-center gap-1.5">
-                          <div className="w-5 h-5 rounded-full bg-brand-500/20 text-brand-400 text-[10px] font-bold flex items-center justify-center shrink-0">
-                            {item.userInitial}
-                          </div>
+                          {item.userId ? (
+                            <PersonAvatar seed={item.userId} name={item.userName} size={20} />
+                          ) : (
+                            <div className="w-5 h-5 rounded-full bg-brand-500/20 text-brand-400 text-[10px] font-bold flex items-center justify-center shrink-0">
+                              {item.userInitial}
+                            </div>
+                          )}
                           <span className="text-xs text-gray-500">{item.userName}</span>
                         </div>
                         {/* Proyecto */}

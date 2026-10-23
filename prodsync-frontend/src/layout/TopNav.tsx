@@ -39,7 +39,7 @@ export default function TopNav() {
   );
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#1E1E26] border-b border-white/[0.06]">
+    <header className="fixed top-0 left-0 right-0 z-50 glass-bar border-b border-white/[0.06]">
       {/* En móvil las secciones bajan a una segunda fila desplazable */}
       <div className="flex flex-wrap md:flex-nowrap items-center px-4 md:px-6 gap-x-6">
         {/* Logo */}
@@ -57,15 +57,16 @@ export default function TopNav() {
         {/* Separator */}
         <div className="hidden md:block h-5 w-px bg-white/[0.08] shrink-0" />
 
-        {/* Nav links */}
+        {/* Nav links: grupo en píldora; en móvil baja a una segunda fila */}
+        <div className="order-last md:order-none basis-full md:basis-auto md:flex-1 min-w-0 pb-2 md:pb-0">
         <nav
           ref={containerRef}
-          className="relative order-last md:order-none basis-full md:basis-auto md:flex-1 min-w-0 flex items-center gap-1 h-11 md:h-14 -mx-1 px-1 md:mx-0 md:px-0 overflow-x-auto no-scrollbar"
+          className="relative w-full md:w-fit max-w-full flex items-center gap-0.5 p-1 rounded-full bg-white/[0.04] ring-1 ring-inset ring-white/[0.06] overflow-x-auto no-scrollbar"
         >
           {/* Indicador compartido: se desliza a la sección activa */}
           <span
             aria-hidden
-            className={`absolute left-0 top-0 rounded-lg bg-brand-500/10 ring-1 ring-inset ring-brand-500/15 motion-reduce:transition-none ${
+            className={`absolute left-0 top-0 rounded-full bg-white shadow-[0_2px_10px_-2px_rgb(0_0_0/0.5)] motion-reduce:transition-none ${
               ready ? "transition-[transform,width,opacity] duration-[420ms] ease-out-expo" : ""
             }`}
             style={{
@@ -83,8 +84,8 @@ export default function TopNav() {
                 ref={itemRef(item.path)}
                 href={item.path}
                 aria-current={active ? "page" : undefined}
-                className={`relative px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors duration-200 ${
-                  active ? "text-brand-400" : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
+                className={`relative px-3.5 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-300 ${
+                  active ? "text-gray-900" : "text-gray-400 hover:text-white hover:bg-white/[0.06]"
                 }`}
               >
                 {item.name}
@@ -92,6 +93,7 @@ export default function TopNav() {
             );
           })}
         </nav>
+        </div>
 
         {/* Right side */}
         <div className="flex items-center gap-3 shrink-0 ml-auto md:ml-0">

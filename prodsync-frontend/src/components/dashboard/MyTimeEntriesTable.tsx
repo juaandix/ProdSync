@@ -13,7 +13,7 @@ export default function MyTimeEntriesTable() {
   const recent = entries.slice(0, 5);
 
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
+    <div className="rounded-2xl glass p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-base font-semibold text-white">Registros de tiempo recientes</h3>
         <Link

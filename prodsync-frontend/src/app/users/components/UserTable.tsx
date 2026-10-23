@@ -1,5 +1,6 @@
 "use client";
 import { toast } from 'sonner';
+import PersonAvatar from '@/components/ui/avatar/PersonAvatar';
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
@@ -12,6 +13,9 @@ import { getErrorMessage } from '@/lib/errorUtils';
 import Badge from "@/components/ui/badge/Badge";
 import RoleGuard from '@/components/auth/RoleGuard';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
+import { PageHeader, ViewToggle, FilterPills, SearchField, useViewMode } from '@/components/list/ListChrome';
+import { useWorkStats, fmtHours } from '@/hooks/useWorkStats';
+import UserCard, { type UserCardStats } from './UserCard';
 
 const ROLE_TABS = ['All', 'ADMIN', 'OPERATOR', 'USER'] as const;
 const ROLE_LABEL: Record<string, string> = { All: 'Todos', ADMIN: 'Administrador', OPERATOR: 'Operador', USER: 'Usuario' };
@@ -38,6 +42,8 @@ export default function UserTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(15);
   const [roleTab, setRoleTab] = useState<typeof ROLE_TABS[number]>('All');
+  const [view, setView] = useViewMode('users');
+  const work = useWorkStats();
   const [sortKey, setSortKey] = useState<keyof User | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -117,57 +123,55 @@ export default function UserTable() {
     return acc;
   }, {});
 
-  return (
-    <div className="w-full rounded-2xl border border-white/[0.06] bg-white/[0.04] px-6 py-5">
+  // Horas y proyectos de cada persona, a partir de sus imputaciones
+  const statsFor = (u: User): UserCardStats => {
+    const id = String(u.id);
+    const hours = work.byUser.get(id);
+    return {
+      hours,
+      teamShare: work.teamMonth > 0 ? (hours?.month ?? 0) / work.teamMonth : 0,
+      projects: work.projects.filter((p) => work.usersByProject.get(p.id)?.has(id)),
+    };
+  };
+  const activeUsers = users.filter((u) => u.status === 'ACTIVE').length;
+  const withHoursThisMonth = users.filter((u) => (work.byUser.get(String(u.id))?.month ?? 0) > 0).length;
+  const changeTab = (tab: typeof ROLE_TABS[number]) => { setRoleTab(tab); setCurrentPage(1); setSelectedIds(new Set()); };
 
-      {/* Header */}
-      <div className="flex flex-col gap-3 mb-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h3 className="text-base font-semibold text-white">Usuarios</h3>
-          <p className="text-xs text-gray-500 mt-0.5">{filteredUsers.length} total</p>
-        </div>
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <div className="relative flex-1 min-w-0 sm:flex-none">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" width="14" height="14" viewBox="0 0 20 20" fill="none">
-              <path fillRule="evenodd" clipRule="evenodd" d="M3.04175 9.37363C3.04175 5.87693 5.87711 3.04199 9.37508 3.04199C12.8731 3.04199 15.7084 5.87693 15.7084 9.37363C15.7084 12.8703 12.8731 15.7053 9.37508 15.7053C5.87711 15.7053 3.04175 12.8703 3.04175 9.37363ZM9.37508 1.54199C5.04902 1.54199 1.54175 5.04817 1.54175 9.37363C1.54175 13.6991 5.04902 17.2053 9.37508 17.2053C11.2674 17.2053 13.003 16.5344 14.357 15.4176L17.177 18.238C17.4699 18.5309 17.9448 18.5309 18.2377 18.238C18.5306 17.9451 18.5306 17.4703 18.2377 17.1774L15.418 14.3573C16.5365 13.0033 17.2084 11.2669 17.2084 9.37363C17.2084 5.04817 13.7011 1.54199 9.37508 1.54199Z" fill="currentColor"/>
-            </svg>
-            <input
-              type="text"
-              placeholder="Buscar usuarios..."
-              value={searchTerm}
-              onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); setSelectedIds(new Set()); }}
-              className="pl-9 pr-3 py-2 border border-white/[0.08] rounded-lg bg-white/[0.04] text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-500/50 w-full sm:w-52 transition-colors"
-            />
-          </div>
+  return (
+    <div className="w-full">
+      <PageHeader
+        title="Usuarios"
+        subtitle={`${filteredUsers.length} de ${users.length} personas`}
+        kpis={[
+          { label: 'Equipo', value: users.length, chip: `${activeUsers} activos` },
+          { label: 'Con horas este mes', value: withHoursThisMonth },
+          { label: 'Horas del equipo este mes', value: fmtHours(work.teamMonth) },
+        ]}
+      />
+
+      {/* Barra de herramientas */}
+      <div className="flex flex-col gap-3 mb-5 lg:flex-row lg:items-center lg:justify-between">
+        <FilterPills
+          options={ROLE_TABS.map((tab) => ({ value: tab, label: ROLE_LABEL[tab], count: tab === 'All' ? users.length : roleCounts[tab] || 0 }))}
+          value={roleTab}
+          onChange={changeTab}
+        />
+        <div className="flex items-center gap-2 w-full lg:w-auto">
+          <SearchField
+            value={searchTerm}
+            onChange={(v) => { setSearchTerm(v); setCurrentPage(1); setSelectedIds(new Set()); }}
+            placeholder="Buscar usuarios…"
+          />
+          <ViewToggle value={view} onChange={setView} />
           <RoleGuard roles={['ADMIN']}>
-            <Link href="/users/create">
-              <button className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium text-white whitespace-nowrap transition-all duration-200 bg-gradient-to-r from-brand-500 to-theme-purple-500 hover:opacity-90 hover:shadow-lg hover:shadow-brand-500/25 active:scale-[0.97]">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                Nuevo usuario
-              </button>
+            <Link
+              href="/users/create"
+              className="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-full transition-colors whitespace-nowrap press"
+            >
+              + Nuevo usuario
             </Link>
           </RoleGuard>
         </div>
-      </div>
-
-      {/* Role tabs */}
-      <div className="flex items-center gap-1 mb-4 border-b border-white/[0.06] overflow-x-auto no-scrollbar">
-        {ROLE_TABS.map(tab => (
-          <button
-            key={tab}
-            onClick={() => { setRoleTab(tab); setCurrentPage(1); setSelectedIds(new Set()); }}
-            className={`relative px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors pb-3 ${
-              roleTab === tab
-                ? 'text-brand-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-brand-400'
-                : 'text-gray-500 hover:text-gray-300'
-            }`}
-          >
-            {ROLE_LABEL[tab]}
-            <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${roleTab === tab ? 'bg-brand-500/20 text-brand-400' : 'bg-white/[0.06] text-gray-500'}`}>
-              {tab === 'All' ? users.length : (roleCounts[tab] || 0)}
-            </span>
-          </button>
-        ))}
       </div>
 
       {/* Bulk bar */}
@@ -188,7 +192,12 @@ export default function UserTable() {
         </div>
       )}
 
-      {isLoading ? (
+      <div className={view === 'list' ? 'rounded-2xl glass px-6 py-5' : ''}>
+      {isLoading && view === 'grid' ? (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          {[...Array(8)].map((_, i) => <div key={i} className="h-[330px] rounded-2xl glass shimmer" />)}
+        </div>
+      ) : isLoading ? (
         <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="flex items-center gap-4 py-2">
@@ -212,6 +221,23 @@ export default function UserTable() {
           <p className="text-sm font-medium text-gray-400">No se encontraron usuarios</p>
           <p className="text-xs text-gray-600">Prueba ajustando la búsqueda o los filtros</p>
         </div>
+      ) : view === 'grid' ? (
+        <>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 stagger-children" data-testid="user-grid">
+            {currentUsers.map((u) => (
+              <UserCard
+                key={u.id}
+                user={u}
+                stats={statsFor(u)}
+                selected={selectedIds.has(u.id)}
+                selecting={selectedIds.size > 0}
+                onToggleSelect={() => toggleSelect(u.id)}
+                onDelete={() => handleDelete(u.id)}
+              />
+            ))}
+          </div>
+          <Pagination totalPages={Math.ceil(filteredUsers.length / usersPerPage)} currentPage={currentPage} onPageChange={setCurrentPage} />
+        </>
       ) : (
         <>
           <div className="w-full overflow-x-auto" data-testid="user-table">
@@ -250,9 +276,7 @@ export default function UserTable() {
                     </TableCell>
                     <TableCell className="py-3.5 pr-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 flex items-center justify-center rounded-full bg-brand-500/20 text-brand-400 font-semibold text-sm shrink-0">
-                          {user.name.charAt(0).toUpperCase()}
-                        </div>
+                        <PersonAvatar seed={String(user.id)} name={user.name} size={36} />
                         <div>
                           <Link href={`/users/${user.id}`}>
                             <p className="font-medium text-white/90 text-sm hover:text-white transition-colors">{user.name}</p>
@@ -295,6 +319,7 @@ export default function UserTable() {
           <Pagination totalPages={Math.ceil(filteredUsers.length / usersPerPage)} currentPage={currentPage} onPageChange={setCurrentPage} />
         </>
       )}
+      </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="p-6 bg-[#1E1E26] rounded-2xl">

@@ -1,5 +1,6 @@
 "use client";
 import { toast } from 'sonner';
+import ClientLogo from '@/components/ui/avatar/ClientLogo';
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
@@ -9,7 +10,11 @@ import Pagination from '../../users/components/Pagination';
 import { clientService } from '@/services/clientService';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getErrorMessage } from '@/lib/errorUtils';
-import FilterDropdown from '@/components/ui/dropdown/FilterDropdown';
+import { PageHeader, ViewToggle, FilterPills, SearchField, useViewMode } from '@/components/list/ListChrome';
+import { useWorkStats, fmtHours } from '@/hooks/useWorkStats';
+import { useRole } from '@/hooks/useRole';
+import { userService } from '@/services/userService';
+import ClientCard, { type ClientCardStats } from './ClientCard';
 import RoleGuard from '@/components/auth/RoleGuard';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 
@@ -29,12 +34,15 @@ function SortIcon({ active, dir }: { active: boolean; dir: 'asc' | 'desc' }) {
 const thClass = "py-3 pr-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500 border-b border-white/[0.06]";
 const tdClass = "py-3.5 pr-4 text-sm text-gray-400";
 
+type ClientFilter = 'all' | 'active' | 'none';
+
 export default function ClientTable() {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [clientsPerPage] = useState(15);
-  const [filterOption, setFilterOption] = useState('Todos');
+  const [filterOption, setFilterOption] = useState<ClientFilter>('all');
+  const [view, setView] = useViewMode('clients');
   const [sortKey, setSortKey] = useState<keyof Client | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -64,8 +72,8 @@ export default function ClientTable() {
     },
   });
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
     setCurrentPage(1);
     setSelectedIds(new Set());
   };
@@ -91,18 +99,40 @@ export default function ClientTable() {
     setIsModalOpen(false);
   };
 
+  // Datos de trabajo para tarjetas y cifras: proyectos, horas y quién ha trabajado
+  const { isAdmin } = useRole();
+  const work = useWorkStats();
+  const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: userService.getAll, enabled: isAdmin });
+  const userName = new Map(users.map((u) => [String(u.id), u.name]));
+
+  const statsFor = (client: Client): ClientCardStats => {
+    const own = work.projects.filter((p) => p.client?.id === client.id);
+    const progress = { done: 0, total: 0 };
+    const team = new Set<string>();
+    own.forEach((p) => {
+      const pr = work.progress.get(p.id);
+      if (pr) { progress.done += pr.done; progress.total += pr.total; }
+      work.usersByProject.get(p.id)?.forEach((u) => team.add(u));
+    });
+    return {
+      projects: own.length,
+      activeProjects: own.filter((p) => p.status === 'EN_PROGRESO' || p.status === 'ACTIVO').length,
+      hours: work.byClient.get(client.id),
+      progress,
+      team: [...team].map((id) => ({ id, name: userName.get(id) ?? 'Miembro del equipo' })),
+    };
+  };
+  const hasActive = (c: Client) =>
+    work.projects.some((p) => p.client?.id === c.id && (p.status === 'EN_PROGRESO' || p.status === 'ACTIVO'));
+  const hasProjects = (c: Client) => work.projects.some((p) => p.client?.id === c.id);
+
   const filteredClients = clients.filter((client) => {
     const term = searchTerm.toLowerCase();
-    if (filterOption === 'Todos') {
-      return (
-        client.name.toLowerCase().includes(term) ||
-        client.identification.toLowerCase().includes(term) ||
-        client.email.toLowerCase().includes(term)
-      );
-    }
-    if (filterOption === 'Nombre') return client.name.toLowerCase().includes(term);
-    if (filterOption === 'NIF/CIF') return client.identification.toLowerCase().includes(term);
-    if (filterOption === 'Email') return client.email.toLowerCase().includes(term);
+    const matches = [client.name, client.identification, client.email, client.contactPerson, client.location, client.province]
+      .some((v) => (v ?? '').toLowerCase().includes(term));
+    if (!matches) return false;
+    if (filterOption === 'active') return hasActive(client);
+    if (filterOption === 'none') return !hasProjects(client);
     return true;
   });
 
@@ -145,36 +175,38 @@ export default function ClientTable() {
     });
   };
 
-  const filterOptions = ['Todos', 'Nombre', 'NIF/CIF', 'Email'];
+  const filterOptions: { value: ClientFilter; label: string; count: number }[] = [
+    { value: 'all', label: 'Todos', count: clients.length },
+    { value: 'active', label: 'Con proyectos activos', count: clients.filter(hasActive).length },
+    { value: 'none', label: 'Sin proyectos', count: clients.filter((c) => !hasProjects(c)).length },
+  ];
+  const monthHours = clients.reduce((s, c) => s + (work.byClient.get(c.id)?.month ?? 0), 0);
+  const provinces = new Set(clients.map((c) => c.province).filter(Boolean)).size;
 
   return (
-    <div className="w-full rounded-2xl border border-white/[0.06] bg-white/[0.04] px-6 py-5">
+    <div className="w-full">
+      <PageHeader
+        title="Clientes"
+        subtitle={`${filteredClients.length} de ${clients.length} clientes`}
+        kpis={[
+          { label: 'Clientes', value: clients.length, chip: `${provinces} provincias`, tone: 'neutral' },
+          { label: 'Con proyectos activos', value: clients.filter(hasActive).length },
+          { label: 'Horas este mes', value: fmtHours(monthHours) },
+        ]}
+      />
 
-      {/* Header */}
-      <div className="flex flex-col gap-3 mb-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h3 className="text-base font-semibold text-white">Clientes</h3>
-          <p className="text-xs text-gray-500 mt-0.5">{filteredClients.length} total</p>
-        </div>
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <div className="relative flex-1 min-w-0 sm:flex-none">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" width="14" height="14" viewBox="0 0 20 20" fill="none">
-              <path fillRule="evenodd" clipRule="evenodd" d="M3.04175 9.37363C3.04175 5.87693 5.87711 3.04199 9.37508 3.04199C12.8731 3.04199 15.7084 5.87693 15.7084 9.37363C15.7084 12.8703 12.8731 15.7053 9.37508 15.7053C5.87711 15.7053 3.04175 12.8703 3.04175 9.37363ZM9.37508 1.54199C5.04902 1.54199 1.54175 5.04817 1.54175 9.37363C1.54175 13.6991 5.04902 17.2053 9.37508 17.2053C11.2674 17.2053 13.003 16.5344 14.357 15.4176L17.177 18.238C17.4699 18.5309 17.9448 18.5309 18.2377 18.238C18.5306 17.9451 18.5306 17.4703 18.2377 17.1774L15.418 14.3573C16.5365 13.0033 17.2084 11.2669 17.2084 9.37363C17.2084 5.04817 13.7011 1.54199 9.37508 1.54199Z" fill="currentColor"/>
-            </svg>
-            <input
-              type="text"
-              placeholder={filterOption === 'Todos' ? 'Buscar clientes...' : `Buscar por ${filterOption}...`}
-              value={searchTerm}
-              onChange={handleSearch}
-              className="pl-9 pr-3 py-2 border border-white/[0.08] rounded-lg bg-white/[0.04] text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-500/50 w-full sm:w-52 transition-colors"
-            />
-          </div>
-          <FilterDropdown options={filterOptions} selectedOption={filterOption} onFilterChange={setFilterOption} />
+      {/* Barra de herramientas */}
+      <div className="flex flex-col gap-3 mb-5 lg:flex-row lg:items-center lg:justify-between">
+        <FilterPills options={filterOptions} value={filterOption} onChange={(v) => { setFilterOption(v); setCurrentPage(1); }} />
+        <div className="flex items-center gap-2 w-full lg:w-auto">
+          <SearchField value={searchTerm} onChange={handleSearch} placeholder="Buscar clientes…" />
+          <ViewToggle value={view} onChange={setView} />
           <RoleGuard roles={['ADMIN', 'OPERATOR']}>
-            <Link href="/clients/create">
-              <button className="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap">
-                + Nuevo cliente
-              </button>
+            <Link
+              href="/clients/create"
+              className="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-full transition-colors whitespace-nowrap press"
+            >
+              + Nuevo cliente
             </Link>
           </RoleGuard>
         </div>
@@ -202,7 +234,12 @@ export default function ClientTable() {
         </div>
       )}
 
-      {isLoading ? (
+      <div className={view === 'list' ? 'rounded-2xl glass px-6 py-5' : ''}>
+      {isLoading && view === 'grid' ? (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {[...Array(6)].map((_, i) => <div key={i} className="h-[300px] rounded-2xl glass shimmer" />)}
+        </div>
+      ) : isLoading ? (
         <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="flex items-center gap-4 py-2">
@@ -223,6 +260,27 @@ export default function ClientTable() {
           <p className="text-sm font-medium text-gray-400">No se encontraron clientes</p>
           <p className="text-xs text-gray-600">Prueba ajustando la búsqueda</p>
         </div>
+      ) : view === 'grid' ? (
+        <>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 stagger-children" data-testid="client-grid">
+            {currentClients.map((client) => (
+              <ClientCard
+                key={client.id}
+                client={client}
+                stats={statsFor(client)}
+                selected={selectedIds.has(client.id)}
+                selecting={selectedIds.size > 0}
+                onToggleSelect={() => toggleSelect(client.id)}
+                onDelete={() => handleDelete(client.id)}
+              />
+            ))}
+          </div>
+          <Pagination
+            totalPages={Math.ceil(filteredClients.length / clientsPerPage)}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        </>
       ) : (
         <>
           <div className="w-full overflow-x-auto" data-testid="client-table">
@@ -272,9 +330,7 @@ export default function ClientTable() {
                     </TableCell>
                     <TableCell className="py-3.5 pr-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 flex items-center justify-center rounded-full bg-brand-500/20 text-brand-400 font-semibold text-sm shrink-0">
-                          {client.name.charAt(0).toUpperCase()}
-                        </div>
+                        <ClientLogo client={client} size={36} />
                         <Link href={`/clients/${client.id}`}>
                           <p className="font-medium text-white/90 text-sm hover:text-white transition-colors">{client.name}</p>
                         </Link>
@@ -311,6 +367,7 @@ export default function ClientTable() {
           />
         </>
       )}
+      </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="p-6 bg-[#1E1E26] rounded-2xl">

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useRef } from 'react';
+import ClientLogo from '@/components/ui/avatar/ClientLogo';
 import Link from 'next/link';
 import { Client } from '@/types/models';
 import { Mail, MapPin, User, ExternalLink } from 'lucide-react';
@@ -52,9 +53,7 @@ export default function ClientTooltip({ client }: Props) {
         <div className="rounded-xl border border-white/[0.08] bg-[#1a1c25] shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3 border-b border-white/[0.06]">
-            <div className="flex items-center justify-center w-9 h-9 rounded-full bg-brand-500/20 text-brand-400 font-semibold text-sm shrink-0">
-              {client.name.charAt(0).toUpperCase()}
-            </div>
+            <ClientLogo client={client} size={36} />
             <div className="min-w-0">
               <p className="text-sm font-medium text-white truncate">{client.name}</p>
               {client.identification && (

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import PersonAvatar from "@/components/ui/avatar/PersonAvatar";
 import Link from "next/link";
 import { User } from "@/types/models";
 import { userService } from "@/services/userService";
@@ -8,6 +9,9 @@ import Badge from "@/components/ui/badge/Badge";
 import { getErrorMessage } from "@/lib/errorUtils";
 import { Pencil, Mail, AtSign } from "lucide-react";
 import RoleGuard from "@/components/auth/RoleGuard";
+import UserActivity from "@/components/user-profile/UserActivity";
+
+const ROLE_LABEL: Record<string, string> = { ADMIN: 'Administrador', OPERATOR: 'Operador', USER: 'Usuario' };
 
 const ROLE_COLOR: Record<string, 'info' | 'success' | 'warning'> = {
   ADMIN: 'info',
@@ -36,7 +40,7 @@ export default function ViewUserCard({ id }: { id: string }) {
   if (!user) {
     return (
       <div className="space-y-4 animate-pulse">
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6 flex items-center gap-6">
+        <div className="rounded-2xl glass p-6 flex items-center gap-6">
           <div className="h-20 w-20 rounded-full bg-white/[0.06] shrink-0" />
           <div className="flex-1 space-y-3">
             <div className="h-5 rounded bg-white/[0.06] w-1/3" />
@@ -53,16 +57,13 @@ export default function ViewUserCard({ id }: { id: string }) {
     <div className="space-y-5">
 
       {/* Hero card */}
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] overflow-hidden">
+      <div className="rounded-2xl glass overflow-hidden">
         {/* Top accent bar */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-brand-500 to-theme-purple-500" />
 
         <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
           {/* Avatar */}
           <div className="relative shrink-0">
-            <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gradient-to-br from-brand-500/30 to-theme-purple-500/30 border-2 border-brand-500/30 text-brand-400 font-bold text-3xl">
-              {user.name.charAt(0).toUpperCase()}
-            </div>
+            <PersonAvatar seed={String(user.id)} name={user.name} size={80} />
             <span className={`absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full border-2 border-[#1E1E26] ${user.status === 'ACTIVE' ? 'bg-success-400' : 'bg-gray-600'}`} />
           </div>
 
@@ -70,9 +71,9 @@ export default function ViewUserCard({ id }: { id: string }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap mb-1">
               <h2 className="text-xl font-semibold text-white">{user.name}</h2>
-              <Badge size="sm" color={ROLE_COLOR[user.role] ?? 'info'}>{user.role}</Badge>
+              <Badge size="sm" color={ROLE_COLOR[user.role] ?? 'info'}>{ROLE_LABEL[user.role] ?? user.role}</Badge>
               <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${user.status === 'ACTIVE' ? 'text-success-400 bg-success-500/10' : 'text-gray-500 bg-white/[0.04]'}`}>
-                {user.status}
+                {user.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
               </span>
             </div>
             <div className="flex items-center gap-4 flex-wrap">
@@ -98,22 +99,8 @@ export default function ViewUserCard({ id }: { id: string }) {
         </div>
       </div>
 
-      {/* Info grid */}
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
-        <h3 className="text-sm font-medium uppercase tracking-wider text-gray-500 mb-4">Datos de la cuenta</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {[
-            { label: 'Nombre completo', value: user.name },
-            { label: 'Nombre de usuario', value: `@${user.username}` },
-            { label: 'Email', value: user.email },
-          ].map(({ label, value }) => (
-            <div key={label}>
-              <p className="text-xs text-gray-600 mb-1">{label}</p>
-              <p className="text-sm font-medium text-white/90">{value}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* Actividad: horas del mes, peso en el equipo y dónde trabaja */}
+      <UserActivity userId={String(user.id)} />
 
       {/* Analytics */}
       <UserAnalytics userId={user.id} />

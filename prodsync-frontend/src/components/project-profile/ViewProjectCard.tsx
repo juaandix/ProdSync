@@ -7,6 +7,7 @@ import { projectService } from '@/services/projectService';
 import Badge from '@/components/ui/badge/Badge';
 import { Pencil, Calendar, User, ClipboardList } from 'lucide-react';
 import RoleGuard from '@/components/auth/RoleGuard';
+import ClientLogo from '@/components/ui/avatar/ClientLogo';
 import StatusSelect from '@/app/projects/components/StatusSelect';
 
 export default function ViewProjectCard({ id }: { id: string }) {
@@ -19,7 +20,7 @@ export default function ViewProjectCard({ id }: { id: string }) {
   if (isLoading) {
     return (
       <div className="space-y-4 animate-pulse">
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6 flex items-center gap-5">
+        <div className="rounded-2xl glass p-6 flex items-center gap-5">
           <div className="h-16 w-16 rounded-full bg-white/[0.06] shrink-0" />
           <div className="flex-1 space-y-3">
             <div className="h-5 rounded bg-white/[0.06] w-1/3" />
@@ -43,12 +44,15 @@ export default function ViewProjectCard({ id }: { id: string }) {
     <div className="space-y-5">
 
       {/* Hero card */}
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] overflow-hidden">
-        <div className="h-1.5 w-full bg-gradient-to-r from-brand-500 to-theme-purple-500" />
+      <div className="rounded-2xl glass overflow-hidden">
         <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-brand-500/30 to-theme-purple-500/30 border-2 border-brand-500/30 text-brand-400 font-bold text-2xl shrink-0">
-            {project.name.charAt(0).toUpperCase()}
-          </div>
+          {project.client ? (
+            <ClientLogo client={project.client} size={64} />
+          ) : (
+            <div className="w-16 h-16 flex items-center justify-center rounded-2xl bg-white/[0.06] text-gray-300 font-bold text-2xl shrink-0">
+              {project.name.charAt(0).toUpperCase()}
+            </div>
+          )}
           <div className="flex-1 min-w-0">
             <h2 className="text-xl font-semibold text-white mb-2">{project.name}</h2>
             <div className="flex items-center gap-3 flex-wrap">
@@ -88,7 +92,7 @@ export default function ViewProjectCard({ id }: { id: string }) {
       {/* Details grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Description */}
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
+        <div className="rounded-2xl glass p-6">
           <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-3">Descripción</h3>
           <p className="text-sm text-gray-300 leading-relaxed">
             {project.description || <span className="text-gray-600">Sin descripción.</span>}
@@ -96,7 +100,7 @@ export default function ViewProjectCard({ id }: { id: string }) {
         </div>
 
         {/* Dates + Client */}
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
+        <div className="rounded-2xl glass p-6">
           <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">Detalles</h3>
           <div className="space-y-4">
             <div className="flex items-start gap-3">
