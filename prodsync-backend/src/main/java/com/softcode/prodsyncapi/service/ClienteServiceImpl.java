@@ -1,13 +1,16 @@
 package com.softcode.prodsyncapi.service;
 
 import com.softcode.prodsyncapi.model.Cliente;
+import com.softcode.prodsyncapi.model.ClienteLogo;
 import com.softcode.prodsyncapi.model.Project;
 import com.softcode.prodsyncapi.model.enums.ProjectStatus;
+import com.softcode.prodsyncapi.repository.ClienteLogoRepository;
 import com.softcode.prodsyncapi.repository.ClienteRepository;
 import com.softcode.prodsyncapi.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +23,9 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private ClienteLogoRepository clienteLogoRepository;
 
     @Override
     public List<Cliente> getAllClientes() {
@@ -82,11 +88,37 @@ public class ClienteServiceImpl implements ClienteService {
             throw new RuntimeException("No se puede eliminar el cliente porque tiene proyectos asociados que no están cancelados.");
         }
 
+        if (clienteLogoRepository.existsById(id)) clienteLogoRepository.deleteById(id);
         clienteRepository.deleteById(id);
     }
 
     @Override
     public void deleteById(Long id) {
         this.deleteCliente(id); // Re-route to apply the business logic
+    }
+
+    @Override
+    @Transactional
+    public Optional<Cliente> saveLogo(Long id, String contentType, byte[] data) {
+        return clienteRepository.findById(id).map(cliente -> {
+            clienteLogoRepository.save(new ClienteLogo(id, contentType, data));
+            cliente.setLogoVersion(System.currentTimeMillis());
+            return clienteRepository.save(cliente);
+        });
+    }
+
+    @Override
+    public Optional<ClienteLogo> getLogo(Long id) {
+        return clienteLogoRepository.findById(id);
+    }
+
+    @Override
+    @Transactional
+    public Optional<Cliente> deleteLogo(Long id) {
+        return clienteRepository.findById(id).map(cliente -> {
+            if (clienteLogoRepository.existsById(id)) clienteLogoRepository.deleteById(id);
+            cliente.setLogoVersion(null);
+            return clienteRepository.save(cliente);
+        });
     }
 }

@@ -33,6 +33,10 @@ public class Cliente {
     @Column(name = "contact_person", nullable = false)
     private String contactPerson;
 
+    /** Marca de tiempo del logo actual; null si no tiene. El frontend la usa para refrescar la caché. */
+    @Column(name = "logo_version")
+    private Long logoVersion;
+
     public Long getId() {
         return id;
     }
@@ -88,5 +92,13 @@ public class Cliente {
 
     public void setContactPerson(String contactPerson) {
         this.contactPerson = contactPerson;
+    }
+
+    public Long getLogoVersion() {
+        return logoVersion;
+    }
+
+    public void setLogoVersion(Long logoVersion) {
+        this.logoVersion = logoVersion;
     }
 }

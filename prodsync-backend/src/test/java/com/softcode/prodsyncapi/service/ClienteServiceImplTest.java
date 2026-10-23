@@ -1,8 +1,10 @@
 package com.softcode.prodsyncapi.service;
 
 import com.softcode.prodsyncapi.model.Cliente;
+import com.softcode.prodsyncapi.model.ClienteLogo;
 import com.softcode.prodsyncapi.model.Project;
 import com.softcode.prodsyncapi.model.enums.ProjectStatus;
+import com.softcode.prodsyncapi.repository.ClienteLogoRepository;
 import com.softcode.prodsyncapi.repository.ClienteRepository;
 import com.softcode.prodsyncapi.repository.ProjectRepository;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,9 @@ class ClienteServiceImplTest {
 
     @Mock
     private ProjectRepository projectRepository;
+
+    @Mock
+    private ClienteLogoRepository clienteLogoRepository;
 
     @InjectMocks
     private ClienteServiceImpl clienteService;
@@ -133,5 +138,57 @@ class ClienteServiceImplTest {
         clienteService.deleteCliente(1L);
 
         verify(clienteRepository).deleteById(1L);
+    }
+
+    @Test
+    void deleteCliente_shouldAlsoDeleteItsLogo() {
+        when(projectRepository.findByClienteId(1L)).thenReturn(Collections.emptyList());
+        when(clienteLogoRepository.existsById(1L)).thenReturn(true);
+
+        clienteService.deleteCliente(1L);
+
+        verify(clienteLogoRepository).deleteById(1L);
+        verify(clienteRepository).deleteById(1L);
+    }
+
+    @Test
+    void saveLogo_shouldStoreImageAndStampVersion() {
+        Cliente cliente = new Cliente();
+        cliente.setId(1L);
+        when(clienteRepository.findById(1L)).thenReturn(Optional.of(cliente));
+        when(clienteRepository.save(any(Cliente.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Optional<Cliente> result = clienteService.saveLogo(1L, "image/png", new byte[]{1, 2, 3});
+
+        assertTrue(result.isPresent());
+        assertNotNull(result.get().getLogoVersion());
+        ArgumentCaptor<ClienteLogo> logo = ArgumentCaptor.forClass(ClienteLogo.class);
+        verify(clienteLogoRepository).save(logo.capture());
+        assertEquals(1L, logo.getValue().getClienteId());
+        assertEquals("image/png", logo.getValue().getContentType());
+    }
+
+    @Test
+    void saveLogo_shouldReturnEmpty_whenClientMissing() {
+        when(clienteRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertTrue(clienteService.saveLogo(99L, "image/png", new byte[]{1}).isEmpty());
+        verify(clienteLogoRepository, never()).save(any());
+    }
+
+    @Test
+    void deleteLogo_shouldClearVersion() {
+        Cliente cliente = new Cliente();
+        cliente.setId(1L);
+        cliente.setLogoVersion(123L);
+        when(clienteRepository.findById(1L)).thenReturn(Optional.of(cliente));
+        when(clienteRepository.save(any(Cliente.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(clienteLogoRepository.existsById(1L)).thenReturn(true);
+
+        Optional<Cliente> result = clienteService.deleteLogo(1L);
+
+        assertTrue(result.isPresent());
+        assertNull(result.get().getLogoVersion());
+        verify(clienteLogoRepository).deleteById(1L);
     }
 }
