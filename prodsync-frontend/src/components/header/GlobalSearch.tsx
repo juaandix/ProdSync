@@ -105,11 +105,11 @@ export default function GlobalSearch() {
       {/* Modal */}
       {open && (
         <div
-          className="fixed inset-0 z-[999] flex items-start justify-center pt-[15vh] bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[999] flex items-start justify-center pt-[15vh] bg-black/60 backdrop-blur-sm animate-fade"
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-xl mx-4 rounded-2xl border border-white/[0.08] bg-[#161820] shadow-2xl overflow-hidden"
+            className="w-full max-w-xl mx-4 animate-dialog rounded-2xl border border-white/[0.08] bg-[#161820] shadow-2xl overflow-hidden"
             onClick={e => e.stopPropagation()}
           >
             {/* Input */}

@@ -38,7 +38,7 @@ export default function RecentClientsTable() {
         </Link>
       </div>
       {isLoading ? (
-        <div className="space-y-3">
+        <div className="space-y-3 shimmer rounded-lg">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="flex items-center gap-3 py-1">
               <div className="w-8 h-8 rounded-full bg-white/10 shrink-0" />
@@ -50,7 +50,7 @@ export default function RecentClientsTable() {
       ) : recent.length === 0 ? (
         <div className="py-8 text-center text-gray-500 text-sm">No clients found.</div>
       ) : (
-        <div className="space-y-1">
+        <div className="space-y-1 stagger-children">
           {recent.map((client) => (
             <Link
               key={client.id}

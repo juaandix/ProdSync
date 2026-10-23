@@ -3,6 +3,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { projectService } from '@/services/projectService';
 import { FolderIcon, TimeIcon } from '@/icons/index';
+import AnimatedNumber from '@/components/ui/AnimatedNumber';
 
 function StatCard({
   label, value, icon, accent, sub,
@@ -16,7 +17,7 @@ function StatCard({
       </div>
       <div className="min-w-0">
         <p className="text-xs font-medium uppercase tracking-wider text-gray-500">{label}</p>
-        <p className="text-2xl font-bold text-white mt-0.5 leading-none">{value}</p>
+        <p className="text-2xl font-bold text-white mt-0.5 leading-none"><AnimatedNumber value={value} /></p>
         {sub && <p className="text-xs text-gray-600 mt-1">{sub}</p>}
       </div>
     </div>
@@ -42,7 +43,7 @@ export default function ProjectStats() {
   }).length;
 
   return (
-    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6 stagger-children">
       <StatCard
         label="Total proyectos"
         value={total}

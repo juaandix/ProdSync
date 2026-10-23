@@ -24,7 +24,7 @@ export default function MyTimeEntriesTable() {
         </Link>
       </div>
       {isLoading ? (
-        <div className="space-y-3">
+        <div className="space-y-3 shimmer rounded-lg">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="flex gap-4 py-1">
               <div className="h-4 rounded bg-white/10 w-1/4" />
@@ -46,7 +46,7 @@ export default function MyTimeEntriesTable() {
                 <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Descripción</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="stagger-children">
               {recent.map((entry) => (
                 <tr
                   key={entry.id}

@@ -7,7 +7,7 @@ interface Props {
 
 export default function TableSkeleton({ rows = 6, cols = 5 }: Props) {
   return (
-    <div className="w-full animate-pulse">
+    <div className="w-full shimmer">
       {/* Header row */}
       <div className="flex gap-4 pb-3 border-b border-white/[0.06] mb-3">
         {Array.from({ length: cols }).map((_, i) => (

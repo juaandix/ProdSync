@@ -21,9 +21,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={`${lexend.className} bg-[#1E1E26] dark:bg-[#1E1E26]`}>
-        <Toaster position="top-center" richColors />
+        <Toaster position="top-center" theme="dark" richColors />
         <ThemeProvider>
           <SidebarProvider>
             <AuthProvider>

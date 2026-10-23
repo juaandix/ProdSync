@@ -60,7 +60,7 @@ export default function UserDropdown() {
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-60 rounded-xl border border-white/[0.08] bg-[#161820] shadow-2xl z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-60 origin-top-right animate-pop rounded-xl border border-white/[0.08] bg-[#161820] shadow-2xl z-50 overflow-hidden">
           {/* Header */}
           <div className="px-4 py-3 border-b border-white/[0.06]">
             <div className="flex items-center gap-3">

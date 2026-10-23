@@ -38,7 +38,7 @@ export default function Dashboard() {
           <Greeting />
           <Link
             href="/reports"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] border border-white/[0.08] text-sm text-gray-300 hover:text-white hover:bg-white/[0.08] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] border border-white/[0.08] text-sm text-gray-300 hover:text-white hover:bg-white/[0.08] press"
           >
             <BarChart2 size={15} />
             Ver informes
@@ -70,7 +70,7 @@ export default function Dashboard() {
           <Greeting />
           <Link
             href="/reports"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] border border-white/[0.08] text-sm text-gray-300 hover:text-white hover:bg-white/[0.08] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] border border-white/[0.08] text-sm text-gray-300 hover:text-white hover:bg-white/[0.08] press"
           >
             <BarChart2 size={15} />
             Ver informes

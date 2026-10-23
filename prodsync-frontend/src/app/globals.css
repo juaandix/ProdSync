@@ -174,6 +174,40 @@ body {
   --z-index-9999: 9999;
   --z-index-99999: 99999;
   --z-index-999999: 999999;
+
+  /* Motion: salidas rápidas, llegadas con deceleración exponencial */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  --animate-enter: enter 280ms var(--ease-out-quart) backwards;
+  --animate-rise: rise 640ms var(--ease-out-expo) backwards;
+  --animate-pop: pop 180ms var(--ease-out-expo) backwards;
+  --animate-dialog: dialog 260ms var(--ease-out-expo) backwards;
+  --animate-fade: fade 200ms ease-out backwards;
+
+  @keyframes enter {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+    to   { opacity: 1; transform: none; filter: none; }
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: scale(0.96) translateY(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes dialog {
+    from { opacity: 0; transform: scale(0.97) translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes shimmer {
+    to { transform: translateX(100%); }
+  }
 }
 
 /*
@@ -190,7 +224,7 @@ body {
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: rgb(255 255 255 / 0.08);
   }
   button:not(:disabled),
   [role="button"]:not(:disabled) {
@@ -198,6 +232,83 @@ body {
   }
   body {
     @apply relative font-normal font-lexend z-1 bg-white;
+  }
+
+  /* Superficies del navegador alineadas con la paleta */
+  html {
+    color-scheme: dark;
+    scrollbar-color: rgb(255 255 255 / 0.14) transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-brand-500) 45%, transparent);
+    color: #fff;
+  }
+  input,
+  textarea {
+    caret-color: var(--color-brand-400);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brand-400);
+    outline-offset: 2px;
+  }
+  td,
+  th {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Escalonado para listas que aparecen como lista (grids de métricas, filas) */
+@utility stagger-children {
+  & > * {
+    animation: var(--animate-enter);
+    animation-duration: 420ms;
+  }
+  & > *:nth-child(2) { animation-delay: 40ms; }
+  & > *:nth-child(3) { animation-delay: 80ms; }
+  & > *:nth-child(4) { animation-delay: 120ms; }
+  & > *:nth-child(5) { animation-delay: 160ms; }
+  & > *:nth-child(6) { animation-delay: 200ms; }
+  & > *:nth-child(7) { animation-delay: 240ms; }
+  & > *:nth-child(n + 8) { animation-delay: 280ms; }
+}
+
+@utility shimmer {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.05), transparent);
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+}
+
+@utility press {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: 150ms;
+  transition-timing-function: var(--ease-out-quart);
+  &:not(:disabled):active {
+    transform: scale(0.97);
+  }
+}
+
+/* Movimiento reducido: sin desplazamientos, se mantienen los fundidos que comunican estado */
+@media (prefers-reduced-motion: reduce) {
+  .animate-enter,
+  .animate-rise,
+  .animate-pop,
+  .animate-dialog,
+  .stagger-children > * {
+    animation-name: fade !important;
+  }
+  .shimmer::after {
+    animation: none;
+  }
+  .press:not(:disabled):active {
+    transform: none;
   }
 }
 

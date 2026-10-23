@@ -15,15 +15,12 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("dark");
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // Este código solo se ejecutará en el lado del cliente
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    const initialTheme = savedTheme || "light"; // Por defecto, tema claro
-
-    setTheme(initialTheme);
+    // La interfaz solo está diseñada en oscuro: se ignora cualquier "light" guardado antes
+    setTheme("dark");
     setIsInitialized(true);
   }, []);
 

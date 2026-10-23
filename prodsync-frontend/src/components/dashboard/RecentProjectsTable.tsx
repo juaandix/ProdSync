@@ -25,7 +25,7 @@ export default function RecentProjectsTable() {
         </Link>
       </div>
       {isLoading ? (
-        <div className="space-y-3">
+        <div className="space-y-3 shimmer rounded-lg">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="flex gap-4 py-1">
               <div className="h-4 rounded bg-white/10 w-1/3" />
@@ -48,7 +48,7 @@ export default function RecentProjectsTable() {
                 <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Fin</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="stagger-children">
               {recent.map((project) => (
                 <tr
                   key={project.id}
@@ -77,10 +77,12 @@ export default function RecentProjectsTable() {
                           ? 'success'
                           : project.status === 'EN_PROGRESO'
                           ? 'warning'
+                          : project.status === 'CANCELADO'
+                          ? 'error'
                           : 'info'
                       }
                     >
-                      {project.status}
+                      {project.status.replace('_', ' ')}
                     </Badge>
                   </td>
                   <td className="py-3.5 text-gray-400">{project.endDate || '—'}</td>

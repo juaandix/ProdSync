@@ -38,6 +38,12 @@ export default function HorasChart() {
       toolbar: { show: false },
       background: 'transparent',
       fontFamily: 'inherit',
+      animations: {
+        enabled: true,
+        speed: 600,
+        animateGradually: { enabled: true, delay: 60 },
+        dynamicAnimation: { enabled: true, speed: 300 },
+      },
     },
     theme: { mode: 'dark' },
     plotOptions: {

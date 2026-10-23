@@ -24,7 +24,7 @@ export default function DashboardMetrics() {
   const thisMonthHours = thisMonthEntries.reduce((acc, e) => acc + (e.hours || 0), 0);
 
   return (
-    <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 xl:grid-cols-4 stagger-children">
       <DashboardMetricCard
         title="Proyectos"
         value={projects.length}

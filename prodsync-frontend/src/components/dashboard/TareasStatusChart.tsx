@@ -31,6 +31,12 @@ export default function TareasStatusChart() {
       type: 'donut',
       background: 'transparent',
       fontFamily: 'inherit',
+      animations: {
+        enabled: true,
+        speed: 600,
+        animateGradually: { enabled: true, delay: 60 },
+        dynamicAnimation: { enabled: true, speed: 300 },
+      },
     },
     theme: { mode: 'dark' },
     labels: [LABELS.PENDIENTE, LABELS.EN_PROGRESO, LABELS.COMPLETADO],
