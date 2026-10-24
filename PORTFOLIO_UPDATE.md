@@ -3,6 +3,8 @@
 > Documento de traspaso para el proyecto **portfolio** (`~/Desktop/portfolio`). Explica qué ha cambiado en ProdSync, qué archivos copiar y cómo actualizar su ficha. Está pensado para que un agente o una persona lo aplique sin tener que explorar este repositorio.
 >
 > Fecha: 24 de octubre de 2026 · Rama de origen: `feature-ui-motion`
+>
+> **Estado:** aplicado en el portfolio el 24/10/2026, en la rama `update-prodsync` (commit `a7144f1`), pendiente de fusionar con `main`. Este documento queda como referencia para futuras actualizaciones.
 
 ---
 
@@ -81,7 +83,8 @@ Hay que cambiar el texto de la ficha `id: "prodsync"`. **No toques** `id`, `name
 ```ts
 summary:
   "Aplicación B2B de gestión de proyectos para equipos de software: clientes, proyectos, tareas, horas y presupuestos con control de acceso por rol (RBAC). Interfaz oscura de cristal diseñada a medida, con dashboard tipo bento, tarjetas con datos reales y avatares generados. TFG de DAW con Spring Boot + Next.js.",
-stack: ["Java", "Spring Boot", "Next.js", "React", "TypeScript", "PostgreSQL", "Tailwind CSS", "Docker", "JWT", "Playwright"],
+// stack: sin cambios. Solo admite claves de TECH_FILTERS (no existen "Tailwind CSS" ni "JWT" a secas)
+stack: ["Java", "Spring Boot", "Next.js", "React", "TypeScript", "PostgreSQL", "Docker", "JWT / OAuth", "Playwright"],
 screenshots: [
   { src: "/screenshots/01-login.png", alt: "Login" },
   { src: "/screenshots/02-dashboard.png", alt: "Dashboard" },
