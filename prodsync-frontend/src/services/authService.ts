@@ -21,12 +21,15 @@ import axios from 'axios';
 const API_URL = '/backend-api';
 
 export const authService = {
-  /** Inicia sesión y persiste el token JWT en una cookie segura. */
-  async login(data: LoginRequest): Promise<AuthResponse> {
+  /**
+   * Inicia sesión y persiste el token JWT en una cookie.
+   * `remember`: la cookie dura 1 día (el TTL del JWT); si es false, es de sesión
+   * y desaparece al cerrar el navegador.
+   */
+  async login(data: LoginRequest, remember = true): Promise<AuthResponse> {
     const { data: authResponse } = await axios.post<AuthResponse>(`${API_URL}/auth/login`, data);
     if (typeof authResponse.token === 'string' && authResponse.token.length > 0) {
-      // expires: 1 → la cookie caduca en 1 día, igual que el TTL del JWT del backend
-      Cookies.set('authToken', authResponse.token, { ...sessionCookieOptions(), expires: 1 });
+      Cookies.set('authToken', authResponse.token, remember ? { ...sessionCookieOptions(), expires: 1 } : sessionCookieOptions());
     }
     return authResponse;
   },

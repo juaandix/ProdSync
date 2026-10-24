@@ -33,7 +33,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
-  login: (credentials: LoginRequest) => Promise<void>;
+  login: (credentials: LoginRequest, remember?: boolean) => Promise<void>;
   logout: () => void;
 }
 
@@ -90,8 +90,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    * Autentica al usuario y carga su perfil.
    * authService.login() ya guarda el token en la cookie `authToken`.
    */
-  const login = async (credentials: LoginRequest) => {
-    const response = await authService.login(credentials);
+  const login = async (credentials: LoginRequest, remember = true) => {
+    const response = await authService.login(credentials, remember);
     const { token } = response;
     setToken(token);
 

@@ -977,9 +977,12 @@ span.flatpickr-weekday,
 .form-glass select option {
   background-color: #161820;
 }
-/* Error: los formularios marcan el campo con border-red-500 o aria-invalid */
+/*
+  Error: los formularios marcan el campo con border-red-500 o aria-invalid.
+  !important porque la regla base de arriba lleva muchos :not() y gana en especificidad.
+*/
 .form-glass :is(input, select, textarea):is(.border-red-500, [aria-invalid="true"]) {
-  border-color: var(--color-error-500);
+  border-color: var(--color-error-500) !important;
 }
 .form-glass :is(input, select, textarea):is(.border-red-500, [aria-invalid="true"]):focus {
   box-shadow: 0 0 0 4px rgb(240 68 56 / 0.18);
