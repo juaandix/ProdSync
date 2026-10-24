@@ -6,7 +6,7 @@
  *
  * Flujo del token JWT:
  *  - login()   → llama a POST /auth/login, guarda el token en la cookie
- *                'authToken' (1 día de validez, secure, SameSite Strict).
+ *                'authToken' (1 día de validez, SameSite Strict; secure con HTTPS).
  *  - signup()  → llama a POST /auth/register. NO guarda el token porque
  *                el usuario debe iniciar sesión explícitamente tras registrarse.
  *  - logout()  → elimina la cookie 'authToken'. El contexto AuthContext
@@ -15,6 +15,7 @@
 import { LoginRequest, SignUpRequest } from '@/types/dtos';
 import { AuthResponse } from '@/types/models';
 import Cookies from 'js-cookie';
+import { sessionCookieOptions } from '@/lib/cookieOptions';
 import axios from 'axios';
 
 const API_URL = '/backend-api';
@@ -25,7 +26,7 @@ export const authService = {
     const { data: authResponse } = await axios.post<AuthResponse>(`${API_URL}/auth/login`, data);
     if (typeof authResponse.token === 'string' && authResponse.token.length > 0) {
       // expires: 1 → la cookie caduca en 1 día, igual que el TTL del JWT del backend
-      Cookies.set('authToken', authResponse.token, { expires: 1, path: '/', secure: true, sameSite: 'Strict' });
+      Cookies.set('authToken', authResponse.token, { ...sessionCookieOptions(), expires: 1 });
     }
     return authResponse;
   },
