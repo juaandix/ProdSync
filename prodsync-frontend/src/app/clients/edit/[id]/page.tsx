@@ -1,4 +1,5 @@
 import EditClientForm from "@/components/form/EditClientForm";
+import FormPage from "@/components/form/FormPage";
 import { ReactElement } from "react";
 
 export default async function EditClientPage(props: {
@@ -7,13 +8,8 @@ export default async function EditClientPage(props: {
   const params = await props.params;
 
   return (
-    <div className="mx-auto max-w-7xl">
-      <div className="mt-7.5 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white sm:p-6">
-        <h2 className="text-2xl font-bold text-black mb-6">
-          Edit Client
-        </h2>
-        <EditClientForm id={params.id} />
-      </div>
-    </div>
+    <FormPage title="Editar cliente" subtitle="Datos fiscales y de contacto de la empresa" backHref={`/clients/${params.id}`}>
+      <EditClientForm id={params.id} />
+    </FormPage>
   );
 }

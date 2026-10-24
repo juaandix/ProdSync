@@ -308,7 +308,7 @@ export default function BudgetsPage() {
         )}
         </div>
 
-        <Modal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
+        <Modal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} className="max-w-md mx-4">
           <div className="p-6 bg-[#1E1E26] rounded-2xl">
             <h2 className="text-base font-semibold text-white mb-1">{isBulkModal ? `Eliminar ${selectedIds.size} presupuestos` : 'Eliminar presupuesto'}</h2>
             <p className="text-sm text-gray-400 mb-6">Esta acción no se puede deshacer.</p>

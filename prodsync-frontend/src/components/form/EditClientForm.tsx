@@ -53,7 +53,7 @@ export default function EditClientForm({ id }: { id: string }) {
   };
 
   if (isLoading) return (
-    <div data-testid="loading-skeleton" className="animate-pulse space-y-4 p-6 bg-white rounded-lg shadow dark:bg-[#1E1E26]">
+    <div data-testid="loading-skeleton" className="animate-pulse space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[...Array(6)].map((_, i) => (
           <div key={i}>
@@ -66,7 +66,7 @@ export default function EditClientForm({ id }: { id: string }) {
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-6 bg-white rounded-lg shadow text-gray-900 dark:bg-[#1E1E26] dark:text-white">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-white">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium mb-1 dark:text-gray-200">Nombre</label>

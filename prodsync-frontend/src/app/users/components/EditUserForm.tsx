@@ -59,7 +59,7 @@ export default function EditUserForm({ id }: { id: string }) {
   if (!user) return <div className="p-5 text-center">Usuario no encontrado.</div>;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-6 bg-white rounded-lg shadow dark:bg-[#1E1E26]">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium mb-1 dark:text-gray-200">Nombre</label>

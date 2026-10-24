@@ -7,6 +7,7 @@ import { budgetService } from '@/services/budgetService';
 import { BudgetFormData } from '@/schemas/budgetSchema';
 import { toast } from 'sonner';
 import BudgetForm from '../components/BudgetForm';
+import FormPage from '@/components/form/FormPage';
 import RoleGuard from '@/components/auth/RoleGuard';
 
 export default function CreateBudgetPage() {
@@ -26,18 +27,13 @@ export default function CreateBudgetPage() {
 
   return (
     <RoleGuard roles={['ADMIN']}>
-      <div className="w-full max-w-4xl mx-auto">
-        <div className="rounded-2xl border border-gray-200 bg-white px-6 py-6 dark:border-gray-800 dark:bg-white/[0.03]">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90 mb-6">
-            Nuevo presupuesto
-          </h2>
+      <FormPage title="Nuevo presupuesto" subtitle="Cliente, líneas y condiciones" backHref="/budgets" width="lg">
           <BudgetForm
             onSubmit={async (data) => { await mutation.mutateAsync(data); }}
             isSubmitting={mutation.isPending}
             submitLabel="Crear presupuesto"
           />
-        </div>
-      </div>
+      </FormPage>
     </RoleGuard>
   );
 }

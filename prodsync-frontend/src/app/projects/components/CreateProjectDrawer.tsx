@@ -76,7 +76,7 @@ export default function CreateProjectDrawer({ open, onClose }: Props) {
       />
 
       {/* Drawer */}
-      <div className={`fixed top-0 right-0 z-50 h-full w-full max-w-md bg-[#161820] border-l border-white/[0.06] shadow-2xl flex flex-col transition-transform duration-[420ms] ease-out-expo motion-reduce:duration-0 ${open ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`form-glass fixed top-0 right-0 z-50 h-full w-full max-w-md bg-[#161820] border-l border-white/[0.06] shadow-2xl flex flex-col transition-transform duration-[420ms] ease-out-expo motion-reduce:duration-0 ${open ? 'translate-x-0' : 'translate-x-full'}`}>
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06]">
@@ -186,7 +186,7 @@ export default function CreateProjectDrawer({ open, onClose }: Props) {
               onClick={onClose}
               className="flex-1 px-4 py-2.5 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors"
             >
-              Cancel
+              Cancelar
             </button>
             <button
               type="submit"

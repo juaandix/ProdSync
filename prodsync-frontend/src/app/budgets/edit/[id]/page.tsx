@@ -7,6 +7,7 @@ import { budgetService } from '@/services/budgetService';
 import { BudgetFormData } from '@/schemas/budgetSchema';
 import { toast } from 'sonner';
 import BudgetForm from '../../components/BudgetForm';
+import FormPage from '@/components/form/FormPage';
 import RoleGuard from '@/components/auth/RoleGuard';
 
 export default function EditBudgetPage() {
@@ -33,9 +34,9 @@ export default function EditBudgetPage() {
 
   if (isLoading) {
     return (
-      <div className="animate-pulse space-y-4 p-6">
-        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
-        <div className="h-40 bg-gray-200 dark:bg-gray-700 rounded" />
+      <div className="mx-auto max-w-5xl space-y-4">
+        <div className="h-8 w-1/3 rounded-lg glass shimmer" />
+        <div className="h-96 rounded-2xl glass shimmer" />
       </div>
     );
   }
@@ -44,7 +45,7 @@ export default function EditBudgetPage() {
     return (
       <div className="p-10 text-center text-gray-500">
         Presupuesto no encontrado.{' '}
-        <button onClick={() => router.push('/budgets')} className="text-[#E93222] underline">
+        <button onClick={() => router.push('/budgets')} className="text-brand-400 underline">
           Volver al listado
         </button>
       </div>
@@ -65,19 +66,14 @@ export default function EditBudgetPage() {
 
   return (
     <RoleGuard roles={['ADMIN']}>
-      <div className="w-full max-w-4xl mx-auto">
-        <div className="rounded-2xl border border-gray-200 bg-white px-6 py-6 dark:border-gray-800 dark:bg-white/[0.03]">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90 mb-6">
-            Editar presupuesto — <span className="font-mono text-gray-500">{budget.numero}</span>
-          </h2>
+      <FormPage title="Editar presupuesto" subtitle={`${budget.numero} · ${budget.title}`} backHref={`/budgets/${budget.id}`} width="lg">
           <BudgetForm
             defaultValues={defaultValues}
             onSubmit={async (data) => { await mutation.mutateAsync(data); }}
             isSubmitting={mutation.isPending}
             submitLabel="Guardar cambios"
           />
-        </div>
-      </div>
+      </FormPage>
     </RoleGuard>
   );
 }

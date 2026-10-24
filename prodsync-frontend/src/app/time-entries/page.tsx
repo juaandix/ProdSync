@@ -344,7 +344,7 @@ export default function TimeEntriesPage() {
       </div>
 
       {/* Delete modal */}
-      <Modal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
+      <Modal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} className="max-w-md mx-4">
         <div className="p-6 bg-[#1E1E26] rounded-2xl">
           <h2 className="text-base font-semibold text-white mb-1">{isBulkModal ? `Eliminar ${selectedIds.size} registros` : 'Eliminar registro'}</h2>
           <p className="text-sm text-gray-400 mb-6">Esta acción no se puede deshacer.</p>
@@ -358,7 +358,7 @@ export default function TimeEntriesPage() {
       </Modal>
 
       {/* Edit modal */}
-      <Modal isOpen={editModalOpen} onClose={() => setEditModalOpen(false)}>
+      <Modal isOpen={editModalOpen} onClose={() => setEditModalOpen(false)} className="max-w-lg mx-4">
         <div className="p-6 bg-[#1E1E26] rounded-2xl w-full max-w-md">
           <h2 className="text-base font-semibold text-white mb-5">Editar registro de tiempo</h2>
           <form onSubmit={handleEditSubmit} className="space-y-4">
@@ -378,7 +378,7 @@ export default function TimeEntriesPage() {
               <label className={labelClass}>Tipo</label>
               <select value={editForm.type} onChange={e => setEditForm(f => ({ ...f, type: e.target.value as TimeEntry['type'] }))}
                 className={`${inputClass} [color-scheme:dark]`}>
-                {timeEntryTypes.map(t => <option key={t} value={t} className="bg-[#1E1E26]">{t}</option>)}
+                {timeEntryTypes.map(t => <option key={t} value={t} className="bg-[#1E1E26]">{TYPE_LABEL[t] ?? t}</option>)}
               </select>
             </div>
             <div>

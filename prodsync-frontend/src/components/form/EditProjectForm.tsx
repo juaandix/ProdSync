@@ -90,7 +90,7 @@ export default function EditProjectForm({ id }: EditProjectFormProps) {
   // Estados de carga y error
   if (isLoadingProject || isLoadingClients) {
     return (
-      <div className="animate-pulse space-y-6 p-6 bg-white rounded-lg shadow-md dark:bg-[#1E1E26]">
+      <div className="animate-pulse space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[...Array(5)].map((_, i) => (
             <div key={i}>
@@ -109,7 +109,7 @@ export default function EditProjectForm({ id }: EditProjectFormProps) {
 
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-6 bg-white rounded-lg shadow-md text-gray-900 dark:bg-[#1E1E26] dark:text-white">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-white">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Fields here are identical to CreateProjectForm */}
         {/* Name */}
