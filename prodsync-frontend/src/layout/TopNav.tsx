@@ -39,29 +39,32 @@ export default function TopNav() {
   );
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass-bar border-b border-white/[0.06]">
-      {/* En móvil las secciones bajan a una segunda fila desplazable */}
-      <div className="flex flex-wrap md:flex-nowrap items-center px-4 md:px-6 gap-x-6">
+    // Sin franja propia: tres islas de cristal flotan sobre la misma lámina que el contenido.
+    // El contenedor deja pasar los clics; solo las islas los reciben.
+    <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+      {/* En móvil la navegación baja a una segunda fila desplazable */}
+      <div className="relative flex flex-wrap md:flex-nowrap items-center gap-2 md:gap-3 px-4 md:px-6 pt-3">
         {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2.5 shrink-0 h-14">
+        <Link
+          href="/dashboard"
+          className="pointer-events-auto glass-float flex items-center gap-2.5 shrink-0 h-12 rounded-full pl-1.5 pr-4 press"
+        >
           <Image
             src="/images/prodsync-sidebar-logo.png"
             alt="ProdSync"
             width={36}
             height={36}
+            className="h-9 w-9"
             priority
           />
           <span className="text-sm font-semibold text-white tracking-tight">ProdSync</span>
         </Link>
 
-        {/* Separator */}
-        <div className="hidden md:block h-5 w-px bg-white/[0.08] shrink-0" />
-
-        {/* Nav links: grupo en píldora; en móvil baja a una segunda fila */}
-        <div className="order-last md:order-none basis-full md:basis-auto md:flex-1 min-w-0 pb-2 md:pb-0">
+        {/* Navegación: isla centrada; en móvil, fila completa */}
+        <div className="order-last md:order-none basis-full md:basis-auto md:flex-1 min-w-0 flex md:justify-center">
         <nav
           ref={containerRef}
-          className="relative w-full md:w-fit max-w-full flex items-center gap-0.5 p-1 rounded-full bg-white/[0.04] ring-1 ring-inset ring-white/[0.06] overflow-x-auto no-scrollbar"
+          className="pointer-events-auto glass-float relative w-full md:w-fit max-w-full flex items-center gap-0.5 p-1.5 h-12 rounded-full overflow-x-auto no-scrollbar"
         >
           {/* Indicador compartido: se desliza a la sección activa */}
           <span
@@ -95,8 +98,8 @@ export default function TopNav() {
         </nav>
         </div>
 
-        {/* Right side */}
-        <div className="flex items-center gap-3 shrink-0 ml-auto md:ml-0">
+        {/* Búsqueda y cuenta */}
+        <div className="pointer-events-auto glass-float flex items-center gap-1.5 shrink-0 h-12 rounded-full pl-2 pr-1.5 ml-auto md:ml-0">
           <GlobalSearch />
           <UserDropdown />
         </div>

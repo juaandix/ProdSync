@@ -19,7 +19,7 @@ const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen ambient">
       <TopNav />
-      <main className="pt-[105px] md:pt-14">
+      <main className="pt-[116px] md:pt-[68px]">
         <div className="px-4 md:px-6 py-6 mx-auto max-w-screen-2xl">
           <PageBreadCrumb />
           {children}

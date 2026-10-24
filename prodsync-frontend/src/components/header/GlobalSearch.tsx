@@ -92,7 +92,7 @@ export default function GlobalSearch() {
       {/* Trigger button */}
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 h-8 px-3 rounded-full border border-white/[0.08] bg-white/[0.04] text-gray-500 hover:text-gray-300 hover:bg-white/[0.07] hover:border-white/[0.12] transition-colors"
+        className="flex items-center gap-2 h-9 px-3 rounded-full text-gray-400 hover:text-white hover:bg-white/[0.07] transition-colors"
       >
         <Search size={14} />
         <span className="hidden sm:block text-sm">Buscar</span>

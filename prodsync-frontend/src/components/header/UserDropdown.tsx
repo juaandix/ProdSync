@@ -48,7 +48,7 @@ export default function UserDropdown() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setIsOpen(o => !o)}
-        className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-lg hover:bg-white/[0.05] transition-colors group"
+        className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full hover:bg-white/[0.07] transition-colors group"
       >
         {/* Avatar */}
         <PersonAvatar seed={String(user.id)} name={user.name} size={28} />
