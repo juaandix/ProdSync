@@ -190,7 +190,7 @@ export default function ReportsPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-white">Informes de tiempo</h1>
+          <h1 className="text-2xl font-semibold text-white tracking-tight">Informes de tiempo</h1>
           <p className="text-sm text-gray-500 mt-0.5">{filtered.length} registros en el período seleccionado</p>
         </div>
         <button

@@ -201,7 +201,7 @@ export default function ActivityPage() {
 
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-white">Historial de actividad</h1>
+        <h1 className="text-2xl font-semibold text-white tracking-tight">Historial de actividad</h1>
         <p className="text-sm text-gray-500 mt-0.5">{filtered.length} eventos registrados</p>
       </div>
 

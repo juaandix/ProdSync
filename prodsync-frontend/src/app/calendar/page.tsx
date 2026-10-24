@@ -108,7 +108,7 @@ export default function CalendarPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-base font-semibold text-white">Calendario</h2>
+          <h1 className="text-2xl font-semibold text-white tracking-tight">Calendario</h1>
           <p className="text-xs text-gray-500 mt-0.5">Horas registradas, entregas de proyectos y eventos propios</p>
         </div>
         <div className="flex items-center gap-2 relative">
@@ -134,7 +134,7 @@ export default function CalendarPage() {
 
           <button
             onClick={() => { setForm(f => ({ ...f, startDate: '', endDate: '' })); setShowModal(true); }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-white bg-gradient-to-r from-brand-500 to-theme-purple-500 hover:opacity-90 hover:shadow-lg hover:shadow-brand-500/25 active:scale-95 transition-all"
+            className="flex items-center gap-1.5 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-full transition-colors whitespace-nowrap press"
           >
             <Plus size={14} /> Añadir evento
           </button>
