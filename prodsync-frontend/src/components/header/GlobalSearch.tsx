@@ -92,7 +92,7 @@ export default function GlobalSearch() {
       {/* Trigger button */}
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 h-8 px-3 rounded-lg border border-white/[0.08] bg-white/[0.04] text-gray-500 hover:text-gray-300 hover:bg-white/[0.07] hover:border-white/[0.12] transition-colors"
+        className="flex items-center gap-2 h-9 px-3 rounded-full text-gray-400 hover:text-white hover:bg-white/[0.07] transition-colors"
       >
         <Search size={14} />
         <span className="hidden sm:block text-sm">Buscar</span>
@@ -105,11 +105,11 @@ export default function GlobalSearch() {
       {/* Modal */}
       {open && (
         <div
-          className="fixed inset-0 z-[999] flex items-start justify-center pt-[15vh] bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[999] flex items-start justify-center pt-[15vh] bg-black/60 backdrop-blur-sm animate-fade"
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-xl mx-4 rounded-2xl border border-white/[0.08] bg-[#161820] shadow-2xl overflow-hidden"
+            className="w-full max-w-xl mx-4 animate-dialog rounded-2xl border border-white/[0.08] bg-[#161820] shadow-2xl overflow-hidden"
             onClick={e => e.stopPropagation()}
           >
             {/* Input */}
@@ -161,7 +161,7 @@ export default function GlobalSearch() {
                 </div>
               ) : (
                 <div className="px-4 py-10 text-center">
-                  <p className="text-sm text-gray-400">No results for <span className="text-white">&quot;{query}&quot;</span></p>
+                  <p className="text-sm text-gray-400">Sin resultados para <span className="text-white">&quot;{query}&quot;</span></p>
                   <p className="text-xs text-gray-600 mt-1">Prueba con otro término</p>
                 </div>
               )

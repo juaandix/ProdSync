@@ -49,7 +49,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ taskId, projectId, onTaskUp
       taskService.update(taskId, { ...data, projectId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks', projectId] });
-      toast.success("Task updated successfully!");
+      toast.success("Tarea actualizada");
       if (onTaskUpdated) {
         onTaskUpdated();
       }
@@ -70,7 +70,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ taskId, projectId, onTaskUp
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="md:col-span-2">
-          <label htmlFor="descripcion" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Description</label>
+          <label htmlFor="descripcion" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Descripción</label>
           <textarea
             id="descripcion"
             rows={3}
@@ -80,7 +80,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ taskId, projectId, onTaskUp
           {errors.descripcion && <p className="text-xs text-red-500 mt-1">{errors.descripcion.message}</p>}
         </div>
         <div>
-          <label htmlFor="estado" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Status</label>
+          <label htmlFor="estado" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Estado</label>
           <select
             id="estado"
             {...register("estado")}
@@ -93,7 +93,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ taskId, projectId, onTaskUp
           {errors.estado && <p className="text-xs text-red-500 mt-1">{errors.estado.message}</p>}
         </div>
         <div>
-          <label htmlFor="estimacion" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Estimation (hours)</label>
+          <label htmlFor="estimacion" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Estimación (horas)</label>
           <input
             type="number"
             id="estimacion"

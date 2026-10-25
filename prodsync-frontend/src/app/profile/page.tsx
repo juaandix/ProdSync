@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import PersonAvatar from '@/components/ui/avatar/PersonAvatar';
 import { useAuth } from '@/context/AuthContext';
 import apiClient from '@/lib/apiClient';
 import { toast } from 'sonner';
@@ -73,9 +74,7 @@ export default function ProfilePage() {
 
       {/* Header */}
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 flex items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500/30 to-theme-purple-500/30 border border-brand-500/20 text-brand-400 font-bold text-2xl shrink-0">
-          {user.name.charAt(0).toUpperCase()}
-        </div>
+        <PersonAvatar seed={String(user.id)} name={user.name} size={64} />
         <div>
           <h1 className="text-xl font-semibold text-white">{user.name}</h1>
           <div className="flex items-center gap-2 mt-1">
@@ -89,7 +88,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Información personal */}
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6">
+      <div className="rounded-2xl glass p-6">
         <div className="flex items-center gap-2 mb-5">
           <User size={16} className="text-gray-500" />
           <h2 className="text-sm font-semibold text-white">Información personal</h2>
@@ -155,7 +154,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Cambiar contraseña */}
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6">
+      <div className="rounded-2xl glass p-6">
         <div className="flex items-center gap-2 mb-5">
           <Lock size={16} className="text-gray-500" />
           <h2 className="text-sm font-semibold text-white">Cambiar contraseña</h2>

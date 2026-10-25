@@ -85,7 +85,7 @@ describe('CreateProjectForm', () => {
 
   it('renders the form and loads clients', async () => {
     renderWithClient(<CreateProjectForm />);
-    expect(await screen.findByLabelText('Nombre del Proyecto')).toBeInTheDocument();
+    expect(await screen.findByLabelText('Nombre del proyecto')).toBeInTheDocument();
     expect(screen.getByLabelText('Cliente')).toBeInTheDocument();
     expect(await screen.findByText('Client One')).toBeInTheDocument();
   });
@@ -94,7 +94,7 @@ describe('CreateProjectForm', () => {
     renderWithClient(<CreateProjectForm />);
     await screen.findByText('Client One');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Crear Proyecto' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Crear proyecto' }));
 
     expect(await screen.findByText('El nombre del proyecto es obligatorio.')).toBeInTheDocument();
     expect(await screen.findByText('Debes seleccionar un cliente.')).toBeInTheDocument();
@@ -105,11 +105,11 @@ describe('CreateProjectForm', () => {
     await screen.findByText('Client One');
 
     await act(async () => {
-      fireEvent.change(screen.getByLabelText('Nombre del Proyecto'), { target: { value: 'New Awesome Project' } });
+      fireEvent.change(screen.getByLabelText('Nombre del proyecto'), { target: { value: 'New Awesome Project' } });
       fireEvent.change(screen.getByLabelText('Cliente'), { target: { value: 'client1' } });
-      fireEvent.change(screen.getByLabelText('Fecha de Inicio'), { target: { value: '2024-01-01' } });
+      fireEvent.change(screen.getByLabelText('Fecha de inicio'), { target: { value: '2024-01-01' } });
       fireEvent.change(screen.getByLabelText('Estado'), { target: { value: 'ACTIVO' } });
-      fireEvent.click(screen.getByRole('button', { name: 'Crear Proyecto' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Crear proyecto' }));
     });
 
     await waitFor(() => {

@@ -7,17 +7,18 @@ import dynamic from 'next/dynamic';
 import { ApexOptions } from 'apexcharts';
 import { taskService } from '@/services/taskService';
 import { timeEntryService } from '@/services/timeEntryService';
+import { CATEGORICAL, TASK_STATUS, TIME_ENTRY_TYPE } from '@/lib/chartColors';
 import DashboardMetricCard from '@/components/dashboard/DashboardMetricCard';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const TYPE_NAMES = ['DESARROLLO', 'ANALISIS', 'TESTING', 'REUNION', 'DISEÑO'] as const;
-const TYPE_COLORS = ['#6366f1', '#f59e0b', '#10b981', '#3b82f6', '#ec4899'];
+const TYPE_COLORS = TYPE_NAMES.map((t) => TIME_ENTRY_TYPE[t]);
 
 const STATUS_COLOR_MAP: Record<string, string> = {
-  COMPLETADO:  '#10b981',
-  EN_PROGRESO: '#6366f1',
-  PENDIENTE:   '#f59e0b',
+  COMPLETADO:  TASK_STATUS.COMPLETADO,
+  EN_PROGRESO: TASK_STATUS.EN_PROGRESO,
+  PENDIENTE:   TASK_STATUS.PENDIENTE,
 };
 
 const DARK_CHART: Partial<ApexOptions> = {
@@ -72,7 +73,7 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
   const statusCounts  = tasks.reduce<Record<string, number>>((acc, t) => { acc[t.estado] = (acc[t.estado] || 0) + 1; return acc; }, {});
   const statusLabels  = Object.keys(statusCounts);
   const statusValues  = statusLabels.map(s => statusCounts[s]);
-  const donutColors   = statusLabels.map(s => STATUS_COLOR_MAP[s] ?? '#6366f1');
+  const donutColors   = statusLabels.map(s => STATUS_COLOR_MAP[s] ?? CATEGORICAL[0]);
 
   const tasksWithData  = tasks.filter(t => (t.estimacion ?? 0) > 0 || entries.some(e => e.taskId === t.id));
   const taskLabels     = tasksWithData.map(t => t.descripcion.length > 18 ? t.descripcion.slice(0, 16) + '…' : t.descripcion);
@@ -92,7 +93,7 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
 
   if (tasks.length === 0) {
     return (
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-8 text-center text-gray-500">
+      <div className="rounded-2xl glass p-8 text-center text-gray-500">
         Aún no hay tareas en este proyecto
       </div>
     );
@@ -115,12 +116,8 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
       axisTicks: { show: false },
     },
     yaxis: { labels: { style: { colors: '#6b7280', fontSize: '11px' }, formatter: v => `${v}h` } },
-    dataLabels: {
-      enabled: true,
-      offsetY: -20,
-      formatter: (v: number) => v > 0 ? `${v}h` : '',
-      style: { fontSize: '11px', fontWeight: 700, colors: ['#fff'] },
-    },
+    // Con cinco barras estrechas las cifras se solapan: el valor va en el tooltip
+    dataLabels: { enabled: false },
     legend: { show: false },
     tooltip: { theme: 'dark', y: { formatter: v => `${v}h` } },
   };
@@ -153,7 +150,7 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
     ...DARK_CHART,
     chart: { ...DARK_CHART.chart, type: 'bar' },
     plotOptions: { bar: { borderRadius: 4, columnWidth: '60%', dataLabels: { position: 'top' } } },
-    colors: ['#6366f1', '#f59e0b'],
+    colors: [CATEGORICAL[0], CATEGORICAL[1]],
     xaxis: {
       categories: taskLabels,
       labels: { style: { colors: '#6b7280', fontSize: '11px' }, rotate: -20 },
@@ -178,6 +175,7 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
       {/* KPI Cards */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <DashboardMetricCard
+          highlight
           title="Horas registradas" value={`${totalReal}h`}
           icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>}
         />
@@ -185,7 +183,7 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
           title="Horas estimadas" value={`${totalEst}h`}
           icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>}
         />
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5">
+        <div className="rounded-2xl glass p-5">
           <span className="text-xs font-medium uppercase tracking-wider text-gray-500">Desviación</span>
           <p className={`text-3xl font-bold mt-2 ${devColor}`}>{devValue}</p>
           {desviacion !== null && (
@@ -200,14 +198,14 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
       </div>
 
       {entries.length === 0 ? (
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-8 text-center text-gray-500">
+        <div className="rounded-2xl glass p-8 text-center text-gray-500">
           Aún no hay horas registradas en este proyecto
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
           {/* Horas por tipo */}
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
+          <div className="rounded-2xl glass p-6">
             <div className="flex items-center justify-between mb-4 gap-2">
               <h3 className="text-sm font-semibold text-white">Horas por tipo</h3>
               <select
@@ -241,7 +239,7 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
           </div>
 
           {/* Estado de tareas */}
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
+          <div className="rounded-2xl glass p-6">
             <h3 className="text-sm font-semibold text-white mb-4">Estado de tareas</h3>
             <div className="grid grid-cols-2 gap-4">
               <ReactApexChart options={donutStatusOpts} series={statusValues} type="donut" height={200} />
@@ -274,7 +272,7 @@ export default function ProjectAnalytics({ projectId }: ProjectAnalyticsProps) {
 
       {/* Estimado vs Registrado */}
       {tasksWithData.length > 0 && (
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
+        <div className="rounded-2xl glass p-6">
           <h3 className="text-sm font-semibold text-white mb-5">Estimado vs Registrado por tarea</h3>
           <ReactApexChart
             options={groupedBarOpts}

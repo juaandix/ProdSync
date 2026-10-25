@@ -7,6 +7,7 @@ import { projectService } from '@/services/projectService';
 import Badge from '@/components/ui/badge/Badge';
 import { Pencil, Calendar, User, ClipboardList } from 'lucide-react';
 import RoleGuard from '@/components/auth/RoleGuard';
+import ClientLogo from '@/components/ui/avatar/ClientLogo';
 import StatusSelect from '@/app/projects/components/StatusSelect';
 
 export default function ViewProjectCard({ id }: { id: string }) {
@@ -19,7 +20,7 @@ export default function ViewProjectCard({ id }: { id: string }) {
   if (isLoading) {
     return (
       <div className="space-y-4 animate-pulse">
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6 flex items-center gap-5">
+        <div className="rounded-2xl glass p-6 flex items-center gap-5">
           <div className="h-16 w-16 rounded-full bg-white/[0.06] shrink-0" />
           <div className="flex-1 space-y-3">
             <div className="h-5 rounded bg-white/[0.06] w-1/3" />
@@ -43,12 +44,15 @@ export default function ViewProjectCard({ id }: { id: string }) {
     <div className="space-y-5">
 
       {/* Hero card */}
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] overflow-hidden">
-        <div className="h-1.5 w-full bg-gradient-to-r from-brand-500 to-theme-purple-500" />
+      <div className="rounded-2xl glass overflow-hidden">
         <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-brand-500/30 to-theme-purple-500/30 border-2 border-brand-500/30 text-brand-400 font-bold text-2xl shrink-0">
-            {project.name.charAt(0).toUpperCase()}
-          </div>
+          {project.client ? (
+            <ClientLogo client={project.client} size={64} />
+          ) : (
+            <div className="w-16 h-16 flex items-center justify-center rounded-2xl bg-white/[0.06] text-gray-300 font-bold text-2xl shrink-0">
+              {project.name.charAt(0).toUpperCase()}
+            </div>
+          )}
           <div className="flex-1 min-w-0">
             <h2 className="text-xl font-semibold text-white mb-2">{project.name}</h2>
             <div className="flex items-center gap-3 flex-wrap">
@@ -71,13 +75,13 @@ export default function ViewProjectCard({ id }: { id: string }) {
           <div className="flex items-center gap-2 shrink-0">
             <Link href={`/projects/${id}/tasks`}>
               <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">
-                <ClipboardList size={14} /> Tasks
+                <ClipboardList size={14} /> Tareas
               </button>
             </Link>
             <RoleGuard roles={['ADMIN', 'OPERATOR']}>
               <Link href={`/projects/edit/${id}`}>
                 <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">
-                  <Pencil size={14} /> Edit
+                  <Pencil size={14} /> Editar
                 </button>
               </Link>
             </RoleGuard>
@@ -88,28 +92,28 @@ export default function ViewProjectCard({ id }: { id: string }) {
       {/* Details grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Description */}
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
-          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-3">Description</h3>
+        <div className="rounded-2xl glass p-6">
+          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-3">Descripción</h3>
           <p className="text-sm text-gray-300 leading-relaxed">
-            {project.description || <span className="text-gray-600">No description provided.</span>}
+            {project.description || <span className="text-gray-600">Sin descripción.</span>}
           </p>
         </div>
 
         {/* Dates + Client */}
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
-          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">Details</h3>
+        <div className="rounded-2xl glass p-6">
+          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">Detalles</h3>
           <div className="space-y-4">
             <div className="flex items-start gap-3">
               <Calendar size={14} className="text-gray-600 mt-0.5 shrink-0" />
               <div>
-                <p className="text-xs text-gray-600 mb-0.5">Start Date</p>
+                <p className="text-xs text-gray-600 mb-0.5">Fecha de inicio</p>
                 <p className="text-sm text-white/90">{project.startDate || "—"}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <Calendar size={14} className="text-gray-600 mt-0.5 shrink-0" />
               <div>
-                <p className="text-xs text-gray-600 mb-0.5">End Date</p>
+                <p className="text-xs text-gray-600 mb-0.5">Fecha de fin</p>
                 <p className="text-sm text-white/90">{project.endDate || "—"}</p>
               </div>
             </div>
@@ -117,7 +121,7 @@ export default function ViewProjectCard({ id }: { id: string }) {
               <div className="flex items-start gap-3">
                 <User size={14} className="text-gray-600 mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-xs text-gray-600 mb-0.5">Client</p>
+                  <p className="text-xs text-gray-600 mb-0.5">Cliente</p>
                   <Link href={`/clients/${project.client.id}`} className="text-sm text-brand-400 hover:text-brand-300 transition-colors">
                     {project.client.name}
                   </Link>

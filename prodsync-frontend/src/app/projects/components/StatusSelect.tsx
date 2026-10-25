@@ -30,11 +30,11 @@ export default function StatusSelect({ projectId, current }: Props) {
       projectService.update(projectId, { status }),
     onSuccess: (_, status) => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
-      toast.success(`Status updated to ${status.replace('_', ' ')}`);
+      toast.success(`Estado cambiado a ${status.replace('_', ' ')}`);
       setOpen(false);
     },
     onError: () => {
-      toast.error('Failed to update status');
+      toast.error('No se pudo cambiar el estado');
     },
   });
 
@@ -69,7 +69,7 @@ export default function StatusSelect({ projectId, current }: Props) {
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-1.5 z-50 w-40 rounded-xl border border-white/[0.08] bg-[#161820] shadow-xl py-1 overflow-hidden">
+        <div className="absolute left-0 top-full mt-1.5 z-50 w-40 origin-top-left animate-pop rounded-xl border border-white/[0.08] bg-[#161820] shadow-xl py-1 overflow-hidden">
           {STATUSES.map(status => {
             const s = STATUS_STYLES[status];
             const isActive = status === current;

@@ -1,8 +1,15 @@
 "use client";
 import Link from "next/link";
+import PersonAvatar from "@/components/ui/avatar/PersonAvatar";
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { LogOut, Settings, User } from "lucide-react";
+
+const ROLE_LABEL: Record<string, string> = {
+  ADMIN:    "Administrador",
+  OPERATOR: "Operador",
+  USER:     "Usuario",
+};
 
 const ROLE_COLOR: Record<string, string> = {
   ADMIN:    "text-blue-light-400 bg-blue-light-500/10",
@@ -41,12 +48,10 @@ export default function UserDropdown() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setIsOpen(o => !o)}
-        className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-lg hover:bg-white/[0.05] transition-colors group"
+        className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full hover:bg-white/[0.07] transition-colors group"
       >
         {/* Avatar */}
-        <div className="w-7 h-7 flex items-center justify-center rounded-full bg-gradient-to-br from-brand-500/40 to-theme-purple-500/40 border border-brand-500/30 text-brand-300 font-semibold text-xs shrink-0">
-          {user.name.charAt(0).toUpperCase()}
-        </div>
+        <PersonAvatar seed={String(user.id)} name={user.name} size={28} />
         {/* Name */}
         <span className="hidden sm:block text-sm font-medium text-gray-300 group-hover:text-white transition-colors max-w-[100px] truncate">
           {user.name.split(' ')[0]}
@@ -60,13 +65,11 @@ export default function UserDropdown() {
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-60 rounded-xl border border-white/[0.08] bg-[#161820] shadow-2xl z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-60 origin-top-right animate-pop rounded-xl border border-white/[0.08] bg-[#161820] shadow-2xl z-50 overflow-hidden">
           {/* Header */}
           <div className="px-4 py-3 border-b border-white/[0.06]">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 flex items-center justify-center rounded-full bg-gradient-to-br from-brand-500/30 to-theme-purple-500/30 border border-brand-500/20 text-brand-400 font-semibold text-sm shrink-0">
-                {user.name.charAt(0).toUpperCase()}
-              </div>
+              <PersonAvatar seed={String(user.id)} name={user.name} size={36} />
               <div className="min-w-0">
                 <p className="text-sm font-medium text-white truncate">{user.name}</p>
                 <p className="text-xs text-gray-500 truncate">{user.email}</p>
@@ -74,7 +77,7 @@ export default function UserDropdown() {
             </div>
             <div className="mt-2">
               <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${ROLE_COLOR[user.role] ?? ROLE_COLOR.USER}`}>
-                {user.role}
+                {ROLE_LABEL[user.role] ?? user.role}
               </span>
             </div>
           </div>

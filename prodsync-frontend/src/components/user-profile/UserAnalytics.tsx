@@ -8,20 +8,21 @@ import { ApexOptions } from 'apexcharts';
 import { taskService } from '@/services/taskService';
 import { timeEntryService } from '@/services/timeEntryService';
 import { projectService } from '@/services/projectService';
+import { CATEGORICAL, TASK_STATUS, TIME_ENTRY_TYPE } from '@/lib/chartColors';
 import DashboardMetricCard from '@/components/dashboard/DashboardMetricCard';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const TYPE_COLORS = ['#E93222', '#F59E0B', '#3B82F6', '#10B981', '#8B5CF6'];
 const typeNames = ['DESARROLLO', 'ANALISIS', 'TESTING', 'REUNION', 'DISEÑO'] as const;
+const TYPE_COLORS = typeNames.map((t) => TIME_ENTRY_TYPE[t]);
 
 // TaskStatus enum: PENDIENTE | EN_PROGRESO | COMPLETADO
 const STATUS_COLOR_MAP: Record<string, string> = {
-  'PENDIENTE':  '#F59E0B',
-  'EN_PROGRESO': '#3B82F6',
-  'COMPLETADO': '#10B981',
+  'PENDIENTE':  TASK_STATUS.PENDIENTE,
+  'EN_PROGRESO': TASK_STATUS.EN_PROGRESO,
+  'COMPLETADO': TASK_STATUS.COMPLETADO,
 };
-const FALLBACK_COLORS = ['#465FFF', '#A855F7', '#06B6D4', '#EC4899'];
+const FALLBACK_COLORS = CATEGORICAL.slice(4);
 
 // ProjectStatus enum: ACTIVO | EN_PROGRESO | COMPLETADO | CANCELADO
 const PROJECT_STATUS_CLASSES: Record<string, string> = {
@@ -90,9 +91,9 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
 
   if (userEntries.length === 0) {
     return (
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-10 text-center">
+      <div className="rounded-2xl glass p-10 text-center">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" className="text-gray-700 mx-auto mb-2"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><polyline points="12 6 12 12 16 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-        <p className="text-sm text-gray-400">No time entries recorded yet</p>
+        <p className="text-sm text-gray-400">Todavía no hay horas registradas</p>
       </div>
     );
   }
@@ -218,25 +219,25 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
     <div className="space-y-6">
       {/* KPI Cards */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <DashboardMetricCard title="Logged Hours" value={`${totalReal}h`}
+        <DashboardMetricCard highlight title="Horas registradas" value={`${totalReal}h`}
           icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>}
         />
-        <DashboardMetricCard title="Estimated Hours" value={`${totalEst}h`}
+        <DashboardMetricCard title="Horas estimadas" value={`${totalEst}h`}
           icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>}
         />
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 hover:bg-white/[0.06] transition-colors">
+        <div className="rounded-2xl glass p-5 hover:bg-white/[0.06] transition-colors">
           <div className="flex items-start justify-between mb-4">
-            <span className="text-xs font-medium uppercase tracking-wider text-gray-400">Deviation</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-gray-400">Desviación</span>
             <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-brand-500/10 text-brand-400">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
             </div>
           </div>
           <p className={`text-3xl font-bold tracking-tight ${devColor}`}>{devValue}</p>
           {desviacion !== null && (
-            <p className="mt-1 text-xs text-gray-500">{desviacion > 0 ? 'Over estimate' : 'Under estimate'}</p>
+            <p className="mt-1 text-xs text-gray-500">{desviacion > 0 ? 'Por encima del estimado' : 'Por debajo del estimado'}</p>
           )}
         </div>
-        <DashboardMetricCard title="Tasks Done" value={`${completadas}/${workedTasks.length}`}
+        <DashboardMetricCard title="Tareas completadas" value={`${completadas}/${workedTasks.length}`}
           icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>}
           trend={workedTasks.length > 0 ? { value: `${Math.round((completadas/workedTasks.length)*100)}%`, positive: true } : undefined}
         />
@@ -245,7 +246,7 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
       {/* Charts */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Horas por tipo */}
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 sm:p-6">
+        <div className="rounded-2xl glass p-5 sm:p-6">
           <h3 className="mb-3 text-sm font-medium text-white uppercase tracking-wider">
             Horas por tipo de entrada
           </h3>
@@ -275,7 +276,7 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
 
         {/* Estado de tareas */}
         {statusLabels.length > 0 && (
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 sm:p-6">
+          <div className="rounded-2xl glass p-5 sm:p-6">
             <h3 className="mb-3 text-sm font-medium text-white uppercase tracking-wider">
               Estado de tareas
             </h3>
@@ -322,7 +323,7 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
 
       {/* Lista de tareas del usuario */}
       {workedTasks.length > 0 && (
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 sm:p-6">
+        <div className="rounded-2xl glass p-5 sm:p-6">
           <h3 className="mb-4 text-sm font-medium text-white uppercase tracking-wider">
             Tareas asociadas
           </h3>
@@ -384,7 +385,7 @@ export default function UserAnalytics({ userId }: UserAnalyticsProps) {
 
       {/* Tabla de proyectos del usuario */}
       {projectStats.length > 0 && (
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 sm:p-6">
+        <div className="rounded-2xl glass p-5 sm:p-6">
           <h3 className="mb-4 text-sm font-medium text-white uppercase tracking-wider">
             Proyectos trabajados
           </h3>

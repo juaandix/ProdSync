@@ -19,12 +19,12 @@
 import { z } from 'zod';
 
 export const clientSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email"),
-  identification: z.string().min(2, "Identification must be at least 2 characters"),
+  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+  email: z.string().email("Introduce un email válido"),
+  identification: z.string().min(2, "El NIF/CIF debe tener al menos 2 caracteres"),
   location: z.string().optional(),
   province: z.string().optional(),
-  contactPerson: z.string().min(2, "Contact Person must be at least 2 characters"),
+  contactPerson: z.string().min(2, "La persona de contacto debe tener al menos 2 caracteres"),
 });
 
 export type ClientFormData = z.infer<typeof clientSchema>;

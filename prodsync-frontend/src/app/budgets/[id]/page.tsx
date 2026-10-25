@@ -13,6 +13,8 @@ import { toast } from 'sonner';
 import { BudgetStatus } from '@/types/models';
 import RoleGuard from '@/components/auth/RoleGuard';
 import { Pencil, ArrowLeft, Loader2 } from 'lucide-react';
+import ClientLogo from '@/components/ui/avatar/ClientLogo';
+import { clientService } from '@/services/clientService';
 
 const STATUS_LABEL: Record<BudgetStatus, string> = {
   draft: 'Borrador', sent: 'Enviado', accepted: 'Aceptado', rejected: 'Rechazado',
@@ -34,6 +36,13 @@ export default function BudgetDetailPage() {
   const { data: budget, isLoading, isError } = useQuery({
     queryKey: ['budget', id],
     queryFn: () => budgetService.getById(id),
+  });
+
+  // El cliente completo trae su logo (el presupuesto solo lleva id y nombre)
+  const { data: client } = useQuery({
+    queryKey: ['client', budget?.clientId],
+    queryFn: () => clientService.getById(budget!.clientId),
+    enabled: !!budget?.clientId,
   });
 
   const { data: tasks = [] } = useQuery({
@@ -61,7 +70,7 @@ export default function BudgetDetailPage() {
   if (isLoading) {
     return (
       <div className="animate-pulse space-y-4">
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
+        <div className="rounded-2xl glass p-6">
           <div className="h-6 rounded bg-white/[0.06] w-1/3 mb-2" />
           <div className="h-4 rounded bg-white/[0.06] w-1/2" />
         </div>
@@ -74,7 +83,7 @@ export default function BudgetDetailPage() {
 
   if (isError || !budget) {
     return (
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-10 text-center">
+      <div className="rounded-2xl glass p-10 text-center">
         <p className="text-sm text-gray-400 mb-3">Presupuesto no encontrado.</p>
         <button onClick={() => router.push('/budgets')} className="text-sm text-brand-400 hover:text-brand-300 transition-colors">
           ← Volver a presupuestos
@@ -103,10 +112,11 @@ export default function BudgetDetailPage() {
       <div className="w-full max-w-4xl mx-auto space-y-5">
 
         {/* Cabecera */}
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] overflow-hidden">
-          <div className="h-1.5 w-full bg-gradient-to-r from-brand-500 to-theme-purple-500" />
+        <div className="rounded-2xl glass overflow-hidden">
           <div className="p-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-            <div>
+            <div className="flex items-start gap-4 min-w-0">
+            <ClientLogo client={client ?? { id: budget.clientId, name: budget.clientName ?? 'Cliente' }} size={56} />
+            <div className="min-w-0">
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-xs font-mono text-gray-500 bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded-md">{budget.numero}</span>
                 <Badge size="sm" color={STATUS_COLOR[budget.status]}>{STATUS_LABEL[budget.status]}</Badge>
@@ -118,6 +128,7 @@ export default function BudgetDetailPage() {
                 <span><span className="text-gray-600">Emitido:</span> {budget.createdAt}</span>
                 <span><span className="text-gray-600">Válido hasta:</span> {budget.validUntil}</span>
               </div>
+            </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <Link href={`/budgets/edit/${budget.id}`}>
@@ -165,7 +176,7 @@ export default function BudgetDetailPage() {
 
         {/* KPIs financieros */}
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <DashboardMetricCard title="Total (sin IVA)" value={formatEur(budget.totalAmount)}
+          <DashboardMetricCard highlight title="Total (sin IVA)" value={formatEur(budget.totalAmount)}
             icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>}
           />
           <DashboardMetricCard title="IVA (21%)" value={formatEur(totalIVA)}
@@ -176,7 +187,7 @@ export default function BudgetDetailPage() {
             description={`Media: ${formatEur(avgLine)}/línea`}
             icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>}
           />
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 hover:bg-white/[0.06] transition-colors">
+          <div className="rounded-2xl glass p-5 hover:bg-white/[0.06] transition-colors">
             <div className="flex items-start justify-between mb-4">
               <span className="text-xs font-medium uppercase tracking-wider text-gray-400">Validez</span>
               <div className={`flex items-center justify-center w-9 h-9 rounded-xl ${daysLeft < 0 ? 'bg-error-500/10 text-error-400' : daysLeft <= 7 ? 'bg-warning-500/10 text-warning-400' : 'bg-brand-500/10 text-brand-400'}`}>
@@ -194,7 +205,7 @@ export default function BudgetDetailPage() {
 
         {/* Cálculo real: horas vs presupuesto */}
         {hasProjectData && (
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6">
+          <div className="rounded-2xl glass p-6">
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-sm font-semibold text-white">Ejecución real del proyecto</h3>
               {budget.projectId && (
@@ -244,7 +255,7 @@ export default function BudgetDetailPage() {
         )}
 
         {/* Líneas de presupuesto */}
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] px-6 py-5">
+        <div className="rounded-2xl glass px-6 py-5">
           <h3 className="text-sm font-medium uppercase tracking-wider text-gray-500 mb-5">Líneas del presupuesto</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -286,7 +297,7 @@ export default function BudgetDetailPage() {
 
         {/* Notas */}
         {budget.notes && (
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] px-6 py-5">
+          <div className="rounded-2xl glass px-6 py-5">
             <h3 className="text-sm font-medium uppercase tracking-wider text-gray-500 mb-3">Notas / Condiciones</h3>
             <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">{budget.notes}</p>
           </div>

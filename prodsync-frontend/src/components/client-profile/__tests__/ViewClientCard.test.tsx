@@ -8,6 +8,11 @@ import { clientService } from '@/services/clientService';
 import { projectService } from '@/services/projectService';
 import { ApiServiceError } from '@/services/errors';
 
+// La ficha abre los proyectos con el router de Next
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ push: jest.fn() }),
+}));
+
 jest.mock('@/services/clientService', () => ({
   clientService: {
     getById: jest.fn(),

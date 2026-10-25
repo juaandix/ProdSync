@@ -13,7 +13,7 @@ export default function MyTimeEntriesTable() {
   const recent = entries.slice(0, 5);
 
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-6">
+    <div className="rounded-2xl glass p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-base font-semibold text-white">Registros de tiempo recientes</h3>
         <Link
@@ -24,7 +24,7 @@ export default function MyTimeEntriesTable() {
         </Link>
       </div>
       {isLoading ? (
-        <div className="space-y-3">
+        <div className="space-y-3 shimmer rounded-lg">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="flex gap-4 py-1">
               <div className="h-4 rounded bg-white/10 w-1/4" />
@@ -34,7 +34,7 @@ export default function MyTimeEntriesTable() {
           ))}
         </div>
       ) : recent.length === 0 ? (
-        <div className="py-8 text-center text-gray-500 text-sm">No time entries found.</div>
+        <div className="py-8 text-center text-gray-500 text-sm">Todavía no hay horas registradas.</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -46,7 +46,7 @@ export default function MyTimeEntriesTable() {
                 <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Descripción</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="stagger-children">
               {recent.map((entry) => (
                 <tr
                   key={entry.id}

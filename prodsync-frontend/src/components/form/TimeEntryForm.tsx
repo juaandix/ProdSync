@@ -35,12 +35,12 @@ const TimeEntryForm = ({ taskId, onTimeEntryCreated }: TimeEntryFormProps) => {
     mutationFn: (data: TimeEntryFormData) => {
       const hoursNumber = parseTime(data.hours);
       if (isNaN(hoursNumber) || hoursNumber <= 0) {
-        throw new Error('Hours must be a positive number and in a valid format (e.g., 1.5, 1h 30m, 1:30).');
+        throw new Error('Las horas deben ser un número positivo con un formato válido (ej.: 1.5, 1h 30m, 1:30).');
       }
       return timeEntryService.create({ ...data, taskId, hours: hoursNumber });
     },
     onSuccess: (newTimeEntry) => {
-      toast.success('Time entry created successfully!');
+      toast.success('Horas registradas');
       onTimeEntryCreated(newTimeEntry);
       reset();
     },
@@ -57,7 +57,7 @@ const TimeEntryForm = ({ taskId, onTimeEntryCreated }: TimeEntryFormProps) => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" data-testid="time-entry-form">
       <div>
         <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-          Date
+          Fecha
         </label>
         <input
           type="date"
@@ -69,7 +69,7 @@ const TimeEntryForm = ({ taskId, onTimeEntryCreated }: TimeEntryFormProps) => {
       </div>
       <div>
         <label htmlFor="hours" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-          Hours Spent
+          Horas dedicadas
         </label>
         <input
           type="text"
@@ -82,7 +82,7 @@ const TimeEntryForm = ({ taskId, onTimeEntryCreated }: TimeEntryFormProps) => {
       </div>
       <div>
         <label htmlFor="type" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-          Type
+          Tipo
         </label>
         <select
           id="type"
@@ -98,7 +98,7 @@ const TimeEntryForm = ({ taskId, onTimeEntryCreated }: TimeEntryFormProps) => {
       </div>
       <div>
         <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-          Description
+          Descripción
         </label>
         <textarea
           id="description"
@@ -112,7 +112,7 @@ const TimeEntryForm = ({ taskId, onTimeEntryCreated }: TimeEntryFormProps) => {
         disabled={isSubmitting}
         className="inline-flex items-center justify-center rounded-md bg-primary py-2 px-4 text-center font-medium text-white hover:bg-opacity-90 lg:px-8"
       >
-        {isSubmitting ? 'Logging...' : 'Log Time'}
+        {isSubmitting ? 'Registrando...' : 'Registrar horas'}
       </button>
     </form>
   );

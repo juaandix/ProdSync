@@ -90,7 +90,7 @@ export default function EditProjectForm({ id }: EditProjectFormProps) {
   // Estados de carga y error
   if (isLoadingProject || isLoadingClients) {
     return (
-      <div className="animate-pulse space-y-6 p-6 bg-white rounded-lg shadow-md dark:bg-[#1E1E26]">
+      <div className="animate-pulse space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[...Array(5)].map((_, i) => (
             <div key={i}>
@@ -109,12 +109,12 @@ export default function EditProjectForm({ id }: EditProjectFormProps) {
 
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-6 bg-white rounded-lg shadow-md text-gray-900 dark:bg-[#1E1E26] dark:text-white">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-white">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Fields here are identical to CreateProjectForm */}
         {/* Name */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">Nombre del Proyecto</label>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">Nombre del proyecto</label>
           <input
             type="text"
             id="name"
@@ -156,7 +156,7 @@ export default function EditProjectForm({ id }: EditProjectFormProps) {
 
         {/* Start Date */}
         <div>
-          <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">Fecha de Inicio</label>
+          <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">Fecha de inicio</label>
           <input
             type="date"
             id="startDate"
@@ -168,7 +168,7 @@ export default function EditProjectForm({ id }: EditProjectFormProps) {
 
         {/* End Date */}
         <div>
-          <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">Fecha de Fin (Opcional)</label>
+          <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">Fecha de fin (opcional)</label>
           <input
             type="date"
             id="endDate"
@@ -187,7 +187,7 @@ export default function EditProjectForm({ id }: EditProjectFormProps) {
             className={`w-full px-4 py-2 border rounded-md focus:ring-2 dark:bg-[#1E1E26] dark:text-white/90 ${errors.status ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-blue-500 dark:border-gray-700'}`}
           >
             <option value="ACTIVO">Activo</option>
-            <option value="EN_PROGRESO">En Progreso</option>
+            <option value="EN_PROGRESO">En progreso</option>
             <option value="COMPLETADO">Completado</option>
             <option value="CANCELADO">Cancelado</option>
           </select>
@@ -201,7 +201,7 @@ export default function EditProjectForm({ id }: EditProjectFormProps) {
           disabled={updateProjectMutation.isPending}
           className="px-6 py-2 bg-[#1E1E26] text-white font-semibold rounded-md shadow-sm hover:bg-[#13131a] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {updateProjectMutation.isPending ? "Actualizando..." : "Actualizar Proyecto"}
+          {updateProjectMutation.isPending ? "Guardando..." : "Guardar cambios"}
         </button>
       </div>
     </form>

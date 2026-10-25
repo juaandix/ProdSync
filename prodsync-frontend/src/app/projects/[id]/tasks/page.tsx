@@ -106,15 +106,13 @@ const TasksPage: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-white">
-              {project ? project.name : 'Proyecto'} — Tareas
-            </h2>
-            <p className="text-sm text-gray-500 mt-0.5">{tasks.length} tarea{tasks.length !== 1 ? 's' : ''}</p>
+            <h1 className="text-2xl font-semibold text-white tracking-tight">Tareas</h1>
+            <p className="text-sm text-gray-500 mt-0.5">{project ? `${project.name} · ` : ''}{tasks.length} tarea{tasks.length !== 1 ? 's' : ''}</p>
           </div>
           <RoleGuard roles={['ADMIN', 'OPERATOR']}>
             <button
               onClick={() => setIsCreateTaskModalOpen(true)}
-              className="px-4 py-2 bg-white text-[#1E1E26] rounded-xl text-sm font-semibold hover:bg-white/90 transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-full transition-colors whitespace-nowrap press"
             >
               + Nueva tarea
             </button>
@@ -141,7 +139,7 @@ const TasksPage: React.FC = () => {
       {/* Modal: Registrar tiempo */}
       {isTimeEntryModalOpen && showTimeEntryFormForTask && (
         <Modal isOpen onClose={() => { setIsTimeEntryModalOpen(false); setShowTimeEntryFormForTask(null); }} className="max-w-lg p-6">
-          <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-white">Registrar tiempo</h2>
+          <h2 className="text-lg font-semibold mb-4 text-white">Registrar tiempo</h2>
           <CreateTimeEntryForm
             taskId={showTimeEntryFormForTask}
             onTimeEntryCreated={() => {
@@ -157,7 +155,7 @@ const TasksPage: React.FC = () => {
       {/* Modal: Nueva tarea */}
       {isCreateTaskModalOpen && typeof projectId === 'string' && (
         <Modal isOpen onClose={() => setIsCreateTaskModalOpen(false)} className="max-w-lg p-6">
-          <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-white">Nueva tarea</h2>
+          <h2 className="text-lg font-semibold mb-4 text-white">Nueva tarea</h2>
           <CreateTaskForm
             projectId={projectId}
             onTaskCreated={() => {
@@ -173,7 +171,7 @@ const TasksPage: React.FC = () => {
       {isDeleteModalOpen && (
         <Modal isOpen onClose={() => { setIsDeleteModalOpen(false); setTaskToDelete(null); }} className="max-w-md">
           <div className="p-6">
-            <h2 className="text-lg font-bold mb-2 text-gray-800 dark:text-white">Eliminar tarea</h2>
+            <h2 className="text-lg font-semibold mb-2 text-white">Eliminar tarea</h2>
             <p className="text-gray-500 dark:text-gray-300 text-sm">¿Seguro que quieres eliminar esta tarea? Esta acción no se puede deshacer.</p>
             <div className="mt-6 flex justify-end gap-3">
               <button
@@ -197,7 +195,7 @@ const TasksPage: React.FC = () => {
       {/* Modal: Editar tarea */}
       {isEditModalOpen && taskToEdit && (
         <Modal isOpen onClose={() => { setIsEditModalOpen(false); setTaskToEdit(null); }} className="max-w-lg p-6">
-          <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-white">Editar tarea</h2>
+          <h2 className="text-lg font-semibold mb-4 text-white">Editar tarea</h2>
           <EditTaskForm
             taskId={taskToEdit}
             projectId={projectId as string}

@@ -8,22 +8,17 @@ import { taskService } from '@/services/taskService';
 import { userService } from '@/services/userService';
 import { Download } from 'lucide-react';
 import { ApexOptions } from 'apexcharts';
+import { CATEGORICAL, TIME_ENTRY_TYPE } from '@/lib/chartColors';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
-const TYPE_COLOR: Record<string, string> = {
-  DESARROLLO: '#6366f1',
-  ANALISIS:   '#f59e0b',
-  TESTING:    '#10b981',
-  REUNION:    '#3b82f6',
-  DISEÑO:     '#ec4899',
-};
+const TYPE_COLOR = TIME_ENTRY_TYPE;
 
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5">
+    <div className="rounded-2xl glass p-5">
       <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{label}</p>
       <p className="text-2xl font-bold text-white">{value}</p>
       {sub && <p className="text-xs text-gray-600 mt-0.5">{sub}</p>}
@@ -168,7 +163,7 @@ export default function ReportsPage() {
     theme: { mode: 'dark' },
     plotOptions: { bar: { borderRadius: 5, columnWidth: '55%' } },
     dataLabels: { enabled: false },
-    colors: ['#6366f1'],
+    colors: [CATEGORICAL[0]],
     grid: { borderColor: 'rgba(255,255,255,0.06)', yaxis: { lines: { show: true } }, xaxis: { lines: { show: false } } },
     xaxis: { categories, axisBorder: { show: false }, axisTicks: { show: false }, labels: { style: { colors: '#6b7280', fontSize: '11px' } } },
     yaxis: { labels: { style: { colors: '#6b7280', fontSize: '11px' }, formatter: (v) => `${v}h` } },
@@ -179,7 +174,7 @@ export default function ReportsPage() {
     chart: { type: 'donut', background: 'transparent', fontFamily: 'inherit' },
     theme: { mode: 'dark' },
     labels: hoursByType.map(([t]) => t),
-    colors: hoursByType.map(([t]) => TYPE_COLOR[t] || '#6366f1'),
+    colors: hoursByType.map(([t]) => TYPE_COLOR[t] || CATEGORICAL[0]),
     dataLabels: { enabled: false },
     legend: { show: false },
     plotOptions: { pie: { donut: { size: '65%' } } },
@@ -195,7 +190,7 @@ export default function ReportsPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-white">Informes de tiempo</h1>
+          <h1 className="text-2xl font-semibold text-white tracking-tight">Informes de tiempo</h1>
           <p className="text-sm text-gray-500 mt-0.5">{filtered.length} registros en el período seleccionado</p>
         </div>
         <button
@@ -208,7 +203,7 @@ export default function ReportsPage() {
       </div>
 
       {/* Filtros */}
-      <div className="flex flex-wrap gap-3 p-4 rounded-2xl border border-white/[0.06] bg-white/[0.03]">
+      <div className="flex flex-wrap gap-3 p-4 rounded-2xl glass">
         <div className="flex flex-col gap-1">
           <label className="text-xs text-gray-500 uppercase tracking-wider">Desde</label>
           <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className={inputClass} />
@@ -237,7 +232,7 @@ export default function ReportsPage() {
       {/* Gráficos fila 1 */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Horas por mes */}
-        <div className="xl:col-span-2 rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6">
+        <div className="xl:col-span-2 rounded-2xl glass p-6">
           <h2 className="text-sm font-semibold text-white mb-4">Horas por mes</h2>
           <ReactApexChart
             options={barOpts(hoursByMonth.map(m => m.label))}
@@ -247,7 +242,7 @@ export default function ReportsPage() {
         </div>
 
         {/* Distribución por tipo */}
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6">
+        <div className="rounded-2xl glass p-6">
           <h2 className="text-sm font-semibold text-white mb-4">Por tipo de trabajo</h2>
           {hoursByType.length > 0 ? (
             <div>
@@ -260,7 +255,7 @@ export default function ReportsPage() {
                 {hoursByType.map(([type, hours]) => (
                   <div key={type} className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full" style={{ background: TYPE_COLOR[type] || '#6366f1' }} />
+                      <span className="w-2 h-2 rounded-full" style={{ background: TYPE_COLOR[type] || CATEGORICAL[0] }} />
                       <span className="text-gray-400">{type}</span>
                     </div>
                     <span className="text-white font-medium">{hours.toFixed(1)}h</span>
@@ -277,7 +272,7 @@ export default function ReportsPage() {
       {/* Gráficos fila 2 */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Horas por proyecto */}
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6">
+        <div className="rounded-2xl glass p-6">
           <h2 className="text-sm font-semibold text-white mb-4">Horas por proyecto</h2>
           {hoursByProject.length > 0 ? (
             <ReactApexChart
@@ -291,7 +286,7 @@ export default function ReportsPage() {
         </div>
 
         {/* Horas por usuario */}
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6">
+        <div className="rounded-2xl glass p-6">
           <h2 className="text-sm font-semibold text-white mb-4">Horas por usuario</h2>
           {hoursByUser.length > 0 ? (
             <div className="space-y-3">

@@ -56,7 +56,8 @@ const mapFromBackend = (data: ProjectBackend): Project => ({
     location: data.cliente.localidad || '',
     province: data.cliente.provincia || '',
     phone: '',   // Sin soporte en backend
-    avatar: ''   // Sin soporte en backend
+    avatar: '',  // Sin soporte en backend
+    logoVersion: data.cliente.logoVersion ?? undefined,
   } : undefined,
 });
 

@@ -177,7 +177,7 @@ export default function BudgetForm({ defaultValues, onSubmit, isSubmitting, subm
           <button
             type="button"
             onClick={() => append({ id: `new_${Date.now()}`, concept: '', quantity: 1, unitPrice: 0, total: 0 })}
-            className="text-sm px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+            className="text-sm px-3 py-1.5 rounded-full text-gray-200 bg-white/[0.05] ring-1 ring-inset ring-white/[0.08] hover:bg-white/[0.1] press"
           >
             + Añadir línea
           </button>
@@ -263,9 +263,9 @@ export default function BudgetForm({ defaultValues, onSubmit, isSubmitting, subm
 
         {/* Total */}
         <div className="mt-4 flex justify-end">
-          <div className="flex items-center gap-3 rounded-lg bg-gray-50 dark:bg-gray-800 px-5 py-3">
+          <div className="flex items-center gap-3 rounded-xl bg-white/[0.04] ring-1 ring-inset ring-white/[0.06] px-5 py-3">
             <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Total presupuesto:</span>
-            <span className="text-xl font-bold text-[#E93222]">
+            <span className="text-xl font-bold text-white tabular-nums">
               {new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(grandTotal)}
             </span>
           </div>
@@ -288,7 +288,7 @@ export default function BudgetForm({ defaultValues, onSubmit, isSubmitting, subm
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-full text-sm hover:bg-gray-300"
+          className="px-5 py-2.5 rounded-full text-sm text-gray-300 bg-white/[0.04] ring-1 ring-inset ring-white/[0.08] hover:text-white hover:bg-white/[0.08] press"
         >
           Cancelar
         </button>

@@ -81,7 +81,7 @@ describe("EditUserForm", () => {
     // Se usan findBy* para esperar a que el formulario se llene de forma asíncrona con useEffect
     expect(await screen.findByDisplayValue(mockUser.name)).toBeInTheDocument();
     expect(screen.getByDisplayValue(mockUser.email)).toBeInTheDocument();
-    expect(await screen.findByDisplayValue("User")).toBeInTheDocument(); // "User" es el texto visible del option seleccionado
+    expect(await screen.findByDisplayValue("Usuario")).toBeInTheDocument(); // "Usuario" es el texto visible del option seleccionado
   });
 
   test("renderiza el formulario vacío si la carga inicial de datos falla", () => {
@@ -95,7 +95,7 @@ describe("EditUserForm", () => {
     render(<EditUserForm id="1" />, { wrapper });
 
     expect(mockedToast.error).not.toHaveBeenCalled();
-    expect(screen.getByLabelText('Name')).toHaveValue("");
+    expect(screen.getByLabelText('Nombre')).toHaveValue("");
     expect(screen.getByLabelText(/email/i)).toHaveValue("");
     const errorRegex = /error|failed to fetch/i;
     expect(screen.queryByText(errorRegex)).not.toBeInTheDocument();
@@ -123,18 +123,18 @@ describe("EditUserForm", () => {
     render(<EditUserForm id="1" />, { wrapper });
     const user = userEvent.setup();
 
-    const nameInput = screen.getByLabelText('Name');
+    const nameInput = screen.getByLabelText('Nombre');
     await user.clear(nameInput);
     await user.type(nameInput, "Jane Doe");
 
-    await user.click(screen.getByRole("button", { name: /update user/i }));
+    await user.click(screen.getByRole("button", { name: /guardar cambios/i }));
 
     await waitFor(() => {
       expect(mutateSpy).toHaveBeenCalledWith(expect.objectContaining({ name: "Jane Doe" }));
     });
 
     await waitFor(() => {
-      expect(mockedToast.success).toHaveBeenCalledWith("User updated successfully!");
+      expect(mockedToast.success).toHaveBeenCalledWith("Usuario actualizado");
     });
 
     await waitFor(() => {
@@ -164,14 +164,14 @@ describe("EditUserForm", () => {
     const user = userEvent.setup();
 
     // Populate fields to pass validation
-    await user.clear(screen.getByLabelText('Name'));
-    await user.type(screen.getByLabelText('Name'), mockUser.name);
+    await user.clear(screen.getByLabelText('Nombre'));
+    await user.type(screen.getByLabelText('Nombre'), mockUser.name);
     await user.clear(screen.getByLabelText('Email'));
     await user.type(screen.getByLabelText('Email'), mockUser.email);
-    // Assuming username is also required and has a label 'Username'
-    await user.type(screen.getByLabelText('Username'), mockUser.username);
+    // Assuming username is also required and has a label 'Nombre de usuario'
+    await user.type(screen.getByLabelText('Nombre de usuario'), mockUser.username);
 
-    await user.click(screen.getByRole("button", { name: /update user/i }));
+    await user.click(screen.getByRole("button", { name: /guardar cambios/i }));
 
     await waitFor(() => {
       expect(mutateSpy).toHaveBeenCalled();

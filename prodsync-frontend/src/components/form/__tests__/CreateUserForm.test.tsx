@@ -60,20 +60,20 @@ describe('CreateUserForm', () => {
 
   it('renders the form correctly', () => {
     renderWithClient(<CreateUserForm />);
-    expect(screen.getByLabelText('Name')).toBeInTheDocument();
+    expect(screen.getByLabelText('Nombre')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
-    expect(screen.getByLabelText('Role')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Create User' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Rol')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Crear usuario' })).toBeInTheDocument();
   });
 
   it('shows validation errors for required fields', async () => {
     renderWithClient(<CreateUserForm />);
-    fireEvent.click(screen.getByRole('button', { name: 'Create User' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Crear usuario' }));
     
-    expect(await screen.findByText('Name must be at least 2 characters')).toBeInTheDocument();
-    expect(await screen.findByText('Username must be at least 2 characters')).toBeInTheDocument();
-    expect((await screen.findAllByText('Password must be at least 6 characters'))[0]).toBeInTheDocument();
-    expect(await screen.findByText('Please enter a valid email')).toBeInTheDocument();
+    expect(await screen.findByText('El nombre debe tener al menos 2 caracteres')).toBeInTheDocument();
+    expect(await screen.findByText('El nombre de usuario debe tener al menos 2 caracteres')).toBeInTheDocument();
+    expect((await screen.findAllByText('La contraseña debe tener al menos 6 caracteres'))[0]).toBeInTheDocument();
+    expect(await screen.findByText('Introduce un email válido')).toBeInTheDocument();
   });
 
   it('submits the form with the correct data', async () => {
@@ -88,15 +88,15 @@ describe('CreateUserForm', () => {
       status: 'ACTIVE',
     };
     
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: userData.name } });
-    fireEvent.change(screen.getByLabelText('Username'), { target: { value: userData.username } });
-    fireEvent.change(screen.getByLabelText('Password'), { target: { value: userData.password } });
-    fireEvent.change(screen.getByLabelText('Confirm Password'), { target: { value: userData.password } });
+    fireEvent.change(screen.getByLabelText('Nombre'), { target: { value: userData.name } });
+    fireEvent.change(screen.getByLabelText('Nombre de usuario'), { target: { value: userData.username } });
+    fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: userData.password } });
+    fireEvent.change(screen.getByLabelText('Confirmar contraseña'), { target: { value: userData.password } });
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: userData.email } });
-    fireEvent.change(screen.getByLabelText('Role'), { target: { value: userData.role } });
-    fireEvent.change(screen.getByLabelText('Status'), { target: { value: userData.status } });
+    fireEvent.change(screen.getByLabelText('Rol'), { target: { value: userData.role } });
+    fireEvent.change(screen.getByLabelText('Estado'), { target: { value: userData.status } });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Create User' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Crear usuario' }));
 
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalledWith(userData);
@@ -105,11 +105,11 @@ describe('CreateUserForm', () => {
 
   it('shows a success message and redirects on successful submission', async () => {
     renderWithClient(<CreateUserForm />);
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Test User' } });
-    fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'testuser' } });
-    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByLabelText('Nombre'), { target: { value: 'Test User' } });
+    fireEvent.change(screen.getByLabelText('Nombre de usuario'), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'password123' } });
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Create User' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Crear usuario' }));
 
     await act(async () => {
       if (capturedMutationOptions.onSuccess) {
@@ -117,7 +117,7 @@ describe('CreateUserForm', () => {
       }
     });
 
-    expect(toast.success).toHaveBeenCalledWith('User created successfully!');
+    expect(toast.success).toHaveBeenCalledWith('Usuario creado');
     expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: ['users'] });
     
     act(() => {
@@ -133,11 +133,11 @@ describe('CreateUserForm', () => {
     const mockError = new ApiServiceError('Failed to create user.', 400);
     renderWithClient(<CreateUserForm />);
 
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Test User' } });
-    fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'testuser' } });
-    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByLabelText('Nombre'), { target: { value: 'Test User' } });
+    fireEvent.change(screen.getByLabelText('Nombre de usuario'), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'password123' } });
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Create User' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Crear usuario' }));
     
     await act(async () => {
         if (capturedMutationOptions.onError) {

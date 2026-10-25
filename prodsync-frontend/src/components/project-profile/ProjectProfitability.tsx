@@ -48,7 +48,7 @@ export default function ProjectProfitability({ projectId }: Props) {
   const formatEur = (n: number) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
 
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6 space-y-6">
+    <div className="rounded-2xl glass p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-white">Rentabilidad del proyecto</h2>
         {budget && (
@@ -60,7 +60,7 @@ export default function ProjectProfitability({ projectId }: Props) {
 
       {/* Presupuesto */}
       {budget ? (
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 flex items-center justify-between gap-4">
+        <div className="rounded-xl glass p-4 flex items-center justify-between gap-4">
           <div>
             <p className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Presupuesto vinculado</p>
             <p className="text-sm font-medium text-white truncate">{budget.title}</p>

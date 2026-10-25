@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import { X } from 'lucide-react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -13,23 +14,22 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
 
   return (
     <>
-      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm animate-fade" onClick={onClose}></div>
       <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none max-h-screen">
-        <div className="relative w-full max-w-full mx-auto my-6">
+        <div className="relative w-full max-w-full mx-auto my-6 animate-dialog">
           {/*content*/}
-          <div className="relative flex flex-col w-full bg-white border-0 rounded-lg shadow-lg outline-none focus:outline-none dark:bg-gray-800">
+          <div className="relative flex flex-col w-full rounded-2xl border border-white/[0.08] bg-[#24242d] shadow-2xl outline-none focus:outline-none">
             {/*header*/}
-            <div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t dark:border-gray-700">
+            <div className="flex items-start justify-between p-5 border-b border-white/[0.06] rounded-t">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {title}
               </h3>
               <button
-                className="p-1 ml-auto bg-transparent border-0 text-gray-900 float-right text-3xl leading-none font-semibold outline-none focus:outline-none dark:text-white"
+                className="press ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white/[0.06] hover:text-white"
                 onClick={onClose}
+                aria-label="Cerrar"
               >
-                <span className="bg-transparent text-gray-900 h-6 w-6 text-2xl block outline-none focus:outline-none dark:text-white">
-                  ×
-                </span>
+                <X size={18} />
               </button>
             </div>
             {/*body*/}

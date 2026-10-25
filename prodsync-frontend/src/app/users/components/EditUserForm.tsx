@@ -42,7 +42,7 @@ export default function EditUserForm({ id }: { id: string }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      toast.success("User updated successfully!");
+      toast.success("Usuario actualizado");
       router.push("/users");
     },
     onError: (error: unknown) => {
@@ -55,14 +55,14 @@ export default function EditUserForm({ id }: { id: string }) {
   };
 
   if (isLoading) return <div className="p-5 text-center">Loading user data...</div>;
-  if (isError) return <div className="p-5 text-center text-red-500">Error loading user data.</div>;
-  if (!user) return <div className="p-5 text-center">User not found.</div>;
+  if (isError) return <div className="p-5 text-center text-red-500">No se pudieron cargar los datos del usuario.</div>;
+  if (!user) return <div className="p-5 text-center">Usuario no encontrado.</div>;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-6 bg-white rounded-lg shadow dark:bg-[#1E1E26]">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium mb-1 dark:text-gray-200">Name</label>
+          <label htmlFor="name" className="block text-sm font-medium mb-1 dark:text-gray-200">Nombre</label>
           <input
             type="text"
             id="name"
@@ -72,7 +72,7 @@ export default function EditUserForm({ id }: { id: string }) {
           {errors.name && <p data-testid="name-error" className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
         </div>
         <div>
-          <label htmlFor="username" className="block text-sm font-medium mb-1 dark:text-gray-200">Username</label>
+          <label htmlFor="username" className="block text-sm font-medium mb-1 dark:text-gray-200">Nombre de usuario</label>
           <input
             type="text"
             id="username"
@@ -92,26 +92,26 @@ export default function EditUserForm({ id }: { id: string }) {
           {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
         </div>
         <div>
-          <label htmlFor="role" className="block text-sm font-medium mb-1 dark:text-gray-200">Role</label>
+          <label htmlFor="role" className="block text-sm font-medium mb-1 dark:text-gray-200">Rol</label>
           <select
             id="role"
             {...register("role")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md dark:border-gray-700 dark:bg-[#1E1E26] dark:text-gray-400"
           >
-            <option value="USER">User</option>
-            <option value="ADMIN">Admin</option>
-            <option value="OPERATOR">Operator</option>
+            <option value="USER">Usuario</option>
+            <option value="ADMIN">Administrador</option>
+            <option value="OPERATOR">Operador</option>
           </select>
         </div>
         <div>
-          <label htmlFor="status" className="block text-sm font-medium mb-1 dark:text-gray-200">Status</label>
+          <label htmlFor="status" className="block text-sm font-medium mb-1 dark:text-gray-200">Estado</label>
           <select
             id="status"
             {...register("status")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md dark:border-gray-700 dark:bg-[#1E1E26] dark:text-gray-400"
           >
-            <option value="ACTIVE">Active</option>
-            <option value="INACTIVE">Inactive</option>
+            <option value="ACTIVE">Activo</option>
+            <option value="INACTIVE">Inactivo</option>
           </select>
         </div>
       </div>
@@ -121,7 +121,7 @@ export default function EditUserForm({ id }: { id: string }) {
         disabled={updateUserMutation.isPending}
         className="px-4 py-2 bg-[#1E1E26] text-white rounded-md hover:bg-[#13131a] disabled:opacity-50"
       >
-        {updateUserMutation.isPending ? "Updating..." : "Update User"}
+        {updateUserMutation.isPending ? "Guardando..." : "Guardar cambios"}
       </button>
     </form>
   );

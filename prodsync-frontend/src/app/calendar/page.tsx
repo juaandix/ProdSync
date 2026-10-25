@@ -6,6 +6,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
+import esLocale from '@fullcalendar/core/locales/es';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { timeEntryService } from '@/services/timeEntryService';
 import { projectService } from '@/services/projectService';
@@ -62,7 +63,7 @@ export default function CalendarPage() {
 
   const timeEntryEvents = filters.timeEntries ? timeEntries.map(e => ({
     id: `te-${e.id}`,
-    title: `${e.hours}h · ${e.description ?? 'Time entry'}`,
+    title: `${e.hours}h · ${e.description ?? 'Registro de tiempo'}`,
     date: e.date,
     backgroundColor: TYPE_COLORS[e.type ?? ''] ?? '#6b7280',
     borderColor: 'transparent',
@@ -107,21 +108,21 @@ export default function CalendarPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-base font-semibold text-white">Calendar</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Time entries, project deadlines and custom events</p>
+          <h1 className="text-2xl font-semibold text-white tracking-tight">Calendario</h1>
+          <p className="text-xs text-gray-500 mt-0.5">Horas registradas, entregas de proyectos y eventos propios</p>
         </div>
         <div className="flex items-center gap-2 relative">
           <button
             onClick={() => setShowFilter(f => !f)}
             className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg border transition-colors ${showFilter ? 'text-brand-400 bg-brand-500/10 border-brand-500/20' : 'text-gray-400 hover:text-white border-white/[0.08] hover:border-white/20'}`}
           >
-            <SlidersHorizontal size={14} /> Filters
+            <SlidersHorizontal size={14} /> Filtros
           </button>
 
           {showFilter && (
             <div id="calendar-filter-panel" className="absolute top-full right-28 mt-2 w-52 rounded-xl border border-white/[0.08] bg-[#161820] shadow-xl z-50 p-3 space-y-1">
-              <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">Show</p>
-              {([['timeEntries', 'Time Entries'], ['projects', 'Project Deadlines'], ['custom', 'Custom Events']] as [FilterKey, string][]).map(([key, label]) => (
+              <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">Mostrar</p>
+              {([['timeEntries', 'Horas registradas'], ['projects', 'Entregas de proyectos'], ['custom', 'Eventos propios']] as [FilterKey, string][]).map(([key, label]) => (
                 <label key={key} className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-white/[0.04] cursor-pointer">
                   <input type="checkbox" checked={filters[key]} onChange={() => setFilters(f => ({ ...f, [key]: !f[key] }))}
                     className="w-4 h-4 rounded accent-brand-500 cursor-pointer" />
@@ -133,15 +134,15 @@ export default function CalendarPage() {
 
           <button
             onClick={() => { setForm(f => ({ ...f, startDate: '', endDate: '' })); setShowModal(true); }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-white bg-gradient-to-r from-brand-500 to-theme-purple-500 hover:opacity-90 hover:shadow-lg hover:shadow-brand-500/25 active:scale-95 transition-all"
+            className="flex items-center gap-1.5 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-full transition-colors whitespace-nowrap press"
           >
-            <Plus size={14} /> Add Event
+            <Plus size={14} /> Añadir evento
           </button>
         </div>
       </div>
 
       {/* Calendar */}
-      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-5 overflow-hidden
+      <div className="rounded-2xl glass p-5 overflow-hidden
         [&_.fc-button]:!bg-white/[0.06] [&_.fc-button]:!border-white/[0.08] [&_.fc-button]:!text-gray-300 [&_.fc-button]:!text-xs [&_.fc-button]:!px-3 [&_.fc-button]:!py-1.5 [&_.fc-button]:!rounded-lg [&_.fc-button]:!font-medium
         [&_.fc-button:hover]:!bg-white/[0.10] [&_.fc-button:hover]:!text-white [&_.fc-button:hover]:!border-white/[0.12]
         [&_.fc-button-primary:not(:disabled).fc-button-active]:!bg-brand-500/20 [&_.fc-button-primary:not(:disabled).fc-button-active]:!text-brand-400 [&_.fc-button-primary:not(:disabled).fc-button-active]:!border-brand-500/30
@@ -162,9 +163,9 @@ export default function CalendarPage() {
           headerToolbar={{ left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,listWeek' }}
           events={events}
           height="auto"
-          locale="es"
+          locale={esLocale}
           dateClick={handleDateClick}
-          buttonText={{ today: 'Today', month: 'Month', week: 'Week', list: 'List' }}
+          buttonText={{ today: 'Hoy', month: 'Mes', week: 'Semana', list: 'Lista' }}
         />
       </div>
 
@@ -178,7 +179,7 @@ export default function CalendarPage() {
         ))}
         <span className="flex items-center gap-1.5 text-xs text-gray-500">
           <span className="inline-block w-2.5 h-2.5 rounded-full shrink-0 bg-brand-500/40 border border-brand-500/60" />
-          Project deadline
+          Entrega de proyecto
         </span>
       </div>
 
@@ -188,8 +189,8 @@ export default function CalendarPage() {
           <div className="bg-[#161820] rounded-2xl border border-white/[0.08] shadow-2xl p-6 w-full max-w-md">
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h3 className="text-base font-semibold text-white">New Event</h3>
-                <p className="text-xs text-gray-500 mt-0.5">Add a custom event to the calendar</p>
+                <h3 className="text-base font-semibold text-white">Nuevo evento</h3>
+                <p className="text-xs text-gray-500 mt-0.5">Añade un evento propio al calendario</p>
               </div>
               <button onClick={() => setShowModal(false)} className="p-2 text-gray-500 hover:text-white hover:bg-white/[0.06] rounded-lg transition-colors">
                 <X size={16} />
@@ -198,22 +199,22 @@ export default function CalendarPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className={labelClass}>Title *</label>
+                <label className={labelClass}>Título *</label>
                 <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-                  placeholder="Event title" className={inputClass} />
+                  placeholder="Título del evento" className={inputClass} />
               </div>
               <div>
-                <label className={labelClass}>Description</label>
+                <label className={labelClass}>Descripción</label>
                 <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                  rows={2} placeholder="Optional..." className={`${inputClass} resize-none`} />
+                  rows={2} placeholder="Opcional..." className={`${inputClass} resize-none`} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelClass}>Start *</label>
+                  <label className={labelClass}>Inicio *</label>
                   <input required type="date" value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))} className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>End <span className="text-gray-600 normal-case">(opt.)</span></label>
+                  <label className={labelClass}>Fin <span className="text-gray-600 normal-case">(opc.)</span></label>
                   <input type="date" value={form.endDate} onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))} className={inputClass} />
                 </div>
               </div>
@@ -230,12 +231,12 @@ export default function CalendarPage() {
               <div className="flex justify-end gap-2 pt-2">
                 <button type="button" onClick={() => setShowModal(false)}
                   className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-lg transition-colors">
-                  Cancel
+                  Cancelar
                 </button>
                 <button type="submit" disabled={createEvent.isPending}
                   className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-colors disabled:opacity-50">
                   {createEvent.isPending && <Loader2 size={14} className="animate-spin" />}
-                  {createEvent.isPending ? 'Saving...' : 'Save Event'}
+                  {createEvent.isPending ? 'Guardando...' : 'Guardar evento'}
                 </button>
               </div>
             </form>

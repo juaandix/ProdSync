@@ -16,12 +16,13 @@
  *     y redirige a /signin.
  *
  * Cookies usadas:
- *  - authToken  → JWT de acceso (1 día de expiración, secure, SameSite Strict)
+ *  - authToken  → JWT de acceso (1 día de expiración, SameSite Strict; secure con HTTPS)
  *  - userRole   → rol del usuario ('ADMIN' | 'OPERATOR' | 'USER'), leído por el middleware
  */
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { sessionCookieOptions } from '@/lib/cookieOptions';
 import { authService } from '@/services/authService';
 import { userService } from '@/services/userService';
 import { User } from '@/types/models';
@@ -32,7 +33,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
-  login: (credentials: LoginRequest) => Promise<void>;
+  login: (credentials: LoginRequest, remember?: boolean) => Promise<void>;
   logout: () => void;
 }
 
@@ -63,7 +64,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setUser(currentUser);
             // Sincroniza el rol en cookie para que el middleware pueda leerlo
             // sin necesidad de hacer una petición al backend en cada request
-            Cookies.set('userRole', currentUser.role, { path: '/', secure: true, sameSite: 'Strict' });
+            Cookies.set('userRole', currentUser.role, sessionCookieOptions());
           } else {
             // Token presente pero /auth/me devuelve vacío: sesión inválida
             Cookies.remove('authToken', { path: '/' });
@@ -89,8 +90,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    * Autentica al usuario y carga su perfil.
    * authService.login() ya guarda el token en la cookie `authToken`.
    */
-  const login = async (credentials: LoginRequest) => {
-    const response = await authService.login(credentials);
+  const login = async (credentials: LoginRequest, remember = true) => {
+    const response = await authService.login(credentials, remember);
     const { token } = response;
     setToken(token);
 
@@ -99,7 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (currentUser) {
         setUser(currentUser);
         // Guarda el rol en cookie para acceso rápido sin re-fetch en cada página
-        Cookies.set('userRole', currentUser.role, { path: '/', secure: true, sameSite: 'Strict' });
+        Cookies.set('userRole', currentUser.role, sessionCookieOptions());
       }
       router.push('/dashboard');
     } catch {

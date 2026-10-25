@@ -39,12 +39,12 @@ export default function ProjectQuickView({ project, onClose }: Props) {
       />
 
       {/* Panel */}
-      <div className={`fixed top-0 right-0 z-50 h-full w-full max-w-md bg-[#161820] border-l border-white/[0.06] shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${project ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`fixed top-0 right-0 z-50 h-full w-full max-w-md bg-[#161820] border-l border-white/[0.06] shadow-2xl flex flex-col transition-transform duration-[420ms] ease-out-expo motion-reduce:duration-0 ${project ? 'translate-x-0' : 'translate-x-full'}`}>
 
         {/* Header */}
         <div className="flex items-start justify-between p-6 border-b border-white/[0.06]">
           <div className="flex-1 min-w-0 pr-4">
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-1">Project</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-1">Proyecto</p>
             <h2 className="text-lg font-semibold text-white truncate">{project?.name}</h2>
           </div>
           <button
@@ -61,7 +61,7 @@ export default function ProjectQuickView({ project, onClose }: Props) {
           {/* Status */}
           {project && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500">Status:</span>
+              <span className="text-xs text-gray-500">Estado:</span>
               <RoleGuard
                 roles={['ADMIN', 'OPERATOR']}
                 fallback={
@@ -78,7 +78,7 @@ export default function ProjectQuickView({ project, onClose }: Props) {
           {/* Description */}
           {project?.description && (
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">Description</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">Descripción</p>
               <p className="text-sm text-gray-300 leading-relaxed">{project.description}</p>
             </div>
           )}
@@ -88,14 +88,14 @@ export default function ProjectQuickView({ project, onClose }: Props) {
             <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Calendar size={13} className="text-gray-500" />
-                <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Start</span>
+                <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Inicio</span>
               </div>
               <p className="text-sm font-medium text-white">{project?.startDate || '—'}</p>
             </div>
             <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Calendar size={13} className="text-gray-500" />
-                <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">End</span>
+                <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Fin</span>
               </div>
               <p className="text-sm font-medium text-white">{project?.endDate || '—'}</p>
             </div>
@@ -103,7 +103,7 @@ export default function ProjectQuickView({ project, onClose }: Props) {
               <div className="col-span-2 rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <User size={13} className="text-gray-500" />
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Client</span>
+                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</span>
                 </div>
                 <Link href={`/clients/${project.client.id}`} className="text-sm font-medium text-brand-400 hover:text-brand-300 transition-colors">
                   {project.client.name}
@@ -117,7 +117,7 @@ export default function ProjectQuickView({ project, onClose }: Props) {
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <ClipboardList size={13} className="text-gray-500" />
-                <p className="text-xs font-medium uppercase tracking-wider text-gray-500">Tasks</p>
+                <p className="text-xs font-medium uppercase tracking-wider text-gray-500">Tareas</p>
               </div>
               {tasks.length > 0 && (
                 <span className="text-xs text-gray-500">{completed}/{tasks.length} completed</span>
@@ -127,7 +127,7 @@ export default function ProjectQuickView({ project, onClose }: Props) {
             {tasks.length > 0 && (
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-gray-500">Progress</span>
+                  <span className="text-xs text-gray-500">Progreso</span>
                   <span className="text-xs font-medium text-white">{progress}%</span>
                 </div>
                 <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
@@ -146,7 +146,7 @@ export default function ProjectQuickView({ project, onClose }: Props) {
                 ))}
               </div>
             ) : tasks.length === 0 ? (
-              <p className="text-sm text-gray-600 py-2">No tasks yet.</p>
+              <p className="text-sm text-gray-600 py-2">Todavía no hay tareas.</p>
             ) : (
               <div className="space-y-2">
                 {tasks.slice(0, 6).map(task => (
@@ -171,7 +171,7 @@ export default function ProjectQuickView({ project, onClose }: Props) {
         <div className="p-4 border-t border-white/[0.06] flex gap-2">
           <Link href={`/projects/${project?.id}`} className="flex-1">
             <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-colors">
-              <Eye size={15} /> View full project
+              <Eye size={15} /> Ver proyecto completo
             </button>
           </Link>
           <Link href={`/projects/edit/${project?.id}`}>

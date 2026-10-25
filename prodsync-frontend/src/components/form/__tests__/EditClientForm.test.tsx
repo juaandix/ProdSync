@@ -96,7 +96,7 @@ describe("EditClientForm", () => {
     render(<EditClientForm id="1" />, { wrapper });
 
     expect(mockedToast.error).not.toHaveBeenCalled();
-    expect(screen.getByLabelText(/name/i)).toHaveValue("");
+    expect(screen.getByLabelText(/^nombre$/i)).toHaveValue("");
     expect(screen.getByLabelText(/email/i)).toHaveValue("");
     const errorRegex = /error|failed to fetch/i;
     expect(screen.queryByText(errorRegex)).not.toBeInTheDocument();
@@ -124,7 +124,7 @@ describe("EditClientForm", () => {
     render(<EditClientForm id="1" />, { wrapper });
     const user = userEvent.setup();
 
-    const nameInput = screen.getByLabelText(/name/i);
+    const nameInput = screen.getByLabelText(/^nombre$/i);
     await user.clear(nameInput);
     await user.type(nameInput, "Client Updated");
 
@@ -132,15 +132,15 @@ describe("EditClientForm", () => {
     await user.clear(emailInput);
     await user.type(emailInput, "updated@example.com");
 
-    const identificationInput = screen.getByLabelText(/identification/i);
+    const identificationInput = screen.getByLabelText(/nif\/cif/i);
     await user.clear(identificationInput);
     await user.type(identificationInput, "ID-UPDATED");
 
-    const contactPersonInput = screen.getByLabelText(/contact person/i);
+    const contactPersonInput = screen.getByLabelText(/persona de contacto/i);
     await user.clear(contactPersonInput);
     await user.type(contactPersonInput, "987654321");
 
-    await user.click(screen.getByRole("button", { name: /update client/i }));
+    await user.click(screen.getByRole("button", { name: /guardar cambios/i }));
 
     await waitFor(() => {
       expect(mutateSpy).toHaveBeenCalledWith(expect.objectContaining({
@@ -152,7 +152,7 @@ describe("EditClientForm", () => {
     });
 
     await waitFor(() => {
-      expect(mockedToast.success).toHaveBeenCalledWith("Client updated successfully!");
+      expect(mockedToast.success).toHaveBeenCalledWith("Cliente actualizado");
     });
 
     await waitFor(() => {
@@ -181,7 +181,7 @@ describe("EditClientForm", () => {
     render(<EditClientForm id="1" />, { wrapper });
     const user = userEvent.setup();
 
-    const nameInput = screen.getByLabelText(/name/i);
+    const nameInput = screen.getByLabelText(/^nombre$/i);
     await user.clear(nameInput);
     await user.type(nameInput, mockClient.name);
 
@@ -189,15 +189,15 @@ describe("EditClientForm", () => {
     await user.clear(emailInput);
     await user.type(emailInput, mockClient.email);
 
-    const identificationInput = screen.getByLabelText(/identification/i);
+    const identificationInput = screen.getByLabelText(/nif\/cif/i);
     await user.clear(identificationInput);
     await user.type(identificationInput, mockClient.identification);
 
-    const contactPersonInput = screen.getByLabelText(/contact person/i);
+    const contactPersonInput = screen.getByLabelText(/persona de contacto/i);
     await user.clear(contactPersonInput);
     await user.type(contactPersonInput, "123456789");
 
-    await user.click(screen.getByRole("button", { name: /update client/i }));
+    await user.click(screen.getByRole("button", { name: /guardar cambios/i }));
 
     await waitFor(() => {
       expect(mutateSpy).toHaveBeenCalled();

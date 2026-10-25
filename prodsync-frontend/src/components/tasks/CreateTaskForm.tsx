@@ -37,7 +37,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ projectId, onTaskCreate
   const createTaskMutation = useMutation({
     mutationFn: taskService.create,
     onSuccess: () => {
-      toast.success("Task created successfully!");
+      toast.success("Tarea creada");
       queryClient.invalidateQueries({ queryKey: ['tasks', projectId] });
       queryClient.invalidateQueries({ queryKey: ['project', projectId] });
       if (onTaskCreated) {
@@ -62,7 +62,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ projectId, onTaskCreate
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="md:col-span-2">
-          <label htmlFor="descripcion" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Description</label>
+          <label htmlFor="descripcion" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Descripción</label>
           <textarea
             id="descripcion"
             rows={3}
@@ -72,7 +72,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ projectId, onTaskCreate
           {errors.descripcion && <p className="text-xs text-red-500 mt-1">{errors.descripcion.message}</p>}
         </div>
         <div>
-          <label htmlFor="estado" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Status</label>
+          <label htmlFor="estado" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Estado</label>
           <select
             id="estado"
             {...register("estado")}
@@ -85,7 +85,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ projectId, onTaskCreate
           {errors.estado && <p className="text-xs text-red-500 mt-1">{errors.estado.message}</p>}
         </div>
         <div>
-          <label htmlFor="estimacion" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Estimation (hours)</label>
+          <label htmlFor="estimacion" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Estimación (horas)</label>
           <input
             type="number"
             id="estimacion"

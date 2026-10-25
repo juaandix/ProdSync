@@ -13,6 +13,7 @@ const config = {
   moduleNameMapper: {
     '\\.(css|sass|scss)$': '<rootDir>/__mocks__/styleMock.js',
     '\\.(svg)$': '<rootDir>/__mocks__/svgMock.js',
+    '^@dicebear/(.*)$': '<rootDir>/__mocks__/dicebearMock.js',
     '^@/components/(.*)$': '<rootDir>/src/components/$1',
     '^@/app/(.*)$': '<rootDir>/src/app/$1',
     '^@/shared/(.*)$': '<rootDir>/src/shared/$1',

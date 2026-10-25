@@ -81,7 +81,7 @@ export function AiAssignmentPanel({ descripcion, estimacion, storyPoints }: AiAs
               <tr className="border-b border-gray-100 text-xs text-gray-500 bg-gray-50">
                 <th className="px-3 py-2 text-left font-medium">#</th>
                 <th className="px-3 py-2 text-left font-medium">Desarrollador</th>
-                <th className="px-3 py-2 text-left font-medium">Score</th>
+                <th className="px-3 py-2 text-left font-medium">Puntuación</th>
                 <th className="px-3 py-2 text-left font-medium">Justificación</th>
               </tr>
             </thead>

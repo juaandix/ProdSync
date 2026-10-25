@@ -4,19 +4,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/hooks/useRole";
+import { useSlidingIndicator } from "@/hooks/useSlidingIndicator";
 import GlobalSearch from "@/components/header/GlobalSearch";
 import UserDropdown from "@/components/header/UserDropdown";
 
 type NavItem = { name: string; path: string };
 
 const navItems: NavItem[] = [
-  { name: "Dashboard", path: "/dashboard" },
-  { name: "Projects", path: "/projects" },
-  { name: "Clients", path: "/clients" },
-  { name: "Users", path: "/users" },
-  { name: "Time Entries", path: "/time-entries" },
-  { name: "Calendar", path: "/calendar" },
-  { name: "Budgets", path: "/budgets" },
+  { name: "Inicio", path: "/dashboard" },
+  { name: "Proyectos", path: "/projects" },
+  { name: "Clientes", path: "/clients" },
+  { name: "Usuarios", path: "/users" },
+  { name: "Horas", path: "/time-entries" },
+  { name: "Calendario", path: "/calendar" },
+  { name: "Presupuestos", path: "/budgets" },
 ];
 
 export default function TopNav() {
@@ -31,44 +32,74 @@ export default function TopNav() {
   });
 
   const isActive = (path: string) => pathname === path || pathname.startsWith(path + "/");
+  const activePath = visibleItems.find((item) => isActive(item.path))?.path ?? null;
+  const { containerRef, itemRef, rect, ready } = useSlidingIndicator(
+    activePath,
+    visibleItems.map((item) => item.path).join()
+  );
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-14 bg-[#1E1E26] border-b border-white/[0.06]">
-      <div className="flex items-center h-full px-6 gap-6">
+    // Sin franja propia: tres islas de cristal flotan sobre la misma lámina que el contenido.
+    // El contenedor deja pasar los clics; solo las islas los reciben.
+    <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+      {/* En móvil la navegación baja a una segunda fila desplazable */}
+      <div className="relative flex flex-wrap md:flex-nowrap items-center gap-2 md:gap-3 px-4 md:px-6 pt-3">
         {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2.5 shrink-0">
+        <Link
+          href="/dashboard"
+          className="pointer-events-auto glass-float flex items-center gap-2.5 shrink-0 h-12 rounded-full pl-1.5 pr-4 press"
+        >
           <Image
             src="/images/prodsync-sidebar-logo.png"
             alt="ProdSync"
             width={36}
             height={36}
+            className="h-9 w-9"
             priority
           />
           <span className="text-sm font-semibold text-white tracking-tight">ProdSync</span>
         </Link>
 
-        {/* Separator */}
-        <div className="h-5 w-px bg-white/[0.08] shrink-0" />
-
-        {/* Nav links */}
-        <nav className="flex items-center gap-1 flex-1 overflow-x-auto no-scrollbar">
-          {visibleItems.map((item) => (
-            <Link
-              key={item.path}
-              href={item.path}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                isActive(item.path)
-                  ? "bg-brand-500/10 text-brand-400"
-                  : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
-              }`}
-            >
-              {item.name}
-            </Link>
-          ))}
+        {/* Navegación: isla centrada; en móvil, fila completa */}
+        <div className="order-last md:order-none basis-full md:basis-auto md:flex-1 min-w-0 flex md:justify-center">
+        <nav
+          ref={containerRef}
+          className="pointer-events-auto glass-float relative w-full md:w-fit max-w-full flex items-center gap-0.5 p-1.5 h-12 rounded-full overflow-x-auto no-scrollbar"
+        >
+          {/* Indicador compartido: se desliza a la sección activa */}
+          <span
+            aria-hidden
+            className={`absolute left-0 top-0 rounded-full bg-white shadow-[0_2px_10px_-2px_rgb(0_0_0/0.5)] motion-reduce:transition-none ${
+              ready ? "transition-[transform,width,opacity] duration-[420ms] ease-out-expo" : ""
+            }`}
+            style={{
+              transform: rect ? `translate(${rect.x}px, ${rect.y}px)` : undefined,
+              width: rect?.w ?? 0,
+              height: rect?.h ?? 0,
+              opacity: rect ? 1 : 0,
+            }}
+          />
+          {visibleItems.map((item) => {
+            const active = item.path === activePath;
+            return (
+              <Link
+                key={item.path}
+                ref={itemRef(item.path)}
+                href={item.path}
+                aria-current={active ? "page" : undefined}
+                className={`relative px-3.5 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-300 ${
+                  active ? "text-gray-900" : "text-gray-400 hover:text-white hover:bg-white/[0.06]"
+                }`}
+              >
+                {item.name}
+              </Link>
+            );
+          })}
         </nav>
+        </div>
 
-        {/* Right side */}
-        <div className="flex items-center gap-3 shrink-0">
+        {/* Búsqueda y cuenta */}
+        <div className="pointer-events-auto glass-float flex items-center gap-1.5 shrink-0 h-12 rounded-full pl-2 pr-1.5 ml-auto md:ml-0">
           <GlobalSearch />
           <UserDropdown />
         </div>

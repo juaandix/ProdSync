@@ -2,6 +2,7 @@ package com.softcode.prodsyncapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softcode.prodsyncapi.model.Cliente;
+import com.softcode.prodsyncapi.model.ClienteLogo;
 import com.softcode.prodsyncapi.repository.UserRepository;
 import com.softcode.prodsyncapi.security.CustomUserDetailsService;
 import com.softcode.prodsyncapi.security.JwtService;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -149,5 +152,101 @@ class ClienteControllerTest {
 
         assertThrows(ServletException.class, () ->
                 mockMvc.perform(delete("/api/clientes/1").with(csrf())));
+    }
+
+    // ── Logo ─────────────────────────────────────────────────────────────
+
+    private static final byte[] PNG = {(byte) 0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A, 0, 0};
+
+    private MockMultipartFile logoFile(byte[] content) {
+        return new MockMultipartFile("file", "logo.png", "image/png", content);
+    }
+
+    @Test
+    @WithMockUser(roles = "OPERATOR")
+    void uploadLogo_shouldSaveDetectedPng() throws Exception {
+        Cliente cliente = createCliente();
+        cliente.setLogoVersion(123L);
+        when(clienteService.saveLogo(eq(1L), eq("image/png"), any())).thenReturn(Optional.of(cliente));
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/api/clientes/1/logo").file(logoFile(PNG)).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.logoVersion").value(123));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void uploadLogo_shouldRejectSvgEvenIfDeclaredAsPng() throws Exception {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><script>alert(1)</script></svg>".getBytes();
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/api/clientes/1/logo").file(logoFile(svg)).with(csrf()))
+                .andExpect(status().isBadRequest());
+        verify(clienteService, never()).saveLogo(any(), any(), any());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void uploadLogo_shouldRejectFilesOver1MB() throws Exception {
+        byte[] big = new byte[(int) ClienteController.MAX_LOGO_BYTES + 1];
+        System.arraycopy(PNG, 0, big, 0, PNG.length);
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/api/clientes/1/logo").file(logoFile(big)).with(csrf()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void uploadLogo_shouldReturn404_whenClientMissing() throws Exception {
+        when(clienteService.saveLogo(eq(99L), any(), any())).thenReturn(Optional.empty());
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/api/clientes/99/logo").file(logoFile(PNG)).with(csrf()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void uploadLogo_shouldBeForbiddenForUsers() throws Exception {
+        mockMvc.perform(multipart(HttpMethod.PUT, "/api/clientes/1/logo").file(logoFile(PNG)).with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void getLogo_shouldReturnBytesWithStoredType() throws Exception {
+        when(clienteService.getLogo(1L)).thenReturn(Optional.of(new ClienteLogo(1L, "image/png", PNG)));
+
+        mockMvc.perform(get("/api/clientes/1/logo"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("image/png"))
+                .andExpect(header().string("X-Content-Type-Options", "nosniff"))
+                .andExpect(content().bytes(PNG));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void getLogo_shouldReturn404_whenNoLogo() throws Exception {
+        when(clienteService.getLogo(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/clientes/1/logo"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void deleteLogo_shouldReturnClientWithoutLogo() throws Exception {
+        when(clienteService.deleteLogo(1L)).thenReturn(Optional.of(createCliente()));
+
+        mockMvc.perform(delete("/api/clientes/1/logo").with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.logoVersion").doesNotExist());
+    }
+
+    @Test
+    void detectImageType_recognisesSupportedFormatsOnly() {
+        assertEquals("image/png", ClienteController.detectImageType(PNG));
+        assertEquals("image/jpeg", ClienteController.detectImageType(new byte[]{(byte) 0xFF, (byte) 0xD8, (byte) 0xFF, 0}));
+        assertEquals("image/webp", ClienteController.detectImageType("RIFF0000WEBPVP8 ".getBytes()));
+        assertNull(ClienteController.detectImageType("GIF89a".getBytes()));
+        assertNull(ClienteController.detectImageType(new byte[0]));
     }
 }
